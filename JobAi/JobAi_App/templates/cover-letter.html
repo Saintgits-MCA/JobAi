@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'assets/css/cover-letter.css' %}">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<style>
+    .typing-effect {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    display: inline-block;
+    border-right: 2px solid black; /* Creates the blinking cursor effect */
+    padding-right: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.scrollable-container {
+    max-height: 400px; /* Adjust height as needed */
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding: 15px;
+    border: 1px solid #ccc;
+    background: #fff;
+    text-align: left;
+}
+
+
+</style>
+<body>
+    <div class="main-content">
+        <h2 id="cover-letter" class="mb-3">AI Cover Letter Generator</h2>
+        <div style="margin-top: 50px;">
+            <div class="cover-letter-generator coverletterbox w-100" style="margin-bottom: 50px;">
+                <div class="formcoverletter">
+                    <form class="formcover" method="POST" action="{%url 'ai_cover_letter'%}">
+                        {% csrf_token %}
+                        <div class="coverletterformdiv">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="coverletterinputblock">
+                                        <label class="coverletterlabel form-label">Job Title <span class="text-danger">*</span></label>
+                                        <input required placeholder="Ex. Software Developer" type="text" name="position" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="coverletterinputblock">
+                                        <label class="coverletterlabel form-label">Your Name</label>
+                                        <input placeholder="Ex. Mehul" type="text" name="name" class="form-control input-bg" value="{{fname}}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="coverletterinputblock">
+                                        <label class="coverletterlabel form-label">Applying to Company <span
+                                                class="text-danger">*</span></label>
+                                        <select name="Companyname" class="form-control" required>
+                                            <option value="" disabled selected>--Choose Company---</option>
+                                            {% for i in company %}
+                                            <option value="{{i.id}}">{{i.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="coverletterinputblock">
+                                        <label class="coverletterlabel form-label">Write Cover Letter To <span class="text-danger">*</span></label>
+                                        <input required placeholder="Ex-> Albert, HR Manager, CEO" type="text" name="hrname" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="coverletterinputblock">
+                                        <label class="coverletterlabel form-label">Your Skills (use ',') <span class="text-danger">*</span></label>
+                                        <input placeholder="Ex. Python, JS, C++" type="text" name="skills" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="coverletterinputblock">
+                                        <label class="coverletterlabel form-label">Your Email <span class="text-danger">*</span></label>
+                                        <input type="email" name="email" class="form-control input-bg" placeholder="example@gmail.com" value="{{email}}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="coverletterinputblock">
+                                        <label class="coverletterlabel form-label">Your Phone Number <span class="text-danger">*</span></label>
+                                        <input type="tel" name="phone" class="form-control input-bg" pattern="+91 [1-9]{10}" placeholder="+91-XXXXXXXXXX" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="covergeneratorbutton">
+                                <center>
+                                    <button type="submit" class="mx-5 mt-4 btn btn-primary">
+                                        <i class="bi bi-magic"></i> Generate Cover Letter
+                                    </button>
+                                    {% if cover_letter %}
+                                    <!-- Button to Open Modal -->
+                                    <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#coverLetterModal">
+                                       <i class="bi bi-eye"></i> View Cover Letter
+                                    </button>
+                                
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="coverLetterModal" tabindex="-1" aria-labelledby="coverLetterModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                
+                                                <!-- Modal Header with "X" Close Button -->
+                                                <div class="modal-header">
+                                                    <h3 class="modal-title" id="coverLetterModalLabel">Your Generated Cover Letter</h3>
+                                                    <button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                                </div>
+                                
+                                                <!-- Modal Body -->
+                                                <div class="modal-body">
+                                                    <div class="scrollable-container">
+                                                        <p id="coverLetterText" class="typing-effect">{{ cover_letter|linebreaks }}</p>
+                                                    </div>
+                                                </div>
+                                
+                                                <!-- Modal Footer Buttons -->
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-success" onclick="downloadPDF()">
+                                                        <i class="bi bi-download"></i> Download PDF
+                                                    </button>
+                                                    <button class="btn btn-info" onclick="sendCoverLetter()">
+                                                        <i class="bi bi-send-fill"></i> Send Cover Letter
+                                                    </button>
+                                                </div>
+                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                </center>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>            
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+     // Function to trigger the typing effect after page load
+     window.addEventListener('DOMContentLoaded', (event) => {
+        const coverLetterText = document.getElementById('coverLetterText');
+        const text = coverLetterText.innerText;
+        coverLetterText.innerHTML = ''; // Clear the content to prepare for animation
+        let i = 0;
+
+        function typeWriter() {
+            if (i < text.length) {
+                coverLetterText.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50); // Adjust typing speed here
+            }
+        }
+
+        typeWriter(); // Call the function to start the typing animation
+    });
+
+function downloadPDF() {
+    let coverLetter = `{{ cover_letter|escapejs }}`;
+    if (!coverLetter.trim()) {
+        alert("No cover letter to download.");
+        return;
+    }
+    window.location.href = `/download-pdf/?cover_letter=` + encodeURIComponent(coverLetter);
+}
+
+function sendCoverLetter() {
+    let recipientEmail = document.querySelector("input[name='email']").value;
+    let coverLetter = `{{ cover_letter|escapejs }}`;
+
+    if (!recipientEmail.trim()) {
+        alert("Please enter your email.");
+        return;
+    }
+
+    fetch("/send-cover-letter-email/", {
+        method: "POST",
+        body: JSON.stringify({ recipient_email: recipientEmail, cover_letter: coverLetter }),
+        headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" }
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.success || data.error);
+        if (data.success) {
+            document.getElementById("generated-cover-letter").innerHTML = "";
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobAi | Settings</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Add Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    .no-border,.no-border:hover,.no-border::selection
+    {
+        border:none;
+        outline: none;
+    }
+</style>
+<body class="{% if dark_mode %}dark-mode{% endif %}">
+    <div class="main-content">
+        <h2 id="profile" class="mb-4">Settings</h2><br>
+        <div class="container1 pb-4 pt-3 mt-5 ms-2">
+        <form method="POST" action="" class="p-3">
+            {% csrf_token %}
+            <div class="row g-3">
+                <!-- Full Name Field -->
+                <div class="col-md-6 p-3">
+                    <div class="form-group">
+                        <label for="name" class="form-label fw-bold">Full Name:</label>
+                        <input type="text" id="name" name="name" class="form-control input-bg" value="{{ fname }}" readonly>
+                    </div>
+                </div>
+                <!-- Email Field -->
+                <div class="col-md-6 mt-4">
+                    <div class="form-group">
+                        <label for="email" class="form-label fw-bold">Email:</label>
+                        <input type="email" id="email" name="email" class="form-control ms-1 input-bg" value="{{ email }}" readonly>
+                    </div>
+                </div>
+                <!-- New Password Field -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="password1" class="form-label fw-bold">New Password:</label>
+                        <input type="password" name="password" id="password1" class="form-control ms-1">
+                    </div>
+                </div>
+                <!-- Confirm Password Field -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="password" class="form-label fw-bold">Confirm Password:</label>
+                        <div class="form-control">
+                        <input type="password" name="password" id="password" class="no-border" style="width: 93%;">
+                        <i class="fas fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
+                    </div> </div>
+                </div>
+
+                <!-- Auto Apply Switch -->
+                <div class="col-md-6">
+                    <label for="auto-apply" class="form-label fw-bold ms-3">Auto-Apply Feature</label>
+                    <div class="form-check form-switch ms-3 fill-white">
+                        <input class="form-check-input border-dark" type="checkbox" id="toggleSwitch">
+                        <label class="form-check-label me-4" for="toggleSwitch" id="status">Auto-Apply Feature is Disabled</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-block btn-primary w-75">Save Settings</button>
+            </div>
+        </form>
+
+        <!-- Danger Zone -->
+        <div class="mt-5">
+            <h3 class="mx-5 fw-bold">Danger Zone</h3>
+            <form id="deleteAccountForm" action="" method="POST" class="mt-5">
+                {% csrf_token %}
+                <center><button type="submit" class="btn btn-block btn-danger w-75">Delete Account</button></center>
+            </form>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Password Visibility
+        function togglePassword() {
+            let passwordInput = document.getElementById("password");
+            let eye = document.getElementById("togglePassword");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eye.classList.remove("fa-eye");
+                eye.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eye.classList.remove("fa-eye-slash");
+                eye.classList.add("fa-eye");
+            }
+        }
+
+        // Auto-Apply Feature Toggle
+        const toggleSwitch = document.getElementById("toggleSwitch");
+        const statusText = document.getElementById("status");
+
+        toggleSwitch.addEventListener("change", function () {
+            if (this.checked) {
+                statusText.innerText = "Auto-Apply Feature is Enabled";
+                statusText.style.color = "green";
+            } else {
+                statusText.innerText = "Auto-Apply Feature is Disabled";
+                statusText.style.color = "black";
+            }
+        });
+    </script>
+</body>
+{% endblock %}

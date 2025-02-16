@@ -1,0 +1,149 @@
+{% extends 'company_base.html' %}
+
+{% block content %}
+<style>
+    #message-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 700px;
+    z-index: 1000;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    animation: fadeOut 5s ease-in-out forwards;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+.input-bg:read-only{
+    background-color: #ebe7e7; /* Light gray when readonly */
+  }
+
+/* CSS Animation to Fade Out */
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }  /* Stay visible for a while */
+    100% { opacity: 0; display: none; }
+}
+
+</style>
+<div class="container mt-4">
+    <h3 class="mb-4">Post a New Job</h3>
+
+    <div class="card p-4 shadow-lg">
+        <form method="POST">
+            {% csrf_token %}
+              <!-- Job Number -->
+              <div class="mb-3">
+                <label class="form-label">Job Number</label><span class="text-danger mx-2">*</span>
+                <input type="text" class="form-control" placeholder="Enter job Number" name="job_number" required>
+            </div>
+
+            <!-- Job Title -->
+            <div class="mb-3">
+                <label class="form-label">Job Title</label><span class="text-danger mx-2">*</span>
+                <input type="text" class="form-control" placeholder="Enter job title" name="job_title" required>
+            </div>
+
+            <!-- Job Description -->
+            <div class="mb-3">
+                <label class="form-label">Job Description</label><span class="text-danger mx-2">*</span>
+                <textarea class="form-control" name="job_description" rows="4" placeholder="Describe the job role and responsibilities" required></textarea>
+            </div>
+
+            <!--  Location Row -->
+                <div class="mb-3">
+                    <label class="form-label">Location</label><span class="text-danger mx-2">*</span>
+                    <input type="text" class="form-control" name="Location" placeholder="e.g., New York, Remote" required>
+                </div>
+
+            <!-- Job Type & Experience Level Row -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Job Type</label><span class="text-danger mx-2">*</span>
+                    <input type="text" class="form-control" name="Job_type" placeholder="Enter Job Type(Full Time,Part time,Work from Home etc.)" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label" for="Job Posting Date">Job Posting Date</label><span class="text-danger mx-2">*</span>
+                    <input type="text" name="jobposted_date" class="form-control input-bg"  value="{{cdate}}" readonly>
+                </div>
+            
+            </div>
+
+            <!-- Highest Qualification / Eligibility -->
+            <div class="mb-3">
+                <label class="form-label">Eligibility Criteria</label><span class="text-danger mx-2">*</span>
+                <input type="text" name="highest_qualification" class="form-control" placeholder="Enter Highest Qualification Requirement">
+            </div>
+
+            <!-- Skills Required (Multi-Select) -->
+            <div class="mb-3">
+                <label class="form-label">Skills Required</label><span class="text-danger mx-2">*</span>
+                <input type="text" name="skills_required" class="form-control" placeholder="Enter Skills Required(eg:Python,Java,..,)">
+            </div>
+
+            <!-- Application Deadline -->
+            <div class="mb-3">
+                <label class="form-label">Application Deadline</label><span class="text-danger mx-2">*</span>
+                <input type="date" name="deadline" class="form-control" required>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100 mb-3">Post Job</button><br>
+            <span class="text-danger">*</span>- Required fields
+        </form>
+        {% if messages %}
+    <!-- Modal -->
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"  id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                
+                <!-- Modal Header with "X" Close Button -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                    <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close" onclick="closeMessageModal()">X</button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    
+                        <div  role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeMessageModal()">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript to Auto-Close on Click -->
+    <script>
+        function closeMessageModal() {
+            document.getElementById("message-container").style.display = "none";
+        }
+    </script>
+{% endif %}
+
+    </div>
+</div>
+{% endblock %}

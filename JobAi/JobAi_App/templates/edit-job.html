@@ -1,0 +1,155 @@
+{% extends 'company_base.html' %}
+
+{% block content %}
+<style>
+    #message-container {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        width: 700px;
+        z-index: 1000;
+    }
+
+    .alert {
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        animation: fadeOut 5s ease-in-out forwards;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .input-bg:read-only{
+    background-color: #ebe7e7; /* Light gray when readonly */
+  }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
+
+        80% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+            display: none;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+    <h3 class="mb-4">Edit Posted Job</h3>
+
+    <div class="card p-4 shadow-lg">
+        <form id="editJobForm">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Job ID</label><span class="text-danger mx-2">*</span>
+                <input type="hidden" id="job_id" class="form-control input-bg" value="{{ job_id }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Job Number</label><span class="text-danger mx-2">*</span>
+                <input type="text" class="form-control" name="job_number" id="job_number" value="{{ job_number }}"
+                    required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Job Title</label><span class="text-danger mx-2">*</span>
+                <input type="text" class="form-control" name="job_title" id="job_title" value="{{ job_title }}"
+                    required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Job Description</label><span class="text-danger mx-2">*</span>
+                <textarea class="form-control" name="job_description" id="job_description" rows="4"
+                    required>{{ job_description }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Location</label><span class="text-danger mx-2">*</span>
+                <input type="text" class="form-control" name="location" id="location" value="{{ location }}"
+                    required>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Job Type</label><span class="text-danger mx-2">*</span>
+                    <input type="text" class="form-control" name="job_type" id="job_type" value="{{ job_type }}"
+                        required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Job Posting Date</label><span class="text-danger mx-2">*</span>
+                    <input type="text" name="jobposted_date" id="jobposted_date" class="form-control input-bg"
+                        value="{{ cdate }}" readonly>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Eligibility Criteria</label><span class="text-danger mx-2">*</span>
+                <input type="text" name="highest_qualification" id="highest_qualification" class="form-control"
+                    value="{{ eligibility }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Skills Required</label><span class="text-danger mx-2">*</span>
+                <input type="text" name="skills_required" id="skills_required" class="form-control"
+                    value="{{ skills_required }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Application Deadline</label><span class="text-danger mx-2">*</span>
+                <input type="date" name="deadline" id="deadline" class="form-control"
+                    value="{{ Lastdate|date:'Y-m-d' }}" required>
+            </div>
+
+            <button type="button" class="btn btn-primary w-100 mb-3" onclick="updateJob()">Update Posted Job</button>
+            <a href="{% url 'job_listing' %}">Cancel</a>
+        </form>
+
+        <div id="message-container"></div>
+    </div>
+</div>
+
+<script>
+    function updateJob() {
+        let jobId = document.getElementById("job_id").value;
+        let formData = {
+            job_number: document.getElementById("job_number").value,
+            job_title: document.getElementById("job_title").value,
+            job_description: document.getElementById("job_description").value,
+            location: document.getElementById("location").value,
+            job_type: document.getElementById("job_type").value,
+            highest_qualification: document.getElementById("highest_qualification").value,
+            skills_required: document.getElementById("skills_required").value,
+            deadline: document.getElementById("deadline").value
+        };
+
+        fetch(`/edit/${jobId}/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                let messageContainer = document.getElementById("message-container");
+                messageContainer.innerHTML = `<div class="alert ${data.success ? 'alert-success' : 'alert-danger'}">${data.message}</div>`;
+            })
+            .catch(error => console.error("Error:", error));
+    }
+</script>
+
+{% endblock %}

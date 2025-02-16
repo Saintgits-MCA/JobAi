@@ -1,0 +1,461 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-US" data-theme="light" style="scroll-behavior: smooth;">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="{% static 'images/jobAi-logo1.png' %}">
+
+	<title>JobAi | AI-Powered Job Search Tools</title>
+	<meta name="description">
+	<script defer src="{% static 'assets/js/alpine.min.js' %}" type="b014f77004e53e5bad1cb140-text/javascript"></script>
+
+	<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'assets/css/index.css'%}">
+<body
+	class="grid grid-cols-[1fr_1rem_repeat(2,min(37.5rem,calc(50%-1rem)))_1rem_1fr] bg-top bg-no-repeat [background-size:200vw] lg:[background-size:100%_62rem] [:where(&>*)]:[grid-column:3/5]"
+	style="background-image: url('static/images/bg1.png');opacity: 0.9;">
+
+	<!-- navbar -->
+	<nav class="navbar px-0 flex justify-between items-start">
+		<div class="flex flex-col sm:flex-row gap-4 justify-start mt-2">
+			<a href="">
+				<img src="{% static 'images/JobAi2.png'%}" alt="JobAi" class="h-10" style="height: 90px;border-radius: 25px;box-shadow: 0 0 20px rgb(48, 35, 229);">
+			</a>
+
+		</div>
+
+		<div class="flex">
+			<ul class="menu menu-horizontal gap-0 max-sm:p-0 text-xs lg:text-sm">
+				<li> <a href="#" class="font-bold text-white hover:bg-black flex items-center text-lg">Home</a></li>
+				<li><a href="#FAQ" class="font-bold text-lg text-white hover:bg-black  flex items-center">
+					FAQ
+				</a></li>
+				<li><a href="{% url 'user-type' %}" class="font-bold text-lg text-white hover:bg-black  flex items-center">
+						Login
+					</a></li>
+			</ul>
+		</div>
+
+	</nav>
+	<!-- hero -->
+	<div
+		class="grid place-content-center items-center gap-y-6 overflow-hidden [grid-column:3/5] lg:h-[clamp(40rem,calc(100vh-4rem),50rem)] lg:justify-between lg:[grid-column:3/7] lg:[grid-template-columns:subgrid]" >
+		<div class="z-[1] flex flex-col items-start gap-6 py-6">
+			<h1 class="relative font-title text-[clamp(4rem,20vw,3.75rem)] leading-none">
+				<b style="color:white;background-color: #1E3A8A;border-radius: 15px;text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Automate</b> <span class="font-bold" style="color: #0e0d0d;"> your</span><br /><span class='font-bold' style="color: #080808;">job search</span> <span class="font-bold" style="color:white;background-color:#1E3A8A;border-radius: 15px;text-shadow: 2px 2px 4px rgba(0,0,0,0.2);"> with AI </span></h1>
+			<p class="text-lg [text-wrap:balance] font-bold opacity-90" style="color:rgb(1, 5, 26);">
+				Get a job specific cover letter, resume and followup email instantly – undetected! </p>
+			<div class="flex flex-col gap-4 sm:flex-row">
+				<a href="{%url 'user-type' %}" class="btn btn-primary btn-lg px-10 group font-bolder" id="mainCTA">
+					<span>
+						Start now for free </span>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+						class="size-4 transition-transform group-hover:translate-x-1">
+						<path fill-rule="evenodd"
+							d="M2 8c0 .414.336.75.75.75h8.69l-1.22 1.22a.75.75 0 1 0 1.06 1.06l2.5-2.5a.75.75 0 0 0 0-1.06l-2.5-2.5a.75.75 0 1 0-1.06 1.06l1.22 1.22H2.75A.75.75 0 0 0 2 8Z"
+							clip-rule="evenodd" />
+					</svg>
+				</a>
+			</div>
+			<div class="flex w-full items-start gap-4">
+				<div class="flex items-center gap-2">
+
+					<div class="flex flex-col gap-1" x-data="{ showControl: true }">
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div
+			class="grid h-full max-h-[50rem] w-auto place-content-center [perspective-origin:50%_100%] [perspective:60rem] lg:[grid-column:2/4]">
+			<div
+				class="flex w-full flex-col items-center lg:flex-row lg:[transform:rotateX(2deg)rotateY(-10deg)rotateZ(5deg)]">
+				<div class="me-2 animate-[wiggle_10s_infinite_alternate] rounded-3xl bg-black/10 p-2">
+					<div x-data
+						class="w-[260px] animate-[wiggle_10s_infinite_alternate] rounded-2xl border border-primary/10 bg-gradient-to-tr from-white to-white/80 p-6 font-mono text-xs text-black shadow-[.1rem_0.1rem_oklch(0%_0_0/_0.02),.5rem_2rem_2rem_-1rem_oklch(0%_0_0/.18)] lg:min-w-[20rem] lg:text-sm">
+						<div class="w-0 animate-[command-1_10s_steps(27)_infinite] overflow-hidden whitespace-nowrap">
+							<span class="text-success">⏺</span> Running JobAi
+						</div>
+						<div class="w-0 animate-[command-2_10s_steps(27)_infinite] overflow-hidden whitespace-nowrap">
+							Finding jobs <span class="text-success">✔︎</span>
+						</div>
+						
+						<div class="w-0 animate-[command-3_10s_steps(27)_infinite] overflow-hidden whitespace-nowrap">
+							Generating cover letter <span class="text-success">✔︎</span>
+						</div>
+						<div class="w-0 animate-[command-4_10s_steps(27)_infinite] overflow-hidden whitespace-nowrap">
+							Applying <span class="text-success">✔︎</span>
+						</div>
+						<div class="w-0 animate-[command-5_10s_steps(27)_infinite] overflow-hidden whitespace-nowrap">
+							Generating followup email <span class="text-success">✔︎</span>
+						</div>
+					</div>
+				</div>
+				<div class="flex rotate-90 flex-col max-lg:-my-12 lg:rotate-0 lg:text-white/60">
+					<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+						class="animate-[path-1_30s_infinite]"  style="color: rgb(60, 18, 188);">
+						<path d="M98 2C45.5 2 56 98 2 98" stroke="currentColor" stroke-dasharray="4"
+							class="animate-[dash_2s_linear_infinite]" />
+					</svg>
+					<svg width="100" height="6" viewBox="0 0 100 6" fill="none" xmlns="http://www.w3.org/2000/svg"
+						class="animate-[path-2_30s_infinite]" style="color: rgb(60, 18, 188);">
+						<path d="M98 3H2" stroke="currentColor" stroke-dasharray="4"
+							class="animate-[dash_2s_linear_infinite]" />
+					</svg>
+					<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+						class="animate-[path-3_30s_infinite]"  style="color: rgb(60, 18, 188);">
+						<path d="M98 98C54.5 98 44 2 2 2" stroke="currentColor" stroke-dasharray="4"
+							class="animate-[dash_2s_linear_infinite]" />
+					</svg>
+				</div>
+				<div
+					class="whitespace-nowrap lg:[mask-image:linear-gradient(to_bottom,transparent_10%,black_15%,black_85%,transparent_50%)]">
+					<div
+						class="flex gap-x-2 gap-y-4 max-sm:-mx-20 max-sm:[scale:70%] lg:animate-[positions-vertical_10s_infinite_alternate] lg:flex-col lg:p-4">
+						<div
+							class="rounded-2xl border border-base-content/10 bg-base-100/5 p-3 max-lg:hidden lg:border-white/20 lg:p-5 lg:text-white">
+						</div>
+						<div
+							class="rounded-2xl border border-base-content/10 bg-base-100/5 p-3 lg:border-white/20 lg:p-5 lg:text-white">
+							<div class="text-sm font-bold">Software Engineer</div>
+							<div class="text-xs tracking-wider opacity-80">
+								Full-time, NY </div>
+						</div>
+						<div
+							class="rounded-2xl border border-base-content/10 bg-base-100/5 p-3 lg:border-white/20 lg:p-5 lg:text-white">
+							<div class="text-sm font-bold">Accountant</div>
+							<div class="text-xs tracking-wider opacity-80">
+								Full-time, Berlin </div>
+						</div>
+						<div
+							class="rounded-2xl border border-base-content/10 bg-base-100/5 p-3 lg:border-white/20 lg:p-5 lg:text-white">
+							<div class="text-sm font-bold">Social Media Manager</div>
+							<div class="text-xs tracking-wider opacity-80">
+								Part-time, Remote </div>
+						</div>
+						<div
+							class="rounded-2xl border border-base-content/10 bg-base-100/5 p-3 [xmask-image:linear-gradient(to_bottom,black,transparent_50%)] max-lg:hidden lg:border-white/20 lg:p-5 lg:text-white">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- title -->
+	<h2
+		class="rounded-box bg-gradient-to-t from-base-200 py-10 text-center font-title text-4xl [text-wrap:balance] sm:text-5xl">
+		<span class="font-bold">AI provides everything you need</span>
+		<br />
+		<span>Automatically,</span> <span class="text-primary">in seconds!</span>
+	</h2>
+
+	<!-- top features -->
+	<div class="grid gap-1 py-1 lg:grid-cols-3" >
+		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
+			<!-- <div class="aspect-square p-2 bg-accent font-title font-bold text-xl rounded-full grid place-content-center">
+        <svg class="text-accent-content" width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 24L20 34L40 14" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div> -->
+			<h3 class="text-center font-title text-xl font-bold">
+				Job-specific cover letter </h3>
+			<figure
+				class="grid w-64 transition-transform duration-500 hover:scale-105 lg:hover:rotate-2 [&>*]:[grid-column:1/1] [&>*]:[grid-row:1/1]">
+				<div class="bg-base-300 shadow-lg"></div>
+				<div class="z-[1] bg-base-100 text-[.5rem] text-base-content/70 shadow-lg lg:-rotate-3 [&>p]:mt-2"
+					style="
+              background-image: url(https://www.toptal.com/designers/subtlepatterns/uploads/handmadepaper.png);
+            ">
+					<div class="grid h-full place-items-stretch [&>*]:[grid-column:1/1] [&>*]:[grid-row:1/1]">
+						<div
+							class="bg-[repeating-linear-gradient(45deg,white,oklch(0_0_0/.05))] [background-size:50%_50%]">
+						</div>
+						<p class="p-6 text-black/70">
+							Dear HR Manager <br />
+							<br />
+							I'm reaching out about the engineering gig at JobAi. You're looking for an innovator and
+							boundary-pusher in tech. Well, guess what? That's exactly my jam. <br />
+							<br />
+							You might've heard of a little company called SpaceX. As the CEO and lead designer, I turned
+							the aerospace industry on its head. Reusable rockets? Commercial trips to Mars? That was all
+							me. Over at Tesla, I shook up the car world with top-tier electric vehicles and self-driving
+							tech. <br />
+							<br />
+
+							My background's in physics and economics, but it's the hands-on tech experience that really
+							counts. I'm the guy who dreams up new propulsion systems in the shower and sketches AI
+							algorithms on napkins at lunch. It's all about creativity, sharp analysis, and a relentless
+							drive for excellence. <br />
+							<br />
+
+							I'm not just here to take up a desk. I'm here to make waves. Let's chat and see how I can
+							help JobAi rocket to the next level. <br />
+							<br />
+							Best, Elon
+						</p>
+					</div>
+				</div>
+			</figure>
+		</div>
+		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
+			<!-- <div class="aspect-square p-2 bg-accent font-title font-bold text-xl rounded-full grid place-content-center">
+        <svg class="text-accent-content" width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 24L20 34L40 14" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div> -->
+			<h3 class="text-center font-title text-xl font-bold">
+				Job-specific resume </h3>
+			<figure
+				class="grid w-64 transition-transform duration-500 hover:scale-105 [&>*]:[grid-column:1/1] [&>*]:[grid-row:1/1]">
+				<div class="-rotate-3 rounded bg-base-300 shadow-lg brightness-95"></div>
+				<img class="z-[1] rounded shadow-lg" src="{% static 'images/example-cv.webp' %}" />
+			</figure>
+		</div>
+		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
+			<!-- <div class="aspect-square p-2 bg-accent font-title font-bold text-xl rounded-full grid place-content-center">
+        <svg class="text-accent-content" width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 24L20 34L40 14" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div> -->
+			<h3 class="text-center font-title text-xl font-bold">
+				Job-specific followup email </h3>
+			<figure
+				class="grid w-64 transition-transform duration-500 hover:scale-105 lg:hover:-rotate-2 [&>*]:[grid-column:1/1] [&>*]:[grid-row:1/1]">
+				<div
+					class="relative z-[1] rounded-xl border border-base-content/10 bg-base-100 text-[.5rem] shadow-lg lg:rotate-3">
+					<div class="absolute end-2 top-2 flex gap-1">
+						<div class="size-1.5 rounded-full bg-base-content/20"></div>
+						<div class="size-1.5 rounded-full bg-base-content/20"></div>
+						<div class="size-1.5 rounded-full bg-base-content/20"></div>
+					</div>
+					<div class="px-4 py-1.5 font-bold">New email</div>
+					<div class="border-b border-base-content/10 px-4 py-1.5">
+						To: <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+							data-cfemail="147c6654757d756464786d3a777b">[email&#160;protected]</a> </div>
+					<div class="border-b border-base-content/10 px-4 py-1.5">
+						Subject: Elon Musk Checking In on CEO Application </div>
+					<div class="h-full">
+						<p class="p-4 text-black/70">
+							Hi John, <br />
+							<br />
+							Hope this email finds you well! Just a friendly ping on my application for the CEO position
+							at JobAi. <br />
+							<br />
+							Given my background with SpaceX and passion for space exploration, I believe I could bring
+							some unique perspectives to the table. It's not every day you get an application from
+							someone who's sent a car to orbit Mars, right? 😉 <br />
+							<br />
+							Would love to chat more about how we can propel JobAi to new heights. Let me know if there's
+							a good time to talk. <br />
+							<br />
+							Cheers, Elon
+						</p>
+					</div>
+				</div>
+			</figure>
+		</div>
+	</div>
+
+	<!-- logos -->
+	<div class="mt-10 bg-base-200 py-24 [grid-column:1/7]">
+		<div class="mx-auto flex max-w-7xl flex-col gap-12">
+			<h2 class="text-center text-lg font-extralight uppercase tracking-widest text-base-content/50">
+				Get hired by top companies worldwide </h2>
+			<div class="mx-auto max-w-7xl text-center [text-wrap:balance]">
+				<img class="m-6 inline-block brightness-50 invert" src="{% static 'images/coinbase.webp' %}"
+					alt="ai apply" width="158" height="48" />
+				<img class="m-6 inline-block brightness-50 invert" src="{% static 'images/spotify.webp' %}"
+					alt="find a job with ai" width="158" height="48" />
+				<img class="m-6 inline-block brightness-50 invert" src="{% static 'images/microsoft.webp' %}"
+					alt="job application ai" width="158" height="48" />
+				<img class="m-6 inline-block brightness-50 invert" src="{% static 'images/meta.webp' %}"
+					alt="cover letter generator" width="158" height="48" />
+				<img class="m-6 inline-block brightness-50 invert" src="{% static 'images/spacex.webp' %}"
+					alt="resume builder" width="158" height="48" />
+			</div>
+		</div>
+	</div>
+
+	<!-- services -->
+	<h2 class="py-32 text-center font-title text-4xl [text-wrap:balance] sm:text-5xl">
+		You are <span class='font-bold'>90% more likely</span> to get hired if you use JobAi </h2>
+	<div class="grid items-end gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-24">
+
+		<div class="flex flex-col gap-6">
+			<h3 class="text-xl font-bold">AI Cover Letter</h3>
+			<p class="text-sm">
+				AI generates cover letters for each job application, increasing your chances of getting hired. </p>
+			<img loading="lazy" src=" {% static 'images/ai-cover-letter-fresh1.jpg' %}" alt="cover letter generator"
+				class="rounded-box" />
+		</div>
+		<div class="flex flex-col gap-6">
+			<h3 class="text-xl font-bold">Auto apply</h3>
+			<p class="text-sm">
+				Let AI apply to thousands of jobs for you automatically. Save time and get hired faster. </p>
+			<img loading="lazy" src="{% static 'images/auto-apply-fresh1.jpg' %}" alt="ai apply to jobs"
+				class="rounded-box" style="height: 190px;" />
+		</div>
+		<div class="flex flex-col gap-6">
+			<h3 class="text-xl font-bold">AI Interview Practice</h3>
+			<p class="text-sm">
+				Practice with AI-generated interviews to gain valuable insights and confidence. </p>
+			<img loading="lazy" src="{% static 'images/ai-job-interview-fresh.jpg' %}" alt="ai cover letter"
+				class="rounded-box" />
+		</div>
+		
+
+	</div>
+	<svg class="my-10 w-full stroke-base-content/10 stroke-2" width="1000" height="152" viewBox="0 0 1000 152"
+		fill="none">
+		<path d="M0 0C107 105 393 73 415 152" />
+		<path d="M1000 0C893 105 607 73 585 152" />
+	</svg>
+
+	<!-- cta -->
+	<h2 class="text-center font-title text-4xl sm:text-5xl">
+		We help job seekers to succeed </h2>
+	<div class="h-12"></div>
+	<div class="text-center">
+		<a class="btn-cta btn btn-primary btn-lg btn-wide" href="{% url 'user-type' %}">Let's Start Now</a>
+	</div>
+
+	<!-- testimonial -->
+	<div class="h-32"></div>
+	<h2 class="py-10 text-center font-title text-4xl sm:text-5xl">
+		<span class="font-bold" id="FAQ">Frequently Asked Questions</span>
+	</h2>
+
+	<div class="flex flex-col gap-2">
+		<div class="collapse collapse-arrow bg-base-200">
+			<input type="radio" name="faq" />
+			<div class="collapse-title text-xl font-medium">How does it work?</div>
+			<div class="collapse-content">
+				<p>We train custom AI Models on the most successful cover letters and resumes.</p>
+			</div>
+		</div>
+		<div class="collapse collapse-arrow bg-base-200">
+			<input type="radio" name="faq" />
+			<div class="collapse-title text-xl font-medium">What if I'm missing a feature?</div>
+			<div class="collapse-content">
+				<p>If you're missing a feature anywhere on our platform, reach out to us at <a
+						href="#" class="__cf_email__"
+						data-cfemail="55262025253a272115343c342525392c7b363a">[email&#160;protected]</a> and we will try
+					our absolute best to meet your needs and expectations.</p>
+			</div>
+		</div>
+		<div class="collapse collapse-arrow bg-base-200">
+			<input type="radio" name="faq" />
+			<div class="collapse-title text-xl font-medium">Can I find jobs directly on this website?</div>
+			<div class="collapse-content">
+				<p>Yes! We match you with job opportunities from our partners and thanks to our tight integration, you
+					can select and generate job-specific cover letters, resumes and much more. We aggregate multiple job
+					boards to find the perfect match.</p>
+			</div>
+		</div>
+		<div class="collapse collapse-arrow bg-base-200">
+			<input type="radio" name="faq" />
+			<div class="collapse-title text-xl font-medium">Do you have an API?</div>
+			<div class="collapse-content">
+				<p>We do not have a publicly accessible API, however, if you're interested in getting access to our
+					advanced infrastructure, email us at <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+						data-cfemail="73000603031c010733121a1203031f0a5d101c">[email&#160;protected]</a> and we will do
+					our best to offer a win-win partnership.</p>
+			</div>
+		</div>
+		<div class="collapse collapse-arrow bg-base-200">
+			<input type="radio" name="faq" />
+			<div class="collapse-title text-xl font-medium">Will my employer find out I used JobAi?</div>
+			<div class="collapse-content">
+				<p>Our AI models are advanced enough to bypass AI-detection and we are constantly working on improving
+					that. Besides that, most employers will not mind you getting help from AI - the opposite is true
+					most of the time! Being able to find a quicker/better solution to a problem is a quality that most
+					employers value highly.</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- footer -->
+	<div class="h-32"></div>
+
+	<footer class="footer gap-10 p-4 md:p-10 [&_a:hover]:underline">
+
+		</a>
+
+		<nav class="my-4 flex flex-col">
+			<img src="{% static 'images/JobAi2.png'%}" alt="JobAi" class="h-10" style="height: 50px;border-radius: 25px;box-shadow: 0 0 15px rgb(48, 35, 229);">
+	<br>		<a href="/privacy-policy">Privacy Policy</a>
+			<a href="/terms-of-service">Terms of Service</a>
+			<a href="/influencer-program">Affiliate Program</a>
+			<a href="/students">Student discount</a>
+		</nav>
+
+		</aside>
+		<nav>
+			<h3 class="footer-title">Tools</h3>
+			<a href="{%url 'user-type' %}">Auto Apply To Jobs</a>
+			<a href="{%url 'user-type' %}">AI Cover Letter</a>
+			<a href="{%url 'user-type' %}">AI Job Interview</a>
+		</nav>
+		<nav>
+			<h3 class="footer-title">Blog</h3>
+			<a href="#" >How to write a
+				resignation letter</a>
+			<a href="#" >Structuring your resume
+				objective for a career change</a>
+			<a href="#" >Should my resume be in reverse
+				chronological order?</a>
+			<a href="#" >How to make a resume for your first
+				job</a>
+			<a href="#" >All Posts</a>
+		</nav>
+	</footer>
+	<footer class="footer border-t border-base-content/5 p-8 py-4">
+		<aside class="grid-flow-col items-center">
+			<p>© 2025 JobAi, All rights reserved</p>
+		</aside>
+		<nav class="md:place-self-center md:justify-self-end">
+			<div class="grid grid-flow-col gap-4">
+				<a aria-label="Facebook" href="https://www.facebook.com" target="_blank">
+					<svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+						<path fill-rule="evenodd"
+							d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+							clip-rule="evenodd"></path>
+					</svg>
+				</a>
+				<a aria-label="Instagram" href="https://www.instagram.com/" target="_blank">
+					<svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+						<path fill-rule="evenodd"
+							d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+							clip-rule="evenodd"></path>
+					</svg>
+				</a>
+				<a aria-label="X" href="https://x.com/" target="_blank">
+					<svg class="h-6 w-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+						width="24px" height="24px">
+						<path
+							d="M 2.3671875 3 L 9.4628906 13.140625 L 2.7402344 21 L 5.3808594 21 L 10.644531 14.830078 L 14.960938 21 L 21.871094 21 L 14.449219 10.375 L 20.740234 3 L 18.140625 3 L 13.271484 8.6875 L 9.2988281 3 L 2.3671875 3 z M 6.2070312 5 L 8.2558594 5 L 18.033203 19 L 16.001953 19 L 6.2070312 5 z" />
+					</svg>
+				</a>
+				<a aria-label="TikTok" href="https://www.tiktok.com/" target="_blank">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"
+						xml:space="preserve">
+						<path
+							d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z">
+						</path>
+					</svg>
+				</a>
+			</div>
+		</nav>
+	</footer>
+	<!-- Add floating CTA -->
+	<div id="floatingCTA" class="fixed bottom-4 end-4 z-50 hidden lg:hidden">
+		<a href="/signin" class="btn btn-block btn-lg btn-primary ">
+			Start now for free <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+				class="size-6">
+				<path fill-rule="evenodd"
+					d="M2 8c0 .414.336.75.75.75h8.69l-1.22 1.22a.75.75 0 1 0 1.06 1.06l2.5-2.5a.75.75 0 0 0 0-1.06l-2.5-2.5a.75.75 0 1 0-1.06 1.06l1.22 1.22H2.75A.75.75 0 0 0 2 8Z"
+					clip-rule="evenodd" />
+			</svg>
+		</a>
+	</div>
+</body>
+
+</html>

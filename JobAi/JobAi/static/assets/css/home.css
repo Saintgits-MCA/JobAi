@@ -1,0 +1,261 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    background: #c7c6c6;
+}
+:root {
+    --primary-color: rgb(160, 0, 247);
+    --secondary-color: #0056b3;
+    --sidebar-bg: #0350a2;
+    --text-color: white;
+    --hover-bg:  #386ca3;
+}
+.container-fluid
+{
+   position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--primary-color);
+    color: white;
+    padding: 15px 20px;
+    border-bottom: 3px solid var(--secondary-color);
+}
+
+.sidebar {
+    width: 260px;
+    background: var(--sidebar-bg);
+    color: white;
+    padding: 5px;
+    height: 145vh;
+}
+
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 4px;
+    cursor: pointer;
+}
+
+.main-content {
+    flex: 1;
+    margin-right: 30px;
+}
+
+
+header {
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    padding: 15px;
+    margin-left: 25px;
+    width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.stat-box {
+    background: white;
+    padding: 20px;
+    flex: 1;
+    margin: 0 10px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.graph-section,
+.recommended-jobs {
+    background: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.job {
+    padding: 10px;
+    background: #ececec;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+h2 {
+    float: left;
+    margin-bottom: 30px;
+}
+
+.divider {
+    height: 1px;
+    background: white;
+    opacity: 0.7;
+    margin-top: 10px;
+    margin-right: 10px;
+    width: 259px;
+}
+
+.box {
+    padding-top: 1px;
+    border-radius: 5px;
+    margin-top: 14px;
+    border-bottom: 1px white solid;
+}
+
+.box:hover {
+    transform: scale(1.07);
+    box-shadow: 0 0 1px rgba(224, 218, 218, 0.3);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+    text-decoration: none;
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    text-align: justify;
+    margin-left: 30px;
+}
+
+#profile {
+    margin-left: 50px;
+    font-size: 40px;
+
+}
+.container {
+    margin-top: 10px;
+    margin-right: 20px;
+    background-color: white;
+    align-items: center;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* .active {
+    background-color: rgb(160, 0, 247);
+    color: white;
+} */
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="file"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px;
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.content {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.profile1 {
+    display: flex;
+    margin-top: 20px;
+    margin-left: 25px;
+    height: 20px;
+    margin-bottom: 10px;
+}
+
+.profile-pic1 {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #5a2c91;
+
+}
+
+
+
+.container1 {
+    background: white;
+    padding: 0.6px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 900px;
+}
+.input1, select {
+    width: 350px;
+    margin: 3px 0;
+    border: 1px solid #ccc;
+    border-radius: 9px;
+    margin-left: 20px;
+    padding-left: 5px;
+}
+label{
+    margin-left: 25px;
+}
+.button1 {
+    background: blue;
+    color: white;
+    border: none;
+    width: 300px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.button1:hover {
+    background: darkblue;
+}
+textarea
+{
+    resize: none;
+}
+.edit-button:hover
+{
+    background-color: black;
+}
+.input-bg:read-only{
+    background-color: #ebe7e7; /* Light gray when readonly */
+  }
+  .dropdown-toggle {
+    transition: background-color 0.3s ease-in-out;
+}
+
+.dropdown-toggle:hover {
+    background-color: lightgray !important;
+}

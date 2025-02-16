@@ -1,0 +1,79 @@
+{%extends 'base.html'%}
+{% load static %}
+{% block content %}
+
+   <head>
+  <script src="{%static 'assets/js/search.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'assets/css/search-job.css'%}">
+<link rel="stylesheet" href="{% static 'assets/css/search-bar.css'%}">
+
+</head>
+<style>
+    body
+    {
+        overflow-x: hidden;
+    }
+</style>
+<body>
+
+        <h2 id="search-job">Search Job</h1>  
+            <br><br>
+            <div class="join w-full flex-col lg:flex-row mx-3">
+                <input class="input input-lg input-bordered join-item w-full mb-2 lg:mb-0" x-model="searchQuery" :placeholder="$store.language.translations.job_title_company_or" @input.debounce.300ms="fetchJobs(false, true)" :class="{'input-error': searchError}" x-ref="searchInput" x-init="$nextTick(() => $refs.searchInput.focus())" placeholder="Job Title, Company, or Keyword">
+                <div class="w-full lg:w-auto">
+                    <div>
+                        <input x-ref="cityInput" class="input input-bordered input-lg join-item w-full mb-2 lg:mb-0" x-model="location" :placeholder="$store.language.translations.city" :class="{'input-error': locationError}" @input.debounce.300ms="fetchJobs(false, true)" placeholder="City">
+                    </div>
+                </div>
+                <button @click="fetchJobs(false, true)" class="btn btn-accent text-white join-item btn-lg w-full lg:w-auto">
+                    <span x-text="$store.language.translations.search">Search</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-5">
+                        <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="table-responsive border mt-5">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr class="w-120">
+                            <th>#</th>
+                            <th>Job Number</th>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Job Type</th>
+                            <th>Location</th>
+                            <th>Eligibility</th>
+                            <th>&emsp14;</th>
+                            <th>Apply</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if jobs %}
+                            {% for job in jobs %}
+                                <tr>
+                                    <td>{{ job.id }}</td>
+                                    <td>{{ job.job_number }}</td>
+                                    <td>{{ job.job_title }}</td>
+                                    <td>{{ job.company}}</td>
+                                    <td>{{ job.job_type }}</td>
+                                    <td>{{ job.location }}</td>
+                                    <td>{{ job.highest_qualification }}</td>
+                                    <td>{{ job.last_date }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-primary btn-sm">Apply</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="10" class="text-center">No job postings available.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            
+
+</body>
+{% endblock %}

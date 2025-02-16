@@ -1,0 +1,254 @@
+{%extends 'base.html'%}
+{% load static %}
+{%block content%}
+<style>
+    .edit-button {
+       background-color: #28a745; /* Green */
+       color: white;
+       border: none;
+       padding: 10px 20px;
+       border-radius: 19px;
+       transition: background-color 0.3s ease, transform 0.2s ease;
+   }
+
+   .edit-button:hover {
+       background-color: #218838; /* Darker Green */
+       transform: scale(1.05); /* Slight zoom effect */
+   }
+   #message-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    z-index: 1000;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    animation: fadeOut 5s ease-in-out forwards;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* CSS Animation to Fade Out */
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }  /* Stay visible for a while */
+    100% { opacity: 0; display: none; }
+}
+.sidebar{
+    height: 142vh;
+}
+</style>
+<div class="main-content">
+    <h2 id="profile">Profile{{name}}</h2><br><br>
+
+    <div class="container w-50 mt-4" style="margin-right: 250px;margin-left: 25px;">
+        <h4 class="text-center">Upload Resume in doc,docx format</h4>
+        <form  action="{%url 'home'%}" method="POST" id="uploadForm" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <input type="file" id="fileInput" name="word_file" accept=".doc,.docx" required>
+            <button type="submit" id="submit">Upload and Submit</button>
+            
+        </form>
+        {% if messages %}
+        <!-- Modal -->
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"  id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    
+                    <!-- Modal Header with "X" Close Button -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                        <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close" onclick="closeMessageModal()">X</button>
+                    </div>
+    
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        
+                            <div  role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+    
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeMessageModal()">Close</button>
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+    
+        <!-- JavaScript to Auto-Close on Click -->
+        <script>
+            function closeMessageModal() {
+                document.getElementById("message-container").style.display = "none";
+            }
+        </script>
+    {% endif %}
+    
+      
+
+        <!-- {% if content %}
+            <div class="content">
+                <h2>Document Content:</h2>
+                <p class="mt-4">{{ content }}</p>
+            </div>
+            {% endif %} -->
+    </div>
+    <div class="container1 mt-3" style="margin-left: 20px;">
+        <button onclick="toggleEditable()" id="edit" class="float-end bg-success edit-button hover-bg-dark" style="border-radius: 19px;">
+            <i class="fa fa-edit float-end mx-4 mt-2 fs-5"></i>
+            <b class="float-end mt-2">Edit</b>
+        </button>
+        <form action="{%url 'update_profile'%}" method="POST" enctype="multipart/form-data" class="mt-5">
+            {% csrf_token %}
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="name" class="fw-bold">Full Name:</label><input type="text" id="name" name="name"
+                            class="input1 input-bg toggleInput" placeholder="Enter your full name" value="{{fname}}" required
+                            readonly="">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="fw-bold">Email:</label>
+                        <input type="email" class="input1 input-bg toggleInput" id="email" name="email" placeholder="ex: name@gmail.com"
+                            value="{{ email }}" required readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="fw-bold">Phone Number:</label><input type="text" id="phone"
+                            name="phone" class="input1 input-bg toggleInput" placeholder="Enter your Phone Number(+91)"
+                            value="{{ resume_details.phone }}" required readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Address" class="fw-bold">Address:</label><input id="Address" name="Address"
+                            class="input1 input-bg toggleInput" placeholder="Enter your Address" required rows="5" cols="5"
+                            value="{{ resume_details.address }}" readonly></textarea>
+                    </div>
+                </div>
+                <!-- right column -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="dob" class="fw-bold">Date Of Birth</label><br>
+                        <input type="text" id="dob" name="dob" class="input1 input-bg toggleInput" placeholder="Enter Date of Birth" value="{{ resume_details.dob }}" readonly
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Education" class="fw-bold">Education Qualification</label><br>
+                        <input type="text" name="Education" id="Education" class="input1 input-bg toggleInput"
+                            placeholder="Enter your Highest Qualification"
+                            value="{{ resume_details.highest_qualification }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="University" class="fw-bold">University/Institution:</label><input type="text"
+                            id="University" name="University" class="input1 input-bg toggleInput"
+                            placeholder="Enter University/Institution of Highest Qualification" value="{{resume_details.university}}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="skills" class="fw-bold">Skills:</label><input type="text" id="skills" name="skills"
+                            class="input1 input-bg toggleInput" placeholder="Enter your Skills" value="{{resume_details.skills}}" required
+                            readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="job preferences" class="fw-bold">Job Preference(Only one):</label><input type="text"
+                            name="job_preferences" class="input1 input-bg toggleInput" placeholder="Enter your highest Job Preference"
+                            value="{{ resume_details.job_preference }}" readonly>
+                    </div>
+                   
+
+                </div>
+                <center> <button id="submitBtn" class="w-50 m-4 button1 justify-content-center" type="submit">Update Profile</button>
+                </center>
+            </div>
+        </form>
+
+    </div>
+    <script>
+    function toggleEditable() {
+    let input = document.getElementById("toggleInput");
+    if (input.hasAttribute("readonly")) {
+      input.removeAttribute("readonly");
+    } else {
+      input.setAttribute("readonly", true);
+    }
+  }
+  setTimeout(function() {
+        let messageContainer = document.getElementById("message-container");
+        if (messageContainer) {
+            messageContainer.style.transition = "opacity 0.5s";
+            messageContainer.style.opacity = "1"; // Fade out effect
+            setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
+        }
+    }, 5000);
+    document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("dataForm");
+    const inputField = document.querySelector("input[name='data_field']");
+    const submitBtn = document.getElementById("submitBtn");
+
+    // ✅ Load saved data from localStorage when the page loads
+    if (localStorage.getItem("savedData")) {
+        inputField.value = localStorage.getItem("savedData");
+    }
+
+    submitBtn.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        let formData = new FormData(form);
+        let inputData = inputField.value;
+
+        fetch("/upload/", {  // Change this URL to match your Django view
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": getCSRFToken()
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Data uploaded successfully!");
+
+                // ✅ Save the data to localStorage
+                localStorage.setItem("savedData", inputData);
+            } else {
+                alert("Failed to upload data.");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+
+    // ✅ Function to get CSRF token from cookies
+    function getCSRFToken() {
+        let cookieValue = null;
+        let cookies = document.cookie.split(";");
+
+        cookies.forEach(cookie => {
+            let trimmedCookie = cookie.trim();
+            if (trimmedCookie.startsWith("csrftoken=")) {
+                cookieValue = trimmedCookie.split("=")[1];
+            }
+        });
+
+        return cookieValue;
+    }
+});
+
+    </script>
+    {%endblock%}

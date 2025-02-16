@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JobAi| JobSeeker Login</title>
+  <link rel="icon" href="{% static 'images/jobAi-logo1.png' %}">
+  <script defer src="{% static 'assets/js/alpine.min.js' %}" type="b014f77004e53e5bad1cb140-text/javascript"></script>
+  <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css'%}">
+  <link rel="stylesheet" href="{% static 'assets/css/login.css'%}">
+</head>
+<style>
+  .back:hover {
+    opacity: 0.6;
+  }
+  body
+  {
+    overflow: hidden;
+  }
+  #message-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    z-index: 1000;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    animation: fadeOut 5s ease-in-out forwards;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* CSS Animation to Fade Out */
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }  /* Stay visible for a while */
+    100% { opacity: 0; display: none; }
+}
+
+</style>
+<body style="opacity: 0.9;">
+  <!-- <div class="container-fluid"> -->
+  <div class="row">
+    <div class="col-sm-6 login-section-wrapper">
+     
+      <div class="brand-wrapper">
+        <a href="{%url 'user-type'%}" class="nav-link">
+          <h6 class="text-white fw-bolder fs-5" style="text-decoration: none;"><img src="{%static 'images/back.png'%}"
+              alt="back" class="back"
+              style="filter:invert(50%);margin-top:0px;height: 35px;border: solid rgb(65, 63, 63);border-radius: 5px;">
+          </h6><br>
+        </a>
+        <a href="{% url 'index'%}"> <img src="{% static 'images/JobAi2.png'%}" alt="logo" class="logo"
+            style="height: 90px;border-radius: 25px;box-shadow: 0 0 20px rgb(48, 35, 229);"></a>
+        <h4 class="fw-bold mt-2 login-title">Welcome to JobAi</h4>
+        <h5>Jobseeker Login</h5>
+      </div>
+      <div class="login-wrapper my-auto">
+        <form method="post" action="{% url 'jobseeker_login' %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="email">Username</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email Address" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password"
+              required>
+          </div>
+          <div class="form-group mb-2">
+            <input type="checkbox" name="show_pwd" id="show_pwd" onclick="togglepwd()">
+            <label for="Show Password">Show Password</label>
+
+          </div>
+          <button name="login" id="login" class="btn btn-block btn-primary w-100">Login</button>
+        </form>
+        <a href="{%url 'Forgot Password'%}" class="forgot-password-link mb-2 mt-2">Forgot password?</a>
+        <p class="login-wrapper-footer-text">Don't have an account? <a href="{%url 'Register'%}"
+            class="text-reset">Register here</a></p>
+      </div>
+    </div>
+    <div class="col-sm-6 px-0 d-none d-sm-block">
+      <img src="{% static 'images/login1.jpg'%}" alt="login image" class="login-img"
+       >
+    </div>
+  </div>
+  </div>
+  {% if messages %}
+    <!-- Modal -->
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"  id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                
+                <!-- Modal Header with "X" Close Button -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                    <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close" onclick="closeMessageModal()">X</button>
+                  </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    
+                        <div  role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeMessageModal()">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript to Auto-Close on Click -->
+    <script>
+        function closeMessageModal() {
+            document.getElementById("message-container").style.display = "none";
+        }
+    </script>
+{% endif %}
+
+</body>
+<script>
+  function togglepwd() {
+    let passwordInput = document.getElementById("password");
+    let checkbox = document.getElementById("show_pwd");
+    passwordInput.type = checkbox.checked ? "text" : "password";
+  }
+  setTimeout(function() {
+        let messageContainer = document.getElementById("message-container");
+        if (messageContainer) {
+            messageContainer.style.transition = "opacity 0.5s";
+            messageContainer.style.opacity = "1"; // Fade out effect
+            setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
+        }
+    }, 5000);
+</script>
+
+</html>

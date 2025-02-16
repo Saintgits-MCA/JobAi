@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobAi | Company Reset Password</title>
+    <link rel="icon" href="{% static 'images/jobAi-logo1.png' %}">
+    <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{%static 'assets/css/bootstrap.min.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/css/login.css'%}">
+</head>
+
+<body style="background-image: url('../static/images/bg1.png');">
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6 login-section-wrapper">
+                    <div class="brand-wrapper">
+                        <a href="{% url 'index'%}"> <img src="{% static 'images/JobAi2.png'%}" alt="logo" class="logo"
+                                style="height: 90px;border-radius: 25px;box-shadow: 0 0 20px rgb(48, 35, 229);"></a>
+                    </div>
+                    <h4>Company Password Reset</h4>
+                    <div class="login-wrapper my-auto">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" name="email" id="email" class="form-control"
+                                    placeholder="Enter Email Address" required>
+                            </div>
+
+                            <button name="Forget_Password" id="pwd" class="btn btn-block btn-primary mt-3 w-100"> Reset
+                                Password</button>
+                        </form>
+                        <br>
+                        <a href="{% url 'company_login' %}" class="text-reset">Back to Login</a>
+                    </div>
+                </div>
+                <div class="col-sm-6 px-0 d-none d-sm-block">
+                    <img src="{% static 'images/job_portal_about.png'%}" alt="login image" class="login-img">
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script> -->
+</body>
+
+</html>

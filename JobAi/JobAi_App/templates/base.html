@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobAi | Jobseekers Dashboard</title>
+    <link rel="icon" href="{% static 'images/jobAi-logo1.png' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="{% static 'assets/js/home.js'%}"></script>
+    <link rel="stylesheet" href="{%static 'assets/css/bootstrap.min.css'%}">
+    <script src="{%static 'assets/js/bootstrap.bundle.min.js'%}"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="fw-bold fs-5 mx-4 mt-4"><img src="{%static 'images/profile.jpeg'%}" alt="profile-pic"
+                class="profile-pic1 w-75 h-75 mx-3" style="margin-left: 12px;margin-right: 18px;">
+            <center> {{ fname }}</center>
+        </div>
+        <ul class="mt-5">
+            <div class="box" onclick="select(this)">
+                <a href="{%url 'home'%}" class="nav-link fw-bold">
+                    <li><i class="fa-solid fa-home"></i> &emsp;Profile</li>
+                </a>
+            </div>
+            <div class="box" onclick="select(this)">
+                <a href="{%url 'search-job' %}" class="nav-link fw-bold">
+                    <li><i class="fa-solid fa-search"></i> &emsp;Search Job</li>
+                </a>
+            </div>
+            <div class="box" onclick="select(this)">
+                <a href="{%url 'ai_cover_letter'%}" class="nav-link fw-bold">
+                    <li><i class="fa-solid fa-envelope"></i> &emsp;AI Cover Letter</li>
+                </a>
+            </div>
+            <!-- <div class="box" onclick="select(this)">
+                <a href="{%url 'mock-interview'%}" class="nav-link fw-bold">
+                    <li><i class="fa-solid fa-user"></i> &emsp;Job Interview</li>
+                </a>
+            </div> -->
+           
+            <div class="box" onclick="select(this)">
+                <a href="{%url 'auto-apply'%}" class="nav-link fw-bold">
+                    <li><i class="fa-solid fa-bolt"></i> &emsp;Auto Apply</li>
+                </a>
+            </div>
+            <div class="box" onclick="select(this)">
+                <a href="{%url 'settings_view' %}" class="nav-link fw-bold">
+                    <li><i class="fa-solid fa-gear"></i> &emsp;Settings</li>
+                </a>
+            </div>
+        </ul>
+        <div class="sidebarFooter mt-5 text-center">
+            <div class="sidebarFooterContent mb-1"><img src="{%static 'images/contact.png'%}" class="contact" width="200px">
+                <p class="contactMain mb-1 fw-bold">Contact Us <i class="fas fa-address-book"></i></p>
+                <div class="contactUs">
+                    <p class="text-center">tecknohow.132@gmail.com <br>
+                    +91 9562766835</p>
+                </div>
+            </div>
+        </div>
+        <br><br>
+    </div>
+    
+<div class="main-content">
+    <nav class="navbar d-flex justify-content-between container-fluid">
+        <div class="menu d-none d-md-flex">
+            <div class="brand d-flex align-items-center">
+                <center><a href="{%url 'index'%}"><img src="{% static 'images/JobAi2.png' %}" alt="JobAi" height="50px" class="mx-3"
+                            style="border-radius: 25px;"></a></center>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center">
+              <div class="dropdown">
+                <button class="dropdown-toggle mx-3" type="button" data-bs-toggle="dropdown" style="border-radius: 5px;background-color: white;color:black;">
+                    <img src="{% static 'images/profile.jpeg' %}" alt="Profile" height="25px" class="rounded-circle"> {{ fname }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <!-- <li><a class="dropdown-item" href="#">Profile</a></li> -->
+                    <li><a class="dropdown-item" href="{%url 'support'%}"><i class="fas fa-headset icon-support"></i> Support</a></li>
+                    <li><a class="dropdown-item" href="{%url 'jobseeker_logout'%}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (localStorage.getItem("dark-mode") === "true") {
+            document.body.classList.add("dark-mode");
+        }
+    });
+</script>
+
+</html>
