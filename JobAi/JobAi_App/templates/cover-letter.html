@@ -84,21 +84,24 @@
                                 <div class="col-lg-3">
                                     <div class="coverletterinputblock">
                                         <label class="coverletterlabel form-label">Your Phone Number <span class="text-danger">*</span></label>
-                                        <input type="tel" name="phone" class="form-control input-bg" pattern="+91 [1-9]{10}" placeholder="+91-XXXXXXXXXX" required>
+                                        <input type="tel" name="phone" class="form-control input-bg" pattern="^\+91[-\s]?[1-9][0-9]{9}$" placeholder="+91-XXXXXXXXXX" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="covergeneratorbutton">
                                 <center>
-                                    <button type="submit" class="mx-5 mt-4 btn btn-primary">
+                                    <button type="submit" class="ms-5 mt-4 btn btn-primary">
                                         <i class="bi bi-magic"></i> Generate Cover Letter
                                     </button>
                                     {% if cover_letter %}
                                     <!-- Button to Open Modal -->
-                                    <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#coverLetterModal">
+                                    <button type="button" class="btn btn-success mt-4 ms-3" id="view" data-bs-toggle="modal" data-bs-target="#coverLetterModal">
                                        <i class="bi bi-eye"></i> View Cover Letter
                                     </button>
-                                
+                                    <button type="button" class="btn btn-danger mt-4 ms-3" onclick="resetbtn()" id="resetButton">
+                                        <i class="bi bi-trash3-fill"></i> Reset
+                                     </button>
+                                 
                                     <!-- Modal -->
                                     <div class="modal fade" id="coverLetterModal" tabindex="-1" aria-labelledby="coverLetterModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-lg">
@@ -143,6 +146,51 @@
 </body>
 
 <script>
+    function resetbtn() {
+    console.log("Reset function called"); // Debugging
+
+    // Hide View Cover Letter Button
+    let viewButton = document.getElementById("view");
+    if (viewButton) {
+        viewButton.style.display = "none";
+        console.log("Hiding view button"); // Debugging
+    } else {
+        console.log("View button not found");
+    }
+
+    // Hide Reset Button
+    let resetButton = document.getElementById("resetButton");
+    if (resetButton) {
+        resetButton.style.display = "none";
+        console.log("Hiding reset button"); // Debugging
+    } else {
+        console.log("Reset button not found");
+    }
+
+    // Optionally Clear Cover Letter Text
+    let coverLetterText = document.getElementById("coverLetterText");
+    if (coverLetterText) {
+        coverLetterText.innerHTML = "";
+        console.log("Clearing cover letter text");
+    } else {
+        console.log("Cover letter text not found");
+    }
+
+    // Hide Modal if Open
+    let modalElement = document.getElementById("coverLetterModal");
+    if (modalElement) {
+        let modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) {
+            modal.hide();
+            console.log("Hiding modal");
+        } else {
+            console.log("Modal instance not found");
+        }
+    } else {
+        console.log("Modal element not found");
+    }
+}
+
      // Function to trigger the typing effect after page load
      window.addEventListener('DOMContentLoaded', (event) => {
         const coverLetterText = document.getElementById('coverLetterText');
