@@ -116,6 +116,7 @@ def jobseeker_login(request):
             request.session['jobseeker_name'] = jobseeker.name
             request.session['jobseeker_id'] = jobseeker.id
             request.session['jobseeker_email'] = jobseeker.email
+            request.session['jobseeker_phone'] = jobseeker.phone
             messages.success(request, "Login Successfully")
             return redirect('jobseeker_dashboard')  # Redirect to a dashboard or home page after login
         except Jobseeker_Registration.DoesNotExist:
@@ -126,16 +127,9 @@ def jobseeker_login(request):
 def jobseeker_home(request):
     content = ""
     alert_message = ""
-    fname = ''
-    jobseek_email = ""
-    jobseek_loc = ""
-    jphone = ""
-    jdob = ""
-    jskills = ""
-    jeducation = ""
-    juniversity = ""
     fname = request.session.get('jobseeker_name')
     jobseek_email = request.session.get('jobseeker_email')
+    phone=request.session.get('jobseeker_phone')
     extracted_details = None
     if request.method == "POST":
         uploaded_file = request.FILES.get("word_file")
@@ -168,16 +162,6 @@ def jobseeker_home(request):
                 # Extract resume details
                 extracted_details = extract_resume_details(content)
                 # resume_details = ResumeDetails.objects.create(**extracted_details)
-                jid = request.session.get('jobseeker_id')
-                jobseeker= Jobseeker_Registration.objects.get(id=jid)
-                if(jobseeker):  
-                    jobseekerdt=jobseeker_profile()
-                    jobseek_loc = jobseekerdt.address
-                    jphone = jobseekerdt.phone
-                    jdob = jobseekerdt.dob
-                    jskills = jobseekerdt.skills
-                    jeducation = jobseekerdt.highest_qualification
-                    juniversity = jobseekerdt.university
 
                 # Check if essential details are missing
                 if not extracted_details.get("name") or not extracted_details.get("email") or not extracted_details.get("phone"):
@@ -198,18 +182,14 @@ def jobseeker_home(request):
         "alert_message": alert_message,
         "fname":fname,
         "email":jobseek_email,
-        "address":jobseek_loc,
-        "phone":jphone,
-        "dob":jdob,
-        "skills":jskills,
-        "university":juniversity,
-        "education":jeducation
+        "phone":phone
         
     }   
     return render(request, "jobseeker_home.html", context)
 
 
 def jobseeker_profile_update(request):
+    userid=request.session.get('jobseeker_id')
     dob = ""
     phone = ""
     address = ""
@@ -239,7 +219,10 @@ def jobseeker_profile_update(request):
             jobseeker_obj.university = university
             jobseeker_obj.address = address
             jobseeker_obj.phone = phone
+            jobseeker_obj.user_id=userid
             jobseeker_obj.save()
+            request.session['address']=jobseeker_obj.address
+            request.session['dob']=jobseeker_obj.dob
             messages.success(request, "Updated profile auccessfully")
     return redirect('home')
 
@@ -260,6 +243,7 @@ def Register(request):
         name = request.POST.get('name')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        phone=request.POST.get('Phone')
         if Jobseeker_Registration.objects.filter(name=name).exists() or Jobseeker_Registration.objects.filter(email=email).exists():
             messages.error(request, "A Jobseeker with this name and/or email already exists.You can Login directly.")
         else:
@@ -267,6 +251,7 @@ def Register(request):
             jobseeker_obj.name = name
             jobseeker_obj.email = email
             jobseeker_obj.password = password
+            jobseeker_obj.phone=phone
             jobseeker_obj.save()
             messages.success(request, "Jobseeker registered successfully!.Email will be your Username")
             return render(request, 'jobseeker_register.html')
@@ -358,8 +343,15 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
 
 def settings_view(request):
     fname = request.session.get('jobseeker_name')
-    jobseek_email = request.session.get('jobseeker_email')  
-    return render(request, 'settings_view.html', {"fname":fname, "email":jobseek_email})
+    jobseek_email = request.session.get('jobseeker_email') 
+    phone=request.session.get('jobseeker_phone')
+    address=request.session.get("address")
+    context = {
+            "fname":fname,
+            "email":jobseek_email,
+            "phone":phone,
+        }
+    return render(request, 'settings_view.html', context)
 
 
 def support(request):
