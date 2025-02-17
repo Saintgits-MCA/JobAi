@@ -117,7 +117,7 @@ def jobseeker_login(request):
             request.session['jobseeker_id'] = jobseeker.id
             request.session['jobseeker_email'] = jobseeker.email
             messages.success(request, "Login Successfully")
-            return redirect('home')  # Redirect to a dashboard or home page after login
+            return redirect('jobseeker_dashboard')  # Redirect to a dashboard or home page after login
         except Jobseeker_Registration.DoesNotExist:
             messages.error(request, "Invalid Email or Password")
     return render(request, 'jobseeker_login.html')
@@ -169,13 +169,15 @@ def jobseeker_home(request):
                 extracted_details = extract_resume_details(content)
                 # resume_details = ResumeDetails.objects.create(**extracted_details)
                 jid = request.session.get('jobseeker_id')
-                jobseekerdt = jobseeker_profile.objects.get(user=jid)
-                jobseek_loc = jobseekerdt.address
-                jphone = jobseekerdt.phone
-                jdob = jobseekerdt.dob
-                jskills = jobseekerdt.skills
-                jeducation = jobseekerdt.highest_qualification
-                juniversity = jobseekerdt.university
+                jobseeker= Jobseeker_Registration.objects.get(id=jid)
+                if(jobseeker):  
+                    jobseekerdt=jobseeker_profile()
+                    jobseek_loc = jobseekerdt.address
+                    jphone = jobseekerdt.phone
+                    jdob = jobseekerdt.dob
+                    jskills = jobseekerdt.skills
+                    jeducation = jobseekerdt.highest_qualification
+                    juniversity = jobseekerdt.university
 
                 # Check if essential details are missing
                 if not extracted_details.get("name") or not extracted_details.get("email") or not extracted_details.get("phone"):
@@ -322,9 +324,13 @@ def coverletter(request):
 
         # OpenAI API Call for Cover Letter Generation
         prompt = f"""
-        Write a professional cover letter for fresher jobseeker named {name} with {email} and {phone} for getting a {job_type} job in a {position} role at {company_name} whose address is {company_loc}. 
-        send letter with company address to {hr_name}, mention skills like {skills} with date of {ldate}, and make it engaging and brief without blocks like '[ ]' instead give values provided.
-        """
+Write a professional and engaging cover letter for a fresher job seeker named {name}, whose email is {email} and phone number is {phone}. 
+The job seeker is applying for a {job_type} position as {position} at {company_name}, located at {company_loc}. 
+
+Address the letter to {hr_name}, incorporating the company's full address. Highlight relevant skills such as {skills} and ensure the letter is formatted in a common professional style without placeholders like [Your Name] or [Your Address]. 
+
+Include the date ({ldate}) at the beginning and conclude with a proper closing, using the candidate’s full name instead of placeholders. Keep the letter concise, engaging, and directly relevant to the job opportunity.
+"""
         
         response = openai.ChatCompletion.create(
              model="gpt-4o-mini",
@@ -598,3 +604,10 @@ def download_pdf(request):
     response["Content-Disposition"] = 'attachment; filename="cover_letter.pdf"'
 
     return response
+def jobseeker_dashboard(request):
+    fname=request.session.get('jobseeker_name')
+    ccount=company_joblist.objects.all()
+    company=Company.objects.all()
+    jcount=ccount.count()
+    compcount=company.count()
+    return render(request,'jobseeker_dashboard.html',{"fname":fname,"jcount":jcount,"compcount":compcount,"company":company})

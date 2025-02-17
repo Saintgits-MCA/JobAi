@@ -7,7 +7,7 @@ urlpatterns = [
   
     path('',views.main,name="index"),
     path('profile/',views.jobseeker_home,name="home"),
-    # path('read_word_document/', read_word_document, name='read_word_document'),
+    path('jobseeker_dashboard/', jobseeker_dashboard, name='jobseeker_dashboard'),
     # path('update_jobseeker_profile/',views.update_jobseeker_profile,name="update_jobseeker_profile"),
     path('jobseeker_login/',views.jobseeker_login,name="jobseeker_login"),
     path('jobseeker logout/',views.jobseeker_logout,name='jobseeker_logout'),

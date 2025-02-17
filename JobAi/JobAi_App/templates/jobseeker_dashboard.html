@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    #message-container {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        width: 700px;
+        z-index: 1000;
+    }
+</style>
+
+<div class="container mt-4 ms-3">
+    <div class="row">
+
+        <!-- Profile Section -->
+        <div class="col-lg-9 col-md-12">
+            <div class="card shadow-sm p-4 mb-4">
+                <div class="d-flex align-items-center">
+                    <img src="{% static 'images/profile.jpeg' %}" class="rounded-circle me-3" width="60">
+                    <div>
+                        <h5>Welcome Back, {{ fname }}!</h5>
+                        <p class="text-muted">Search and manage your applied jobs and easily get hired.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <ul class="nav nav-pills mb-3">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="pill" href="#jobs">Jobs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="pill" href="#company-tab">Companies</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Jobs Section -->
+                <div id="jobs" class="tab-pane fade show active">
+                    <div class="card p-3 mb-3">
+                        <h5>Active Job Postings</h5>
+                        <p>You have <b>{{ jcount }}</b> jobs posted.</p>
+                        <a href="{% url 'search-job' %}">
+                            <button class="btn btn-primary">Apply For Job</button>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Companies Section -->
+                <div id="company-tab" class="tab-pane fade">
+                    <div class="card p-3 mb-3">
+                        <h5>Companies Available</h5>
+                        <p>You have the opportunity to apply to jobs posted by <b>{{ compcount }}</b> companies.</p>
+                    </div>
+
+                    <div class="row">
+                        {% for i in company %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card job-card px-2 text-justify">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'images/user1.png' %}" class="rounded-circle me-3" width="40">
+                                    <h5 class="job-title ms-2 text-dark">{{ i.name }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted">No companies available.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Messages Alert -->
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"
+        id="message-container">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Notification</h5>
+                    <button type="button" class="close-btn btn btn-danger" onclick="closeMessageModal()">X</button>
+                </div>
+                <div class="modal-body">
+                    <div role="alert">
+                        {{ message }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+
+<!-- JavaScript to Auto-Close on Click -->
+<script>
+    function closeMessageModal() {
+        document.getElementById("message-container").style.display = "none";
+    }
+    setTimeout(function() {
+        let messageContainer = document.getElementById("message-container");
+        if (messageContainer) {
+            messageContainer.style.transition = "opacity 0.5s";
+            messageContainer.style.opacity = "1"; // Fade out effect
+            setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
+        }
+    }, 5000);
+</script>
+
+{% endblock %}

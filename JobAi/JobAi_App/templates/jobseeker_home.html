@@ -196,58 +196,7 @@
             setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
         }
     }, 5000);
-    document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("dataForm");
-    const inputField = document.querySelector("input[name='data_field']");
-    const submitBtn = document.getElementById("submitBtn");
-
-    // ✅ Load saved data from localStorage when the page loads
-    if (localStorage.getItem("savedData")) {
-        inputField.value = localStorage.getItem("savedData");
-    }
-
-    submitBtn.addEventListener("click", function (event) {
-        event.preventDefault(); // Prevent default form submission
-
-        let formData = new FormData(form);
-        let inputData = inputField.value;
-
-        fetch("/upload/", {  // Change this URL to match your Django view
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-CSRFToken": getCSRFToken()
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Data uploaded successfully!");
-
-                // ✅ Save the data to localStorage
-                localStorage.setItem("savedData", inputData);
-            } else {
-                alert("Failed to upload data.");
-            }
-        })
-        .catch(error => console.error("Error:", error));
-    });
-
-    // ✅ Function to get CSRF token from cookies
-    function getCSRFToken() {
-        let cookieValue = null;
-        let cookies = document.cookie.split(";");
-
-        cookies.forEach(cookie => {
-            let trimmedCookie = cookie.trim();
-            if (trimmedCookie.startsWith("csrftoken=")) {
-                cookieValue = trimmedCookie.split("=")[1];
-            }
-        });
-
-        return cookieValue;
-    }
-});
+    
 
     </script>
     {%endblock%}
