@@ -342,16 +342,34 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
 
 
 def settings_view(request):
-    fname = request.session.get('jobseeker_name')
-    jobseek_email = request.session.get('jobseeker_email') 
-    phone=request.session.get('jobseeker_phone')
-    address=request.session.get("address")
-    context = {
-            "fname":fname,
-            "email":jobseek_email,
-            "phone":phone,
-        }
-    return render(request, 'settings_view.html', context)
+           
+    
+    jbid=request.session.get('jobseeker_id')
+    try: 
+        jsdt=jobseeker_profile.objects.get(user_id=jbid)
+        fname = request.session.get('jobseeker_name')
+        jobseek_email = request.session.get('jobseeker_email') 
+        phone=request.session.get('jobseeker_phone')
+        address=request.session.get("address")
+        context = {
+            'jsdt':jsdt,
+                "fname":fname,
+                "email":jobseek_email,
+                "phone":phone,
+            }
+        return render(request, 'settings_view.html', context)
+    except:
+        
+        jsdt=Jobseeker_Registration.objects.get(id=jbid)
+        fname = request.session.get('jobseeker_name')
+       
+        context = {
+            'jsdt':jsdt,
+                "fname":fname,
+              
+            }
+        return render(request,'settings_view.html', context)
+        
 
 
 def support(request):
@@ -421,20 +439,18 @@ def company_registration(request):
 
 def delete_job(request): 
     cname = request.session.get('company_name')
-    
-    if request.method == "POST": 
-        job_id = request.POST.get("job_id")
-        messages.success(request, f"jobid:{str(job_id)}")
-        if not job_id:
+    job_id = request.GET.get("ids")
+    messages.success(request, f"jobid:{str(job_id)}")
+    if not job_id:
             messages.error(request, "Job ID is missing in request.")
             return render(request, 'company_jobs.html', {'cname': cname})
         
-        try:
+    try:
             job = get_object_or_404(company_joblist, id=job_id)
             job.delete()
             messages.success(request, "Job deleted successfully")
             return redirect('job_listing')
-        except Exception as e:
+    except Exception as e:
             messages.error(request, f"Error deleting job: {str(e)}")
     else: 
         messages.error(request, "Attempt for deleting job item failed")
@@ -570,13 +586,50 @@ def company_postjob(request):
             companyjob_obj.Lastdate = lastdate
             companyjob_obj.save()
             messages.success(request, "Job Posted Successfully!!") 
+            
     cname = request.session.get('company_name')
     return render(request, 'company_postjob.html', {"cname":cname, 'cdate':date.today().strftime("%Y-%m-%d")})
 
 
 def edit_job(request):
+    cid = request.session.get('company_id')
     cname = request.session.get('company_name')
-    return render(request, 'edit-job.html', {"cname":cname})
+    if request.method == "POST":
+        job_id  = request.POST.get('job_id')
+        job_number = request.POST.get('job_number')
+        job_title = request.POST.get('job_title')
+        job_description = request.POST.get('job_description')
+        job_location = request.POST.get('location')
+        job_type = request.POST.get('job_type')
+        # jobposted_date = request.POST.get('jobposted_date')
+        qualification = request.POST._getlist('highest_qualification')
+        skills = request.POST._getlist('skills_required')
+        lastdate = request.POST.get('deadline')
+        # if company_joblist.objects.get(job_number=job_number).exists():
+        #     messages.error(request, "A job with this job number already posted in this portal use other id to post other jobs")
+        # else:
+        
+        companyjob_obj = company_joblist.objects.get(id=job_id)
+        companyjob_obj.company_id = cid
+        companyjob_obj.job_number = job_number
+        companyjob_obj.job_title = job_title
+        companyjob_obj.job_description = job_description
+        companyjob_obj.location = job_location
+        companyjob_obj.job_type = job_type
+        companyjob_obj.dateofpublish = date.today().strftime('%Y-%m-%d')
+        companyjob_obj.highest_qualification = qualification
+        companyjob_obj.skills_required = skills
+        companyjob_obj.Lastdate = lastdate
+        companyjob_obj.save()
+        messages.success(request, "Job Edited Successfully!!") 
+        return redirect('job_listing')
+    jobid=request.GET.get('ids')
+    jobobg=company_joblist.objects.get(id=jobid)
+    context={
+        'jobobg':jobobg,
+        "cname":cname
+    }
+    return render(request, 'edit-job.html',context)
 
 
 def download_pdf(request):

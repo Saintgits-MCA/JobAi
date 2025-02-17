@@ -52,7 +52,7 @@
                         {% if jobs %}
                             {% for job in jobs %}
                                 <tr>
-                                    <td>{{ job.id }}</td>
+                                    <td>{{ forloop.counter }}</td>
                                     <td>{{ job.job_number }}</td>
                                     <td>{{ job.job_title }}</td>
                                     <td>{{ job.company}}</td>
