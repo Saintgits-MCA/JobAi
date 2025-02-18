@@ -55,7 +55,12 @@
             <!-- Job Title -->
             <div class="mb-3">
                 <label class="form-label">Job Title</label><span class="text-danger mx-2">*</span>
-                <input type="text" class="form-control" placeholder="Enter job title" name="job_title" required>
+                <select type="text" class="form-control" name="job_title" required>
+                    <option value="" selected disabled>--Choose Job Title---</option>
+                    {% for i in job %}
+                    <option value="{{i.id}}">{{i.job_title}}</option>
+                  {%endfor%}
+                </select>
             </div>
 
             <!-- Job Description -->

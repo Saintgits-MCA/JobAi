@@ -64,10 +64,15 @@
                     required>
             </div>
 
+            <!-- Job Title -->
             <div class="mb-3">
                 <label class="form-label">Job Title</label><span class="text-danger mx-2">*</span>
-                <input type="text" class="form-control" name="job_title" id="job_title" value="{{ jobobg.job_title }}"
-                    required>
+                <select type="text" class="form-control" name="job_title" required>
+                    <option value="{{jobobj.job_title_id}}" selected disabled>{{jobobj.job_title.job_title}}</option>
+                    {% for i in job %}
+                    <option value="{{i.id}}">{{i.job_title}}</option>
+                  {%endfor%}
+                </select>
             </div>
 
             <div class="mb-3">

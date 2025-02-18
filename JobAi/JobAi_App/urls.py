@@ -23,6 +23,7 @@ urlpatterns = [
     path('company_registration/',views.company_registration,name="company_registration"),
     path('company_dashboard/',views.company_dashboard,name="company_dashboard"),
     path('job_listing/',views.company_jobs,name="job_listing"),
+    path('jobs/',views.jobs,name="jobs"),
     path('Post_Job/',views.company_postjob,name="Post Job"),
     path('company_settings/',views.company_settings,name="company_settings"),
     path('cover-letter/',views.coverletter,name='ai_cover_letter'),

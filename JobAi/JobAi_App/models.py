@@ -49,10 +49,14 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
-
+class job_title(models.Model):
+    job_title=models.CharField(max_length=250,blank=True,null=True)
+    def __str__(self):
+        return self.name 
+    
 class company_joblist(models.Model):
     company=models.ForeignKey(Company,on_delete=models.CASCADE,default=None)
-    job_title = models.CharField(max_length=100, blank=True, null=True)
+    job_title = models.ForeignKey(job_title,on_delete=models.CASCADE,default=None)
     job_number = models.CharField(max_length=100)
     job_description = models.CharField(max_length=5000, blank=True, null=True)
     job_type = models.CharField(max_length=255, blank=True, null=True)
@@ -61,8 +65,11 @@ class company_joblist(models.Model):
     skills_required = models.TextField(blank=True, null=True)
     dateofpublish=models.DateField(max_length=20,null=True)
     Lastdate=models.DateField(max_length=20,null=True)
+    def __str__(self):
+        return self.name 
     
 
+    
 class ResumeDetails(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)

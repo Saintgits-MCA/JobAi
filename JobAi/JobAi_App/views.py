@@ -475,6 +475,16 @@ def company_type(request):
         return render(request, 'company_type.html')
     return render(request, 'company_type.html')
 
+def jobs(request):
+    if request.method == "POST":
+        job_title1 = request.POST.get('job')
+        company_typeobj = job_title()
+        company_typeobj.job_title = job_title1
+        company_typeobj.save()
+        messages.success(request, "Job title added successfully!")
+        return render(request, 'job_position.html')
+    return render(request, 'job_position.html')
+
     
 def company_forgot_password(request):
     return render(request, 'company_forgot_pwd.html')
@@ -540,7 +550,7 @@ def company_jobs(request):
             job_info = {
                 "job_id": job.id,
                 "job_number": job.job_number,
-                "job_title": job.job_title,
+                "job_title": job.job_title.job_title,
                 "job_description": job.job_description,
                 "eligibility": job.highest_qualification,
                 "skills": job.skills_required,
@@ -567,10 +577,11 @@ def company_jobs(request):
 
 
 def company_postjob(request):
+    job=job_title.objects.all()
     cid = request.session.get('company_id')
     if request.method == "POST":
         job_number = request.POST.get('job_number')
-        job_title = request.POST.get('job_title')
+        job_position = request.POST.get('job_title')
         job_description = request.POST.get('job_description')
         job_location = request.POST.get('Location')
         job_type = request.POST.get('Job_type')
@@ -584,7 +595,7 @@ def company_postjob(request):
             companyjob_obj = company_joblist()
             companyjob_obj.company_id = cid
             companyjob_obj.job_number = job_number
-            companyjob_obj.job_title = job_title
+            companyjob_obj.job_title_id = job_position
             companyjob_obj.job_description = job_description
             companyjob_obj.location = job_location
             companyjob_obj.job_type = job_type
@@ -593,19 +604,19 @@ def company_postjob(request):
             companyjob_obj.skills_required = skills
             companyjob_obj.Lastdate = lastdate
             companyjob_obj.save()
-            messages.success(request, "Job Posted Successfully!!") 
-            
+            messages.success(request, "Job Posted Successfully!!")        
     cname = request.session.get('company_name')
-    return render(request, 'company_postjob.html', {"cname":cname, 'cdate':date.today().strftime("%Y-%m-%d")})
+    return render(request, 'company_postjob.html', {"cname":cname, 'cdate':date.today().strftime("%Y-%m-%d"),"job":job})
 
 
 def edit_job(request):
+    job=job_title.objects.all()
     cid = request.session.get('company_id')
     cname = request.session.get('company_name')
     if request.method == "POST":
         job_id  = request.POST.get('job_id')
         job_number = request.POST.get('job_number')
-        job_title = request.POST.get('job_title')
+        job_position = request.POST.get('job_title')
         job_description = request.POST.get('job_description')
         job_location = request.POST.get('location')
         job_type = request.POST.get('job_type')
@@ -620,7 +631,7 @@ def edit_job(request):
         companyjob_obj = company_joblist.objects.get(id=job_id)
         companyjob_obj.company_id = cid
         companyjob_obj.job_number = job_number
-        companyjob_obj.job_title = job_title
+        companyjob_obj.job_title_id = job_position
         companyjob_obj.job_description = job_description
         companyjob_obj.location = job_location
         companyjob_obj.job_type = job_type
@@ -635,7 +646,8 @@ def edit_job(request):
     jobobg=company_joblist.objects.get(id=jobid)
     context={
         'jobobg':jobobg,
-        "cname":cname
+        "cname":cname,
+        "job":job
     }
     return render(request, 'edit-job.html',context)
 
