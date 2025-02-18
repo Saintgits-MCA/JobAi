@@ -1,8 +1,4 @@
-from ctypes import addressof
 from datetime import date
-from io import BytesIO
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 import openai
 from django.db import connection
 from django.shortcuts import get_object_or_404, render, redirect
@@ -11,15 +7,11 @@ import re
 import json
 from django.contrib.auth import logout
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse, JsonResponse
-from django.template.loader import render_to_string
-import tempfile
 # from weasyprint import HTML
 from docx import Document
 from django.conf import settings
 from .models import *
 from django.contrib import messages
-import ast
 
 
 def extract_resume_details(content):
@@ -130,65 +122,80 @@ def jobseeker_login(request):
 
 
 def jobseeker_home(request):
+    messages.info(request, "Complete this Profile Registration and enjoy all features of this portal")
     content = ""
     alert_message = ""
     fname = request.session.get('jobseeker_name')
-    uid= request.session.get('jobseeker_id')
+    uid = request.session.get('jobseeker_id')
     jobseek_email = request.session.get('jobseeker_email')
-    phone=request.session.get('jobseeker_phone')
+    phone = request.session.get('jobseeker_phone')
     extracted_details = None
+    show_modal=False
     if request.method == "POST":
         uploaded_file = request.FILES.get("word_file")
-        jobseeker_resumeobj = jobseeker_resume()
-        jobseeker_resumeobj.file = uploaded_file
-        jobseeker_resumeobj.user_id=uid
-        jobseeker_resumeobj.save()
+
+        # Check if a resume already exists for the user
+        if jobseeker_resume.objects.filter(user_id=uid).exists():
+            messages.error(request, "You have already uploaded a resume. You cannot upload another one.")
+            return redirect("home")
+
         if uploaded_file:
-            # Validate file extension
-            if not uploaded_file.name.lower().endswith(('.doc', '.docx')) and not uploaded_file.name.lower().contains("Resume", "CV"):
-                return JsonResponse({"error": "Only Resumes with .doc and .docx files are allowed."}, status=400)
-                return redirect("jobseeker_home")
+            # Validate file extension before saving
+            allowed_extensions = ('.doc', '.docx')
+            file_extension = os.path.splitext(uploaded_file.name)[1].lower()
+            
+            if file_extension not in allowed_extensions:
+                messages.error(request, "Invalid file format. Only .doc and .docx files are allowed. PDFs are not accepted.")
+                return redirect("home")  # Prevents further execution
+
             try:
+                jobseeker_profile.objects.get(user_id=uid)
+            except jobseeker_profile.DoesNotExist:
+                show_modal = True  # Show modal if profile does not exist
+
                 # Ensure media directories exist
                 documents_dir = os.path.join(settings.MEDIA_ROOT, "documents")
                 json_dir = os.path.join(settings.MEDIA_ROOT, "json")
                 os.makedirs(documents_dir, exist_ok=True)
                 os.makedirs(json_dir, exist_ok=True)
-                
-                # Save the uploaded file
+
+                # Save the uploaded file (only after validation)
                 fs = FileSystemStorage(location=documents_dir)
                 file_path = fs.save(uploaded_file.name, uploaded_file)
                 file_path = fs.path(file_path)
-                
+
                 # Read the Word document content
                 document = Document(file_path)
                 paragraphs = [p.text for p in document.paragraphs if p.text.strip()]
                 content = "\n".join(paragraphs)
-               
+
                 # Extract resume details
                 extracted_details = extract_resume_details(content)
-                # resume_details = ResumeDetails.objects.create(**extracted_details)
 
                 # Check if essential details are missing
                 if not extracted_details.get("name") or not extracted_details.get("email") or not extracted_details.get("phone"):
-                    alert_message = "*Failed to extract your resume.Check your file and try again."
-                    jobseeker_resumeobj.delete()
-                else:
-                    # Convert document to JSON and save
-                    json_data = convert_docx_to_json(file_path, uploaded_file.name)
-                    messages.success(request, "Resume uploaded successfully!")                    
-            except Exception as e: 
+                    messages.error(request, "Failed to extract essential details from your resume. Check your file and try again.")
+                    # Delete the saved file if details are not extracted
+                    os.remove(file_path)
+                    return redirect("home")
+
+                # Save the resume in the database only after successful validation
+                jobseeker_resumeobj = jobseeker_resume(file=uploaded_file, user_id=uid)
+                jobseeker_resumeobj.save()
+
+                messages.success(request, "Resume uploaded successfully!")
+
+            except Exception as e:
                 messages.error(request, f"Error reading document: {str(e)}")
-            except jobseeker_profile.DoesNotExist:
-                messages.error(request, "Profile not found. Please complete your profile.")
-                return redirect('home')  # Redirect to a profile creation view
+
     context = {
         "resume_details": extracted_details,
         "alert_message": alert_message,
-        "fname":fname,
-        "email":jobseek_email,
-        "phone":phone,        
-    }   
+        "fname": fname,
+        "email": jobseek_email,
+        "phone": phone,
+        "show_modal":show_modal
+    }
     return render(request, "jobseeker_home.html", context)
 
 
@@ -289,6 +296,8 @@ def company_logout(request):
 
 def search_job(request):
     fname = request.session.get('jobseeker_name')
+    if not jobseeker_profile.objects.filter(name=fname).exists():
+            return redirect('home')
     jobs = company_joblist.objects.all()  # Fetch all jobs from the database
     return render(request, 'search-job.html', {"fname":fname, 'jobs': jobs})
 
@@ -299,6 +308,8 @@ def coverletter(request):
     fname = request.session.get('jobseeker_name')
     email = request.session.get('jobseeker_email')
     phoneno=request.session.get('jobseeker_phone')
+    if not jobseeker_profile.objects.filter(name=fname).exists():
+        return redirect('home')
     openai.api_key = settings.OPENAI_API_KEY
 
     if request.method == "POST":
@@ -379,7 +390,8 @@ def settings_view(request):
         
         jsdt=Jobseeker_Registration.objects.get(id=jbid)
         fname = request.session.get('jobseeker_name')
-       
+        if not jobseeker_profile.objects.filter(name=fname).exists():
+            return redirect('home')
         context = {
             'jsdt':jsdt,
                 "fname":fname,
@@ -401,6 +413,8 @@ def mockinterview(request):
 
 def autoapply(request):
     fname = request.session.get('jobseeker_name')
+    if not jobseeker_profile.objects.filter(name=fname).exists():
+        return redirect('home')
     return render(request, 'auto-apply.html', {"fname":fname})
 
 
@@ -671,6 +685,8 @@ def edit_job(request):
 
 def jobseeker_dashboard(request):
     fname=request.session.get('jobseeker_name')
+    if not jobseeker_profile.objects.filter(name=fname).exists():
+        return redirect('home')
     ccount=company_joblist.objects.all()
     company=Company.objects.all()
     jcount=ccount.count()
