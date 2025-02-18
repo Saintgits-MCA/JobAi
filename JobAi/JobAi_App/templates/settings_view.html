@@ -68,6 +68,14 @@
                         <input type="text" id="University" name="University" class="form-control ms-1 input-bg" value="{{ jsdt.university }}" readonly>
                     </div>
                 </div>
+                  <!-- Auto Apply Switch -->
+                  <div class="col-md-6">
+                    <label for="auto-apply" class="form-label fw-bold ms-3">Auto-Apply Feature</label>
+                    <div class="form-check form-switch ms-3 fill-white">
+                        <input class="form-check-input border-dark" type="checkbox" id="toggleSwitch">
+                        <label class="form-check-label me-4" for="toggleSwitch" id="status">Auto-Apply Feature is Disabled</label>
+                    </div>
+                </div>
                 <!-- New Password Field -->
                 <div class="col-md-6">
                     <div class="form-group">
@@ -84,15 +92,6 @@
                         <i class="fas fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
                     </div> </div>
                 </div>
-
-                <!-- Auto Apply Switch -->
-                <div class="col-md-6">
-                    <label for="auto-apply" class="form-label fw-bold ms-3">Auto-Apply Feature</label>
-                    <div class="form-check form-switch ms-3 fill-white">
-                        <input class="form-check-input border-dark" type="checkbox" id="toggleSwitch">
-                        <label class="form-check-label me-4" for="toggleSwitch" id="status">Auto-Apply Feature is Disabled</label>
-                    </div>
-                </div>
             </div>
 
             <!-- Save Button -->
@@ -102,10 +101,14 @@
         </form>
 
         <!-- Danger Zone -->
-        <div class="mt-5">
+        <div class="mt-3">
             <h3 class="mx-5 fw-bold">Danger Zone</h3>
             <form id="deleteAccountForm" action="" method="POST" class="mt-5">
                 {% csrf_token %}
+                    <div class="form-group">
+                        <label for="Resume" class="form-label fw-bold ms-5">View/Download Your Resume at {{jsdt.resume.url}}:</label>
+                        <a id="Resume" name="Resume" href="{{jsdt.resume.url}}" class="text-decoration-none"><input type="button" class="bg-dark text-white  w-25" style="border-radius: 10px;" value="Download" readonly></a>
+                    </div>
                 <center><button type="submit" class="btn btn-block btn-danger w-75">Delete Account</button></center>
             </form>
         </div>

@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `jobai1` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `jobai1`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: jobai
+-- Host: localhost    Database: jobai1
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -16,32 +18,36 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `jobai_app_company`
+-- Table structure for table `auth_user`
 --
 
-DROP TABLE IF EXISTS `jobai_app_company`;
+DROP TABLE IF EXISTS `auth_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `jobai_app_company` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `password` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
+CREATE TABLE `auth_user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `password` varchar(128) NOT NULL,
+  `last_login` datetime(6) DEFAULT NULL,
+  `is_superuser` tinyint(1) NOT NULL,
+  `username` varchar(150) NOT NULL,
+  `first_name` varchar(150) NOT NULL,
+  `last_name` varchar(150) NOT NULL,
   `email` varchar(254) NOT NULL,
-  `company_type` varchar(50) NOT NULL,
-  `address` varchar(255) NOT NULL,
+  `is_staff` tinyint(1) NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `date_joined` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `jobai_app_company`
+-- Dumping data for table `auth_user`
 --
 
-LOCK TABLES `jobai_app_company` WRITE;
-/*!40000 ALTER TABLE `jobai_app_company` DISABLE KEYS */;
-INSERT INTO `jobai_app_company` VALUES (1,'admin@tcs','Tata Consulting Services','admin@tcs.org','MNC','Thiruvananthapuram,Kerala,India'),(2,'root','Tisser Technologies','tissertech@gmail.com','LLC','Kottayam,Kerala,India'),(3,'admin@hcl','HCL','hcl@corp.org','MNC','Bangalore,Karnataka,India');
-/*!40000 ALTER TABLE `jobai_app_company` ENABLE KEYS */;
+LOCK TABLES `auth_user` WRITE;
+/*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-06  7:18:11
+-- Dump completed on 2025-02-17 19:20:10

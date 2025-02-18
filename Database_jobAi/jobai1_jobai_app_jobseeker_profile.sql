@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `jobai1` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `jobai1`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: jobai
+-- Host: localhost    Database: jobai1
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -16,34 +18,39 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `jobai_app_resumedetails`
+-- Table structure for table `jobai_app_jobseeker_profile`
 --
 
-DROP TABLE IF EXISTS `jobai_app_resumedetails`;
+DROP TABLE IF EXISTS `jobai_app_jobseeker_profile`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `jobai_app_resumedetails` (
+CREATE TABLE `jobai_app_jobseeker_profile` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `email` varchar(254) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `dob` varchar(50) DEFAULT NULL,
-  `address` longtext,
   `highest_qualification` varchar(255) DEFAULT NULL,
   `job_preference` varchar(255) DEFAULT NULL,
   `university` varchar(255) DEFAULT NULL,
+  `address` longtext,
   `skills` longtext,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `resume` varchar(100) DEFAULT NULL,
+  `user_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `jobai_app_resumedetails`
+-- Dumping data for table `jobai_app_jobseeker_profile`
 --
 
-LOCK TABLES `jobai_app_resumedetails` WRITE;
-/*!40000 ALTER TABLE `jobai_app_resumedetails` DISABLE KEYS */;
-/*!40000 ALTER TABLE `jobai_app_resumedetails` ENABLE KEYS */;
+LOCK TABLES `jobai_app_jobseeker_profile` WRITE;
+/*!40000 ALTER TABLE `jobai_app_jobseeker_profile` DISABLE KEYS */;
+INSERT INTO `jobai_app_jobseeker_profile` VALUES (1,'Prudhwi Raj','prudhwirajk@gmail.com','9378373783','24-April-2002','MCA','Frontend Developer','APJ Abdulkalam Technological University','Kottayam,Kerala,India','Python, Java','',1),(2,'Jayaraj J Pillai','jayu123@gmail.com','7586342510','24-April-2002','MCA','Frontend Developer','APJ Abdulkalam Technological University','Kottayam,Kerala,India','Python, Java','',5);
+/*!40000 ALTER TABLE `jobai_app_jobseeker_profile` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -55,4 +62,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-06  7:18:13
+-- Dump completed on 2025-02-17 19:20:14

@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `jobai1` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `jobai1`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: jobai
+-- Host: localhost    Database: jobai1
 -- ------------------------------------------------------
 -- Server version	8.0.36
 
@@ -16,28 +18,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `django_session`
+-- Table structure for table `jobai_app_jobseeker_resume`
 --
 
-DROP TABLE IF EXISTS `django_session`;
+DROP TABLE IF EXISTS `jobai_app_jobseeker_resume`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `django_session` (
-  `session_key` varchar(40) NOT NULL,
-  `session_data` longtext NOT NULL,
-  `expire_date` datetime(6) NOT NULL,
-  PRIMARY KEY (`session_key`),
-  KEY `django_session_expire_date_a5c62663` (`expire_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `jobai_app_jobseeker_resume` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `file` varchar(100) NOT NULL,
+  `uploaded_at` datetime(6) NOT NULL,
+  `user_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `JobAi_App_jobseeker__user_id_5170ab0a_fk_JobAi_App` (`user_id`),
+  CONSTRAINT `JobAi_App_jobseeker__user_id_5170ab0a_fk_JobAi_App` FOREIGN KEY (`user_id`) REFERENCES `jobai_app_jobseeker_registration` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `django_session`
+-- Dumping data for table `jobai_app_jobseeker_resume`
 --
 
-LOCK TABLES `django_session` WRITE;
-/*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-/*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
+LOCK TABLES `jobai_app_jobseeker_resume` WRITE;
+/*!40000 ALTER TABLE `jobai_app_jobseeker_resume` DISABLE KEYS */;
+INSERT INTO `jobai_app_jobseeker_resume` VALUES (5,'documents/CV_Sample_OlzUYV9.docx','2025-02-17 11:42:24.492515',5);
+/*!40000 ALTER TABLE `jobai_app_jobseeker_resume` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-06  7:18:10
+-- Dump completed on 2025-02-17 19:20:12

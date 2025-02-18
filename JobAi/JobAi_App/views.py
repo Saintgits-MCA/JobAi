@@ -128,14 +128,15 @@ def jobseeker_home(request):
     content = ""
     alert_message = ""
     fname = request.session.get('jobseeker_name')
+    uid= request.session.get('jobseeker_id')
     jobseek_email = request.session.get('jobseeker_email')
     phone=request.session.get('jobseeker_phone')
     extracted_details = None
     if request.method == "POST":
         uploaded_file = request.FILES.get("word_file")
-        resume = request.POST.get("word_file")
         jobseeker_resumeobj = jobseeker_resume()
-        jobseeker_resumeobj.resume = resume
+        jobseeker_resumeobj.file = uploaded_file
+        jobseeker_resumeobj.user_id=uid
         jobseeker_resumeobj.save()
         if uploaded_file:
             # Validate file extension
@@ -176,14 +177,12 @@ def jobseeker_home(request):
             except jobseeker_profile.DoesNotExist:
                 messages.error(request, "Profile not found. Please complete your profile.")
                 return redirect('home')  # Redirect to a profile creation view
-       
     context = {
         "resume_details": extracted_details,
         "alert_message": alert_message,
         "fname":fname,
         "email":jobseek_email,
-        "phone":phone
-        
+        "phone":phone,        
     }   
     return render(request, "jobseeker_home.html", context)
 
@@ -206,6 +205,10 @@ def jobseeker_profile_update(request):
         university = request.POST.get('University')
         skills = request.POST.get('skills')
         job_preference = request.POST.get('job_preferences')
+        # Fetch the first resume for the user (if multiple exist)
+        resume = jobseeker_resume.objects.filter(user=userid).first()
+        cv = resume.file if resume else None  # Handle case where no resume exists
+        
         if jobseeker_profile.objects.filter(name=name).exists() and jobseeker_profile.objects.filter(email=email).exists():
             messages.error(request, "A Jobseeker with this name and/or email already exists. Please use different details.")
         else:
@@ -220,6 +223,7 @@ def jobseeker_profile_update(request):
             jobseeker_obj.address = address
             jobseeker_obj.phone = phone
             jobseeker_obj.user_id=userid
+            jobseeker_obj.resume=cv
             jobseeker_obj.save()
             request.session['address']=jobseeker_obj.address
             request.session['dob']=jobseeker_obj.dob
@@ -288,6 +292,7 @@ def coverletter(request):
     company = Company.objects.all()
     fname = request.session.get('jobseeker_name')
     email = request.session.get('jobseeker_email')
+    phoneno=request.session.get('jobseeker_phone')
     openai.api_key = settings.OPENAI_API_KEY
 
     if request.method == "POST":
@@ -331,13 +336,15 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
             "fname": fname,
             "email": email,
             "cover_letter": cover_letter,
-            "company": company
+            "company": company,
+            "phone":phoneno
         })
 
     return render(request, "cover-letter.html", {
         "fname": fname,
         "company": company,
-        "email": email
+        "email": email,
+        "phone":phoneno
     })
 
 
@@ -350,7 +357,7 @@ def settings_view(request):
         fname = request.session.get('jobseeker_name')
         jobseek_email = request.session.get('jobseeker_email') 
         phone=request.session.get('jobseeker_phone')
-        address=request.session.get("address")
+        # address=request.session.get("address")
         context = {
             'jsdt':jsdt,
                 "fname":fname,
@@ -482,15 +489,16 @@ def company_dashboard(request):
         compjobdt = company_joblist.objects.filter(company=cid)
         # If no jobs exist, show the default page
         if not compjobdt.exists():
-            return render(request, 'company_jobs.html', {"cname": cname})
+            count=0
+            return render(request, 'company_dashboard.html', {"cname": cname,"count":count})
         
         # Get expired jobs
         expiredyet = company_joblist.objects.filter(company_id=cid, Lastdate__gt=date.today())
-        count = company_joblist.objects.filter(company=cid).count()  # Count jobs for the logged-in company
+        count = compjobdt.count()  # Count jobs for the logged-in company
         context = {
             "jobs": expiredyet,
             "cname": cname,
-            "count":count
+            "count":count,
         }
         return render(request, 'company_dashboard.html', context)
     except Exception as e:

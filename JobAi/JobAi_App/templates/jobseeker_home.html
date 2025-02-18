@@ -60,7 +60,7 @@
         <form  action="{%url 'home'%}" method="POST" id="uploadForm" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <input type="file" id="fileInput" name="word_file" accept=".doc,.docx" required>
+            <input type="file" id="fileInput" name="word_file" class="form-control" accept=".doc,.docx" required>
             <button type="submit" id="submit">Upload and Submit</button>
             
         </form>
