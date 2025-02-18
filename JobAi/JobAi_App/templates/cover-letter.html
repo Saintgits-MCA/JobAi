@@ -3,6 +3,8 @@
 {% block content %}
 
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <link rel="stylesheet" href="{% static 'assets/css/cover-letter.css' %}">
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
@@ -42,8 +44,13 @@
                                 <div class="col-lg-3">
                                     <div class="coverletterinputblock">
                                         <label class="coverletterlabel form-label">Job Title <span class="text-danger">*</span></label>
-                                        <input required placeholder="Ex. Software Developer" type="text" name="position" class="form-control">
-                                    </div>
+                                         <select type="text" class="form-control" name="job_title" required>
+                                            <option selected disabled value="">--Select Job Title--</option>
+                                              {% for i in job %}
+                                              <option value="{{i.id}}" {% if i.id == jobobg.job_title_id %}selected{%endif%} >{{i.job_title}}</option>
+                                            {%endfor%}
+                                          </select>
+                                         </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="coverletterinputblock">
@@ -51,7 +58,7 @@
                                         <input placeholder="Ex. Mehul" type="text" name="name" class="form-control input-bg" value="{{fname}}" readonly>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="coverletterinputblock">
                                         <label class="coverletterlabel form-label">Applying to Company <span
                                                 class="text-danger">*</span></label>
@@ -87,6 +94,18 @@
                                         <input type="tel" name="phone" class="form-control input-bg" pattern="^\+91[-\s]?[1-9][0-9]{9}$" placeholder="+91-XXXXXXXXXX" value="{{phone}}" readonly>
                                     </div>
                                 </div>
+                                <div class="col-lg-3">
+                                    <div class="coverletterinputblock">
+                                    <label for="Address" class="coverletterlabel form-label fw-bold">Your Address:</label>
+                                    <input type="text" id="Address" name="Address" class="form-control  input-bg" value="{{ address }}" placeholder="ex:Bangalore,Karnataka,India">
+                            </div>
+                        </div>
+                            <div class="col-lg-3">
+                                <div class="coverletterinputblock">
+                                <label for="Eligibility" class="coverletterlabel form-label fw-bold">Highest Qualification:</label>
+                                <input type="text" id="eligibility" name="eligibility" class="form-control  input-bg" value="{{ highest_qualification }}" placeholder="ex:MCA/BTech CSE">
+                            </div>
+                        </div>
                             </div>
                             <div class="covergeneratorbutton">
                                 <center>
@@ -115,19 +134,19 @@
                                 
                                                 <!-- Modal Body -->
                                                 <div class="modal-body">
-                                                    <div class="scrollable-container">
+                                                    <div id="scrollable-container" class="scrollable-container">
                                                         <p id="coverLetterText" class="typing-effect">{{ cover_letter|linebreaks }}</p>
                                                     </div>
                                                 </div>
                                 
                                                 <!-- Modal Footer Buttons -->
                                                 <div class="modal-footer">
-                                                    <button class="btn btn-success" onclick="downloadPDF()">
+                                                    <button id="downloadPdfBtn" class="btn btn-success">
                                                         <i class="bi bi-download"></i> Download PDF
-                                                    </button>
-                                                    <button class="btn btn-info" onclick="sendCoverLetter()">
+                                                    </button></a>
+                                                <a><button class="btn btn-info">
                                                         <i class="bi bi-send-fill"></i> Send Cover Letter
-                                                    </button>
+                                                    </button></a>
                                                 </div>
                                 
                                             </div>
@@ -209,38 +228,34 @@
         typeWriter(); // Call the function to start the typing animation
     });
 
-function downloadPDF() {
-    let coverLetter = `{{ cover_letter|escapejs }}`;
-    if (!coverLetter.trim()) {
-        alert("No cover letter to download.");
-        return;
-    }
-    window.location.href = `/download-pdf/?cover_letter=` + encodeURIComponent(coverLetter);
-}
+    document.getElementById('downloadPdfBtn').addEventListener('click', function () {
+    // Select the scrollable container instead of a single p tag
+    var element = document.getElementById('scrollable-container');
 
-function sendCoverLetter() {
-    let recipientEmail = document.querySelector("input[name='email']").value;
-    let coverLetter = `{{ cover_letter|escapejs }}`;
-
-    if (!recipientEmail.trim()) {
-        alert("Please enter your email.");
+    if (!element) {
+        alert("Error: Cover letter content not found!");
         return;
     }
 
-    fetch("/send-cover-letter-email/", {
-        method: "POST",
-        body: JSON.stringify({ recipient_email: recipientEmail, cover_letter: coverLetter }),
-        headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" }
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.success || data.error);
-        if (data.success) {
-            document.getElementById("generated-cover-letter").innerHTML = "";
-        }
-    })
-    .catch(error => console.error("Error:", error));
-}
+    // Expand the container height temporarily to capture full content
+    var originalHeight = element.style.maxHeight;
+    element.style.maxHeight = "none";  // Remove height restriction
+
+    // Configure html2pdf options
+    var options = {
+        margin: 10,
+        filename: 'cover_letter.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, scrollY: 0 }, // Prevents cut-off
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // Generate and download the PDF
+    html2pdf().set(options).from(element).save().then(() => {
+        element.style.maxHeight = originalHeight;  // Restore original height
+    });
+});
+
 </script>
 
 {% endblock %}

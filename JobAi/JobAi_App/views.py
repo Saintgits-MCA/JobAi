@@ -1,4 +1,8 @@
+from ctypes import addressof
 from datetime import date
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 import openai
 from django.db import connection
 from django.shortcuts import get_object_or_404, render, redirect
@@ -15,6 +19,7 @@ from docx import Document
 from django.conf import settings
 from .models import *
 from django.contrib import messages
+import ast
 
 
 def extract_resume_details(content):
@@ -289,6 +294,7 @@ def search_job(request):
 
 
 def coverletter(request):
+    job=job_title.objects.all()
     company = Company.objects.all()
     fname = request.session.get('jobseeker_name')
     email = request.session.get('jobseeker_email')
@@ -298,24 +304,28 @@ def coverletter(request):
     if request.method == "POST":
         # Get form data
         name = request.POST.get("name", "Your Name")
-        position = request.POST.get("position", "Job Title")
+        position = request.POST.get("job_title", "Job Title")
         company_id = request.POST.get("Companyname", "Company Name")
         hr_name = request.POST.get("hrname", "Hiring Manager")
         skills = request.POST.get("skills", "Your Skills")
         job_type = request.POST.get("jobtype", "Job Type")
         phone = request.POST.get("phone", "Phone Number")
+        address=request.POST.get("Address")
+        eligibility=request.POST.get('eligibility')
         ldate=date.today().strftime('%d-%m-%Y')
         try:
             company_obj = Company.objects.get(id=company_id)
             company_name = company_obj.name
             company_loc=company_obj.address
+            job_position=job_title.objects.get(id=position)
+            jobs=job_position.job_title
         except Company.DoesNotExist:
             company_name = "Unknown Company"
 
         # OpenAI API Call for Cover Letter Generation
         prompt = f"""
-Write a professional and engaging cover letter for a fresher job seeker named {name}, whose email is {email} and phone number is {phone}. 
-The job seeker is applying for a {job_type} position as {position} at {company_name}, located at {company_loc}. 
+Write a professional and engaging cover letter for a fresher job seeker named {name} , whose address is {address} ,email is {email},having qualification of '{eligibility}' and phone number is {phone}. 
+The job seeker is applying for a {job_type} position as {jobs} at {company_name}, located at {company_loc}. 
 
 Address the letter to {hr_name}, incorporating the company's full address. Highlight relevant skills such as {skills} and ensure the letter is formatted in a common professional style without placeholders like [Your Name] or [Your Address]. 
 
@@ -337,20 +347,20 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
             "email": email,
             "cover_letter": cover_letter,
             "company": company,
-            "phone":phoneno
+            "phone":phoneno,
+            "job":job
         })
 
     return render(request, "cover-letter.html", {
         "fname": fname,
         "company": company,
         "email": email,
-        "phone":phoneno
+        "phone":phoneno,
+        "job":job
     })
 
 
-def settings_view(request):
-           
-    
+def settings_view(request):    
     jbid=request.session.get('jobseeker_id')
     try: 
         jsdt=jobseeker_profile.objects.get(user_id=jbid)
@@ -455,6 +465,9 @@ def delete_job(request):
     try:
             job = get_object_or_404(company_joblist, id=job_id)
             job.delete()
+            # Reset auto-increment (adjust for your database)
+            with connection.cursor() as cursor:
+                cursor.execute("ALTER TABLE jobai1.jobai_app_company_joblist AUTO_INCREMENT = 1")
             messages.success(request, "Job deleted successfully")
             return redirect('job_listing')
     except Exception as e:
@@ -503,10 +516,10 @@ def company_dashboard(request):
             return render(request, 'company_dashboard.html', {"cname": cname,"count":count})
         
         # Get expired jobs
-        expiredyet = company_joblist.objects.filter(company_id=cid, Lastdate__gt=date.today())
+        # expiredyet = company_joblist.objects.filter(company_id=cid, Lastdate__gt=date.today())
         count = compjobdt.count()  # Count jobs for the logged-in company
         context = {
-            "jobs": expiredyet,
+            # "jobs": expiredyet,
             "cname": cname,
             "count":count,
         }
@@ -552,7 +565,7 @@ def company_jobs(request):
                 "job_number": job.job_number,
                 "job_title": job.job_title.job_title,
                 "job_description": job.job_description,
-                "eligibility": job.highest_qualification,
+                "eligibility":(job.highest_qualification),
                 "skills": job.skills_required,
                 "location": job.location,
                 "job_type": job.job_type,
@@ -560,10 +573,11 @@ def company_jobs(request):
                 "list_date": job.dateofpublish,
             }
             jobs_list.append(job_info)
-        
+
         # Get expired jobs
         expiredyet = company_joblist.objects.filter(company=cid, Lastdate__gt=date.today())
-        
+        # Convert string to list if stored incorrectly
+
         context = {
             "jobs": expiredyet,
             "jobs_list": jobs_list,
@@ -586,8 +600,10 @@ def company_postjob(request):
         job_location = request.POST.get('Location')
         job_type = request.POST.get('Job_type')
         jobposted_date = request.POST.get('jobposted_date')
-        qualification = request.POST._getlist('highest_qualification')
-        skills = request.POST._getlist('skills_required')
+        qualification = request.POST.getlist('highest_qualification')
+        skills = request.POST.getlist('skills_required')
+        qualification_str = ",".join(qualification)
+        skills_str = ",".join(skills)
         lastdate = request.POST.get('deadline')
         if company_joblist.objects.filter(job_number=job_number).exists():
             messages.error(request, "A job with this job number already posted in this portal use other id to post other jobs")
@@ -600,8 +616,8 @@ def company_postjob(request):
             companyjob_obj.location = job_location
             companyjob_obj.job_type = job_type
             companyjob_obj.dateofpublish = jobposted_date
-            companyjob_obj.highest_qualification = qualification
-            companyjob_obj.skills_required = skills
+            companyjob_obj.highest_qualification = qualification_str
+            companyjob_obj.skills_required = skills_str
             companyjob_obj.Lastdate = lastdate
             companyjob_obj.save()
             messages.success(request, "Job Posted Successfully!!")        
@@ -621,8 +637,10 @@ def edit_job(request):
         job_location = request.POST.get('location')
         job_type = request.POST.get('job_type')
         # jobposted_date = request.POST.get('jobposted_date')
-        qualification = request.POST._getlist('highest_qualification')
-        skills = request.POST._getlist('skills_required')
+        qualification = request.POST.getlist('highest_qualification')
+        skills = request.POST.getlist('skills_required')
+        qualification_str = ",".join(qualification)
+        skills_str = ",".join(skills)
         lastdate = request.POST.get('deadline')
         # if company_joblist.objects.get(job_number=job_number).exists():
         #     messages.error(request, "A job with this job number already posted in this portal use other id to post other jobs")
@@ -636,8 +654,8 @@ def edit_job(request):
         companyjob_obj.location = job_location
         companyjob_obj.job_type = job_type
         companyjob_obj.dateofpublish = date.today().strftime('%Y-%m-%d')
-        companyjob_obj.highest_qualification = qualification
-        companyjob_obj.skills_required = skills
+        companyjob_obj.highest_qualification = qualification_str
+        companyjob_obj.skills_required = skills_str
         companyjob_obj.Lastdate = lastdate
         companyjob_obj.save()
         messages.success(request, "Job Edited Successfully!!") 
@@ -651,24 +669,6 @@ def edit_job(request):
     }
     return render(request, 'edit-job.html',context)
 
-
-def download_pdf(request):
-    cover_letter_text = request.GET.get("cover_letter", "No cover letter provided.")
-
-    # Render the HTML template as a string
-    html_string = render_to_string("cover-letter.html", {"cover_letter": cover_letter_text})
-
-    # Create a temporary file for PDF output
-    with tempfile.NamedTemporaryFile(delete=True) as temp_pdf:
-        # HTML(string=html_string.encode("utf-8")).write_pdf(temp_pdf.name)
-        temp_pdf.seek(0)  # Move file pointer to the beginning
-        pdf_content = temp_pdf.read()
-
-    # Return the generated PDF as a response
-    response = HttpResponse(pdf_content, content_type="application/pdf")
-    response["Content-Disposition"] = 'attachment; filename="cover_letter.pdf"'
-
-    return response
 def jobseeker_dashboard(request):
     fname=request.session.get('jobseeker_name')
     ccount=company_joblist.objects.all()

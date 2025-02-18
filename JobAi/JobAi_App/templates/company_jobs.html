@@ -54,7 +54,7 @@
         margin-top: 10px;
         background: #f8f9fa;
         border-radius: 5px;
-        max-width: fit-content;
+        max-width: 100%;
     }
 #message-container {
     position: fixed;
@@ -117,7 +117,7 @@
                 <div class="job-details-expanded">
                     <p><b>Job Description:</b><pre>{{ job.job_description }}</pre></p>
                     <p><b>Job Type:</b> {{ job.job_type }}</p>
-                    <p><b>Eligibility:</b> {{ job.highest_qualification }}</p>
+                    <p><b>Eligibility:</b> {{ job.highest_qualification}}</p>
                     <p><b>Skills Required:</b> {{ job.skills_required }}</p>   
                     <p><b>Last Date to Apply:</b> {{ job.Lastdate }}</p>
                     <p><b>Date of Publishing:</b> {{ job.dateofpublish }}</p>

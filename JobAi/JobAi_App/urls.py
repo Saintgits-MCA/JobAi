@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from .views import *
 from ctypes.test.test_pickling import name
+from django.conf.urls.static import static
 
 urlpatterns = [
   
@@ -27,7 +28,6 @@ urlpatterns = [
     path('Post_Job/',views.company_postjob,name="Post Job"),
     path('company_settings/',views.company_settings,name="company_settings"),
     path('cover-letter/',views.coverletter,name='ai_cover_letter'),
-    path("download-pdf/",download_pdf,name='download-pdf'),
     path('Register/',views.Register,name='Register'),
     path('company_type/',views.company_type,name="company_type"),
     path('Forgot_Password/',views.Forgot_pwd,name='Forgot Password'),
@@ -36,3 +36,5 @@ urlpatterns = [
     path('auto-apply/',views.autoapply,name='auto-apply'),
     path('mock-interview/',views.mockinterview,name='mock-interview')
 ]
+if settings.DEBUG:
+    urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

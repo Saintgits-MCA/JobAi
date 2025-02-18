@@ -68,9 +68,9 @@
             <div class="mb-3">
                 <label class="form-label">Job Title</label><span class="text-danger mx-2">*</span>
                 <select type="text" class="form-control" name="job_title" required>
-                    <option value="{{jobobj.job_title_id}}" selected disabled>{{jobobj.job_title.job_title}}</option>
+                  <option selected disabled value="">--Select Job--</option>
                     {% for i in job %}
-                    <option value="{{i.id}}">{{i.job_title}}</option>
+                    <option value="{{i.id}}" {% if i.id == jobobg.job_title_id %}selected{%endif%} >{{i.job_title}}</option>
                   {%endfor%}
                 </select>
             </div>
@@ -118,7 +118,7 @@
                     value="{{ jobobg.Lastdate|date:'Y-m-d' }}" required>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 mb-3" onclick="updateJob()">Update Posted Job</button>
+            <button type="submit" class="btn btn-primary w-100 mb-3">Update Posted Job</button>
             <a href="{% url 'job_listing' %}"><button class="btn btn-danger w-100 mb-3">Cancel</button></a>
         </form>
 
