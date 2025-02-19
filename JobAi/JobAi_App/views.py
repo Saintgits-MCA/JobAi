@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 import os
 import re
 import json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 from django.contrib.auth import logout
 from django.core.files.storage import FileSystemStorage
 # from weasyprint import HTML
@@ -12,7 +14,9 @@ from docx import Document
 from django.conf import settings
 from .models import *
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 
+openai.api_key = settings.OPENAI_API_KEY
 
 def extract_resume_details(content):
     """Extracts key details like name, skills, address, highest_qualification, job_preference, university name, date of birth, email, and phone number from the resume content."""
@@ -122,7 +126,6 @@ def jobseeker_login(request):
 
 
 def jobseeker_home(request):
-    messages.info(request, "Complete this Profile Registration and enjoy all features of this portal")
     content = ""
     alert_message = ""
     fname = request.session.get('jobseeker_name')
@@ -183,7 +186,7 @@ def jobseeker_home(request):
                 jobseeker_resumeobj = jobseeker_resume(file=uploaded_file, user_id=uid)
                 jobseeker_resumeobj.save()
 
-                messages.success(request, "Resume uploaded successfully!")
+                # messages.success(request, "Resume uploaded successfully!")
 
             except Exception as e:
                 messages.error(request, f"Error reading document: {str(e)}")
@@ -196,6 +199,9 @@ def jobseeker_home(request):
         "phone": phone,
         "show_modal":show_modal
     }
+    if not jobseeker_profile.objects.filter(name=fname).exists() and not jobseeker_resume.objects.filter(user=uid):
+        messages.error(request, "Complete this Profile Registration and enjoy all features of this portal")
+        redirect('home')
     return render(request, "jobseeker_home.html", context)
 
 
@@ -216,6 +222,7 @@ def jobseeker_profile_update(request):
         qualification = request.POST.get('Education')
         university = request.POST.get('University')
         skills = request.POST.get('skills')
+        image=request.FILES.get('image')
         job_preference = request.POST.get('job_preferences')
         # Fetch the first resume for the user (if multiple exist)
         resume = jobseeker_resume.objects.filter(user=userid).first()
@@ -234,12 +241,13 @@ def jobseeker_profile_update(request):
             jobseeker_obj.university = university
             jobseeker_obj.address = address
             jobseeker_obj.phone = phone
+            jobseeker_obj.profile_img=image
             jobseeker_obj.user_id=userid
             jobseeker_obj.resume=cv
             jobseeker_obj.save()
             request.session['address']=jobseeker_obj.address
             request.session['dob']=jobseeker_obj.dob
-            messages.success(request, "Updated profile auccessfully")
+            messages.success(request, "Updated profile successfully.Now you can use whole features of this portal.")
     return redirect('home')
 
 
@@ -248,7 +256,13 @@ def main(request):
 
 
 def base(request):
-    return render(request, 'base.html')
+    jbid=request.session.get('jobseeker_id')
+    if jobseeker_profile.objects.filter(user=jbid).exists():
+        jobseeker=jobseeker_profile.objects.get(user=jbid)
+        return render(request,'base.html',jobseeker)
+    else:
+        jobseeker=None
+    return render(request, 'base.html',jobseeker)
 
 
 def Register(request):
@@ -310,7 +324,7 @@ def coverletter(request):
     phoneno=request.session.get('jobseeker_phone')
     if not jobseeker_profile.objects.filter(name=fname).exists():
         return redirect('home')
-    openai.api_key = settings.OPENAI_API_KEY
+    
 
     if request.method == "POST":
         # Get form data
@@ -361,13 +375,14 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
             "phone":phoneno,
             "job":job
         })
-
+    jsdt=jobseeker_profile.objects.get(email=email)
     return render(request, "cover-letter.html", {
         "fname": fname,
         "company": company,
         "email": email,
         "phone":phoneno,
-        "job":job
+        "job":job,
+        "jsdt":jsdt
     })
 
 
@@ -388,7 +403,7 @@ def settings_view(request):
         return render(request, 'settings_view.html', context)
     except:
         
-        jsdt=Jobseeker_Registration.objects.get(id=jbid)
+        jsdt=Jobseeker_Registration.objects.filter(id=jbid)
         fname = request.session.get('jobseeker_name')
         if not jobseeker_profile.objects.filter(name=fname).exists():
             return redirect('home')
@@ -403,12 +418,50 @@ def settings_view(request):
 
 def support(request):
     fname = request.session.get('jobseeker_name')
+    if not jobseeker_profile.objects.filter(name=fname).exists():
+            return redirect('home')
     return render(request, 'support.html', {"fname":fname})
 
 
 def mockinterview(request):
     fname = request.session.get('jobseeker_name')
-    return render(request, 'mock-interview.html', {"fname":fname})
+    if not jobseeker_profile.objects.filter(name=fname).exists():
+            return redirect('home')
+    jobs=job_title.objects.all()
+    if request.method == "POST":
+        job_id = request.POST.get("job_title")
+        user_answer = request.POST.get("answer", None)
+
+        if not job_id:
+            return JsonResponse({"error": "Job title is required"}, status=400)
+
+        try:
+            job = job_title.objects.get(id=job_id)
+        except job_title.DoesNotExist:
+            return JsonResponse({"error": "Invalid job title"}, status=400)
+
+        if user_answer is None:
+            # Generate exactly 5 interview questions for the given job title
+            prompt = f"Provide exactly 5 professional interview questions for a {job.job_title} role. Do not include any introduction or explanation. List them one after another."
+            response = openai.ChatCompletion.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "system", "content": prompt}]
+            )
+
+            questions = response["choices"][0]["message"]["content"].strip().split("\n")
+            return JsonResponse({"questions": questions})
+
+        else:
+            # Evaluate the user answer
+            prompt = f"Evaluate this job interview response for a {job.job_title} role and provide constructive feedback. Do not include any introduction or pleasantries. Answer concisely.\n\nAnswer: {user_answer}"
+            response = openai.ChatCompletion.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "system", "content": prompt}]
+            )
+            feedback = response["choices"][0]["message"]["content"].strip()
+            return JsonResponse({"feedback": feedback})
+
+    return render(request, 'mock-interview.html', {'job': jobs,"fname":fname})
 
 
 def autoapply(request):
@@ -491,6 +544,28 @@ def delete_job(request):
         
     return render(request, 'company_jobs.html', {'cname': cname})
 
+def delete_user_profile(request):
+    jid=request.session.get('jobseeker_id')
+    user=get_object_or_404(jobseeker_profile, user=jid)
+    user.delete()
+    resume=get_object_or_404(jobseeker_resume, user=jid)
+    resume.delete()
+    # Reset auto-increment (adjust for your database)
+    with connection.cursor() as cursor:
+        cursor.execute("ALTER TABLE jobai1.jobai_app_jobseeker_profile AUTO_INCREMENT = 1")
+        cursor.execute("ALTER TABLE jobai1.jobai_app_jobseeker_resume AUTO_INCREMENT = 1")
+        messages.success(request, "Profile deleted successfully")
+        return redirect('settings_view')
+    jsdt=Jobseeker_Registration.objects.get(id=jid)
+    fname = request.session.get('jobseeker_name')
+    if not jobseeker_profile.objects.filter(name=fname).exists():
+        return redirect('home')
+    context = {
+            'jsdt':jsdt,
+                "fname":fname,
+              
+            }
+    return render(request,'settings_view.html', context)
 
 def company_type(request):
     if request.method == "POST":
@@ -692,3 +767,5 @@ def jobseeker_dashboard(request):
     jcount=ccount.count()
     compcount=company.count()
     return render(request,'jobseeker_dashboard.html',{"fname":fname,"jcount":jcount,"compcount":compcount,"company":company})
+
+

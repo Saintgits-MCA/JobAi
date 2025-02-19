@@ -56,15 +56,38 @@
     <h2 id="profile">Jobseeker Profile Setup</h2><br><br>
 
     <div class="container w-50 mt-4" style="margin-right: 250px;margin-left: 25px;">
-        <h4 class="text-center">Upload Resume in doc,docx format</h4>
-        <form  action="{%url 'home'%}" method="POST" id="uploadForm" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <input type="file" id="fileInput" name="word_file" class="form-control" accept=".doc,.docx" required>
-            <button type="submit" id="submit">Upload and Submit</button>
-            
-        </form>
-      
+        <h4 class="text-center">Upload Your Resume in doc,docx format <span class="text-danger ms-2">*</span></h4>
+        <button type="button" class="btn btn-primary ms-5 w-75" data-bs-toggle="modal" data-bs-target="#uploadResumeModal">
+            <i class="me-2  fas fa-upload"></i>Upload Resume
+        </button>
+        
+        <!-- Upload Resume Modal -->
+        <div class="modal fade" id="uploadResumeModal" tabindex="-1" aria-labelledby="uploadResumeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadResumeModalLabel">Upload Resume</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 class="text-center">Upload Resume in .doc, .docx format</h4>
+                        <form action="{% url 'home' %}" method="POST" id="uploadForm" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="file" id="fileInput" name="word_file" class="form-control" accept=".doc,.docx" required>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="submitForm">Upload and Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.getElementById("submitForm").addEventListener("click", function() {
+                document.getElementById("uploadForm").submit();
+            });
+        </script>
 
         <!-- {% if content %}
             <div class="content">
@@ -80,22 +103,27 @@
                 <!-- Left Column -->
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="name" class="fw-bold">Full Name:</label><input type="text" id="name" name="name"
+                        <label for="name" class="fw-bold">Upload your Image<span class="text-danger ms-2">*</span></label>
+                        <input type="file" id="image" name="image"
+                            class="input1  toggleInput"  required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="fw-bold">Full Name<span class="text-danger ms-2">*</span></label><input type="text" id="name" name="name"
                             class="input1 input-bg toggleInput" placeholder="Enter your full name" value="{{fname}}" required
                             readonly="">
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="fw-bold">Email:</label>
+                        <label for="email" class="fw-bold">Email<span class="text-danger ms-2">*</span></label>
                         <input type="email" class="input1 input-bg toggleInput" id="email" name="email" placeholder="ex: name@gmail.com"
                             value="{{ email }}" required readonly>
                     </div>
                     <div class="mb-3">
-                        <label for="phone" class="fw-bold">Phone Number:</label><input type="text" id="phone"
+                        <label for="phone" class="fw-bold">Phone Number<span class="text-danger ms-2">*</span></label><input type="text" id="phone"
                             name="phone" class="input1 input-bg toggleInput" placeholder="Enter your Phone Number(+91)"
                             value="{{ phone }}" required readonly>
                     </div>
                     <div class="mb-3">
-                        <label for="Address" class="fw-bold">Address:</label><input id="Address" name="Address"
+                        <label for="Address" class="fw-bold">Address<span class="text-danger ms-2">*</span></label><input id="Address" name="Address"
                             class="input1 input-bg toggleInput" placeholder="Enter your Address" required rows="5" cols="5"
                             value="{{ resume_details.address }}" ></textarea>
                     </div>
@@ -103,28 +131,28 @@
                 <!-- right column -->
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="dob" class="fw-bold">Date Of Birth</label><br>
+                        <label for="dob" class="fw-bold">Date Of Birth<span class="text-danger ms-2">*</span></label><br>
                         <input type="text" id="dob" name="dob" class="input1 input-bg toggleInput" placeholder="Enter Date of Birth" value="{{ resume_details.dob }}" 
                             required>
                     </div>
                     <div class="mb-3">
-                        <label for="Education" class="fw-bold">Education Qualification</label><br>
+                        <label for="Education" class="fw-bold">Education Qualification<span class="text-danger ms-2">*</span></label><br>
                         <input type="text" name="Education" id="Education" class="input1 input-bg toggleInput"
                             placeholder="Enter your Highest Qualification"
                             value="{{ resume_details.highest_qualification }}" required>
                     </div>
                     <div class="mb-3">
-                        <label for="University" class="fw-bold">University/Institution:</label><input type="text"
+                        <label for="University" class="fw-bold">University/Institution <span class="text-danger ms-2">*</span></label><input type="text"
                             id="University" name="University" class="input1 input-bg toggleInput"
                             placeholder="Enter University/Institution of Highest Qualification" value="{{resume_details.university}}" required>
                     </div>
                     <div class="mb-3">
-                        <label for="skills" class="fw-bold">Skills:</label><input type="text" id="skills" name="skills"
+                        <label for="skills" class="fw-bold">Skills<span class="text-danger ms-2">*</span></label><input type="text" id="skills" name="skills"
                             class="input1 input-bg toggleInput" placeholder="Enter your Skills" value="{{resume_details.skills}}" required
                             required>
                     </div>
                     <div class="mb-3">
-                        <label for="job preferences" class="fw-bold">Highest Job Preference:</label><input type="text"
+                        <label for="job preferences" class="fw-bold">Highest Job Preference<span class="text-danger ms-2">*</span></label><input type="text"
                             name="job_preferences" class="input1 input-bg toggleInput" placeholder="Enter your highest Job Preference(Only one)"
                             value="{{ resume_details.job_preference }}" required>
                     </div>

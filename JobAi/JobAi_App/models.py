@@ -17,6 +17,7 @@ class jobseeker_profile(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
+    profile_img=models.ImageField(upload_to='images/',blank=True,null=True)
     dob = models.CharField(max_length=50, blank=True, null=True)
     highest_qualification = models.CharField(max_length=255, blank=True, null=True)
     job_preference = models.CharField(max_length=255, blank=True, null=True)
@@ -46,6 +47,7 @@ class Company(models.Model):
     email = models.EmailField(unique=True)
     company_type = models.ForeignKey(Company_Type_Master,on_delete=models.CASCADE,default=None)
     address = models.CharField(max_length=255)
+    profile_img=models.ImageField(upload_to='company_images/',blank=True,null=True)
 
     def __str__(self):
         return self.name
