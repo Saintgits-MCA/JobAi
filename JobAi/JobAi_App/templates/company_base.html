@@ -200,7 +200,7 @@
        
         <ul class="sidebar-menu">
             
-            <center><img src="{%static 'images/company_profile.jpg'%}" alt="" height="85px" class="profile rounded-circle mx-3 mt-0"
+            <center><img src="{{ compdt.profile_img.url }}" alt="" height="85px" class="profile rounded-circle ms-3 mt-0"
                     style="border-radius:25px;"></center>
             <h6 class="text-center fw-bold fs-5">{{cname}}</h6>
             <li class="fw-bold mx-3"><a href="{% url 'company_dashboard' %}"><i class="fas fa-home mx-2"></i> <span
@@ -243,7 +243,7 @@
                 <a href="{% url 'Post Job' %}"><button class="btn btn-light me-3">+ Post a Job</button></a>
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <img src="{% static 'images/company_profile.jpg' %}" alt="Profile" height="25px"
+                        <img src="{{compdt.profile_img.url}}" alt="Profile" height="25px"
                             class="rounded-circle"> {{cname}}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">

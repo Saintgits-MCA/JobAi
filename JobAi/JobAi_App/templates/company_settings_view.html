@@ -53,6 +53,51 @@
 
 </style>
 <div class="container mt-4">
+    {% if messages %}
+<!-- Modal -->
+{% for message in messages %}
+<div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"  id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            
+            <!-- Modal Header with "X" Close Button -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close" onclick="closeMessageModal()">X</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                    <div  role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                  </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to Auto-Close on Click -->
+<script>
+    function closeMessageModal() {
+        document.getElementById("message-container").style.display = "none";
+    }
+    setTimeout(function() {
+        let messageContainer = document.getElementById("message-container");
+        if (messageContainer) {
+            messageContainer.style.transition = "opacity 0.5s";
+            messageContainer.style.opacity = "1"; // Fade out effect
+            setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
+        }
+    }, 5000);
+</script>
+{% endif %}
     <h3 class="mb-4">Company Settings</h3>
 
     <div class="row">
@@ -60,7 +105,7 @@
         <div class="col-md-6">
             <div class="card p-3 mb-4">
                 <h5>Company Profile</h5>
-                <form>
+             
                     <div class="mb-3">
                         <label class="form-label">Company Name</label>
                         <input type="text" class="form-control input-bg" placeholder="Your Company Name" value="{{cname}}" required readonly>
@@ -70,7 +115,6 @@
                         <input type="email" class="form-control w-75 input-bg" placeholder="company@example.com" value="{{cmail}}" readonly>
                     </div>
                     
-                </form>
             </div>
         </div>
 
@@ -78,7 +122,7 @@
         <div class="col-md-6">
             <div class="card p-3 mb-4">
                 <h5>Company Details</h5>
-                <form>
+              
                     <div class="mb-3">
                         <label class="form-label">Company Type</label>
                         <input type="text" class="form-control input-bg" value="{{ctype}}" readonly>
@@ -87,25 +131,28 @@
                         <label class="form-label">Location</label>
                         <input type="text" class="form-control input-bg" placeholder="New York, USA" readonly value="{{cloc}}">
                     </div>                   
-                </form>
+
             </div>
         </div>
     </div>
 
     <!-- Account Settings Section -->
+
     <div class="card p-3">
-        <h5>Account Settings</h5>
+        <h5>Edit Account Settings</h5>
+        <form method="POST" action="{%url 'company_settings'%}" enctype="multipart/form-data">
+            {% csrf_token %}
         <div class="mb-3">
             <label class="form-label">Company Logo</label><span class="text-danger mx-1">*</span>
-            <input type="file" class="form-control" required>
+            <input type="file" name="company_logo" class="form-control" required>
         </div>
         <div class="mb-3">
             <label class="form-label">Company Description</label><span class="text-danger mx-1">*</span>
-            <textarea class="form-control input-bg" rows="3" required></textarea>
+            <textarea class="form-control input-bg" name="company_desc" rows="3" required></textarea>
         </div>
         <div class="mb-3">
             <label class="form-label">Number of Employees</label><span class="text-danger mx-1">*</span>
-            <select class="form-control" required>
+            <select class="form-control" name="company_size" required>
                 <option value="" disabled selected>--Choose No. of Employees--</option>
                 <option>1-10</option>
                 <option>11-50</option>
@@ -116,8 +163,7 @@
         </div>
               <div class="form-group mb-1">
             
-            <button type="submit" class="btn btn-primary mt-2 mb-3">Save Changes</button><br>
-            <span class="text-danger">*</span>-Required fields
+            <button type="submit" class="btn btn-primary mt-2 mb-3 w-75 align-items-center">Save Changes</button><br>
         </form>
     </div>
 </div>

@@ -19,7 +19,11 @@
         <div class="col-lg-9 col-md-12">
             <div class="card shadow-sm p-4 mb-4">
                 <div class="d-flex align-items-center">
+                    {%if jsdt.profile_img%}
+                    <img src="{{jsdt.profile_img.url}}" class="rounded-circle me-3" width="60">
+                    {%else%}
                     <img src="{% static 'images/profile.jpeg' %}" class="rounded-circle me-3" width="60">
+                    {%endif%}
                     <div>
                         <h5>Welcome Back, {{ fname }}!</h5>
                         <p class="text-muted">Search and manage your applied jobs and easily get hired.</p>
@@ -61,7 +65,7 @@
                         <div class="col-md-6 mb-4">
                             <div class="card job-card px-2 text-justify">
                                 <div class="d-flex align-items-center">
-                                    <img src="{% static 'images/user1.png' %}" class="rounded-circle me-3" width="40">
+                                    <img src="{{i.profile_img.url}}" class="rounded-circle me-3" width="40">
                                     <h5 class="job-title ms-2 text-dark">{{ i.name }}</h5>
                                 </div>
                             </div>

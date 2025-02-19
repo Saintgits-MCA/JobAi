@@ -45,7 +45,7 @@
             <!-- Profile Overview -->
             <div class="card shadow-sm p-4 mb-4">
                 <div class="d-flex align-items-center">
-                    <img src="{% static 'images/company_profile.jpg' %}" alt="Profile" class="rounded-circle me-3" width="60">
+                    <img src="{{compdt.profile_img.url}}" alt="Profile" class="rounded-circle me-3" width="100px" height="80px">
                     <div>
                         <h5 class="mb-1">Welcome Back, {{cname}}!</h5>
                         <p class="text-muted">Manage your jobs, candidates, and settings easily.</p>

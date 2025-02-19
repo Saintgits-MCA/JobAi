@@ -15,10 +15,10 @@
 </head>
 <body>
     <div class="sidebar">
-        {%if jobseeker.profile_img%}
-        <div class="fw-bold fs-5 mx-4 mt-4"><img src="{{jobseeker.profile_img}}" alt="profile-pic"
-            class="profile-pic1 w-75 h-75 mx-3" style="margin-left: 12px;margin-right: 18px;">
-    {%else%}
+        {%if jsdt.profile_img%}
+        <div class="fw-bold fs-5 mx-4 mt-4"><img src="{{jsdt.profile_img.url}}" alt="profile-pic"
+            class="profile-pic1 w-75 h-50 mx-3" style="margin-left: 12px;margin-right: 18px;">
+         {%else%}
         <div class="fw-bold fs-5 mx-4 mt-4"><img src="{%static 'images/profile.jpeg'%}" alt="profile-pic"
                 class="profile-pic1 w-75 h-75 mx-3" style="margin-left: 12px;margin-right: 18px;">
                 {%endif%}
@@ -84,8 +84,13 @@
 
         <div class="d-flex align-items-center">
               <div class="dropdown">
+                
                 <button class="dropdown-toggle mx-3" type="button" data-bs-toggle="dropdown" style="border-radius: 5px;background-color: white;color:black;">
-                    <img src="{% static 'images/profile.jpeg' %}" alt="Profile" height="25px" class="rounded-circle"> {{ fname }}
+                    {%if jsdt.profile_img%}
+                    <img src="{{jsdt.profile_img.url}}" alt="Profile" height="25px" class="rounded-circle">
+                    {%else%}
+                    <img src="{% static 'images/profile.jpeg' %}" alt="Profile" height="25px" class="rounded-circle">
+                    {%endif%} {{ fname }}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <!-- <li><a class="dropdown-item" href="#">Profile</a></li> -->

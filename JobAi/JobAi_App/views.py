@@ -258,11 +258,11 @@ def main(request):
 def base(request):
     jbid=request.session.get('jobseeker_id')
     if jobseeker_profile.objects.filter(user=jbid).exists():
-        jobseeker=jobseeker_profile.objects.get(user=jbid)
-        return render(request,'base.html',jobseeker)
+        jsdt=jobseeker_profile.objects.get(user=jbid)
+        return render(request,'base.html',jsdt)
     else:
-        jobseeker=None
-    return render(request, 'base.html',jobseeker)
+        jsdt=None
+    return render(request, 'base.html',jsdt)
 
 
 def Register(request):
@@ -313,7 +313,8 @@ def search_job(request):
     if not jobseeker_profile.objects.filter(name=fname).exists():
             return redirect('home')
     jobs = company_joblist.objects.all()  # Fetch all jobs from the database
-    return render(request, 'search-job.html', {"fname":fname, 'jobs': jobs})
+    jobseeker=jobseeker_profile.objects.get(name=fname)
+    return render(request, 'search-job.html', {"fname":fname, 'jobs': jobs,"jsdt":jobseeker})
 
 
 def coverletter(request):
@@ -366,13 +367,14 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
         )
 
         cover_letter = response["choices"][0]["message"]["content"].strip()
-
+        jsdt=jobseeker_profile.objects.get(email=email)
         return render(request, "cover-letter.html", {
             "fname": fname,
             "email": email,
             "cover_letter": cover_letter,
             "company": company,
             "phone":phoneno,
+            "jsdt":jsdt,
             "job":job
         })
     jsdt=jobseeker_profile.objects.get(email=email)
@@ -460,15 +462,16 @@ def mockinterview(request):
             )
             feedback = response["choices"][0]["message"]["content"].strip()
             return JsonResponse({"feedback": feedback})
-
-    return render(request, 'mock-interview.html', {'job': jobs,"fname":fname})
+    jobseeker=jobseeker_profile.objects.get(name=fname)
+    return render(request, 'mock-interview.html', {'job': jobs,"fname":fname,"jsdt":jobseeker})
 
 
 def autoapply(request):
     fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():
         return redirect('home')
-    return render(request, 'auto-apply.html', {"fname":fname})
+    jobseeker=jobseeker_profile.objects.get(name=fname)
+    return render(request, 'auto-apply.html', {"fname":fname,"jsdt":jobseeker})
 
 
 def user_type(request):
@@ -500,6 +503,7 @@ def company_registration(request):
         password = request.POST.get('password')
         company_type = request.POST.get("CompanyType")  # This returns a string
         company_address = request.POST.get('Address')
+        comp_logo=request.FILES.get('company_logo')
         # Check if a company with the same name or email already exists
         if Company.objects.filter(name=name).exists() or Company.objects.filter(email=email).exists():
             messages.error(request, "A company with this name or email already exists. You can Login.")
@@ -511,6 +515,7 @@ def company_registration(request):
             companyobj.email = email
             companyobj.company_type_id = company_type
             companyobj.address = company_address
+            companyobj.profile_img=comp_logo
             companyobj.save()
             messages.success(request, "Company registered successfully!.Email will be your Username")
             return redirect('company_registration')
@@ -596,42 +601,49 @@ def company_dashboard(request):
     try:
         cname = request.session.get('company_name')
         cid = request.session.get('company_id')
-        
+        company = Company.objects.get(id=cid)
         # Fetch all job listings for the logged-in company
-        compjobdt = company_joblist.objects.filter(company=cid)
+        compjobdt = company_joblist.objects.get(company=cid)
         # If no jobs exist, show the default page
         if not compjobdt.exists():
             count=0
             return render(request, 'company_dashboard.html', {"cname": cname,"count":count})
         
         # Get expired jobs
-        # expiredyet = company_joblist.objects.filter(company_id=cid, Lastdate__gt=date.today())
+       
         count = compjobdt.count()  # Count jobs for the logged-in company
         context = {
             # "jobs": expiredyet,
             "cname": cname,
             "count":count,
+            "compdt":company
         }
         return render(request, 'company_dashboard.html', context)
     except Exception as e:
         # Handle unexpected errors
-        return render(request, 'company_dashboard.html', {"cname": cname, "error": str(e)})
+        return render(request, 'company_dashboard.html', {"cname": cname,"compdt":company, "error": str(e)})
 
     
 def company_settings(request):
     cid = request.session.get('company_id')
-    # =request.session.get('company_email')
-    # ctype=request.session.get('company_type')
-    # cloc=request.session.get('company_address')
     compdt = Company.objects.get(id=cid)
     cmail = compdt.email
     cname = compdt.name
     cloc = compdt.address
     ctype = compdt.company_type.company_type
+    company = Company.objects.get(id=cid)
     context = {
-        "cname":cname, "cmail":cmail, "cloc":cloc,
-        "ctype":ctype
-    }
+            "cname":cname, "cmail":cmail, "cloc":cloc,
+            "ctype":ctype,"cid":cid,"compdt":company
+        } 
+    if request.method=="POST":
+        comp_logo=request.FILES.get('company_logo')
+        comp=Company.objects.get(id=cid)
+        if comp_logo:          
+            comp.profile_img=comp_logo
+            comp.save()
+            messages.success(request,"Logo Uploaded successfully!!")    
+        return render(request, 'company_settings_view.html',context)
     return render(request, 'company_settings_view.html', context)
 
 
@@ -639,12 +651,12 @@ def company_jobs(request):
     try:
         cname = request.session.get('company_name')
         cid = request.session.get('company_id')
-        
+        company = Company.objects.get(id=cid)
         # Fetch all job listings for the logged-in company
         compjobdt = company_joblist.objects.filter(company=cid)
         # If no jobs exist, show the default page
         if not compjobdt.exists():
-            return render(request, 'company_jobs.html', {"cname": cname})
+            return render(request, 'company_jobs.html', {"cname": cname,"compdt":company})
         
         # Iterate through each job for the company
         jobs_list = []
@@ -671,17 +683,19 @@ def company_jobs(request):
             "jobs": expiredyet,
             "jobs_list": jobs_list,
             "cname": cname,
+            "compdt":company
         }
         return render(request, 'company_jobs.html', context)
     
     except Exception as e:
         # Handle unexpected errors
-        return render(request, 'company_jobs.html', {"cname": cname, "error": str(e)})
+        return render(request, 'company_jobs.html', {"cname": cname,'compdt':company, "error": str(e)})
 
 
 def company_postjob(request):
     job=job_title.objects.all()
     cid = request.session.get('company_id')
+    company = Company.objects.get(id=cid)
     if request.method == "POST":
         job_number = request.POST.get('job_number')
         job_position = request.POST.get('job_title')
@@ -711,13 +725,14 @@ def company_postjob(request):
             companyjob_obj.save()
             messages.success(request, "Job Posted Successfully!!")        
     cname = request.session.get('company_name')
-    return render(request, 'company_postjob.html', {"cname":cname, 'cdate':date.today().strftime("%Y-%m-%d"),"job":job})
+    return render(request, 'company_postjob.html', {"cname":cname,"compdt":company, 'cdate':date.today().strftime("%Y-%m-%d"),"job":job})
 
 
 def edit_job(request):
     job=job_title.objects.all()
     cid = request.session.get('company_id')
     cname = request.session.get('company_name')
+    company = Company.objects.get(id=cid)
     if request.method == "POST":
         job_id  = request.POST.get('job_id')
         job_number = request.POST.get('job_number')
@@ -754,7 +769,8 @@ def edit_job(request):
     context={
         'jobobg':jobobg,
         "cname":cname,
-        "job":job
+        "job":job,
+        "compdt":company
     }
     return render(request, 'edit-job.html',context)
 
@@ -766,6 +782,7 @@ def jobseeker_dashboard(request):
     company=Company.objects.all()
     jcount=ccount.count()
     compcount=company.count()
-    return render(request,'jobseeker_dashboard.html',{"fname":fname,"jcount":jcount,"compcount":compcount,"company":company})
+    jobseeker=jobseeker_profile.objects.get(name=fname)
+    return render(request,'jobseeker_dashboard.html',{"fname":fname,"jcount":jcount,"compcount":compcount,"company":company,"jsdt":jobseeker})
 
 

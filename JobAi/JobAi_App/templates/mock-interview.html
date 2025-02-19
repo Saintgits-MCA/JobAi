@@ -24,7 +24,7 @@
                             </div>
 
                             <!-- Button to Start Mock Interview -->
-                            <button type="button" class="btn btn-success ms-5 mt-3 w-75" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-success ms-5 ps-5 mt-3 w-50" data-bs-toggle="modal"
                                 data-bs-target="#mockInterviewModal">
                                 <i class="fas fa-microphone"></i> Start AI Mock Interview
                             </button>
@@ -42,15 +42,17 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">AI Mock Interview</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn btn-danger text-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h5 id="questionText" class="mt-3">Click 'Start Interview' to begin.</h5>
+                    <h5 id="questionText" class="mt-3">Click 'Start Interview' to begin and wait for sometime for questions...</h5>
                     <textarea id="answerInput" class="form-control mt-3"
-                        placeholder="Type your answer or use voice input"></textarea>
+                        placeholder="Type your answer"></textarea>
+                        <button class="btn btn-primary mt-3" id="recordAnswer"><i class="fas fa-microphone"></i> Record
+                            Answer</button>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
                     <button type="button" class="btn btn-info" id="startInterview">Start Interview</button>
                     <button type="button" class="btn btn-success" id="submitAnswer">Submit Answer</button>
                 </div>
@@ -90,8 +92,12 @@
             return;
         }
 
-        // Hide Start Interview button & show Submit Answer button
-        document.getElementById("startInterview").style.display = "none";
+        // Reset interview state
+        currentQuestionIndex = 0;
+        questions = [];
+        document.getElementById("questionText").innerText = "Fetching questions, please wait...";
+        document.getElementById("answerInput").value = "";
+        document.getElementById("startInterview").style.display = "none"; 
         document.getElementById("submitAnswer").style.display = "block";
 
         fetch("{% url 'mock-interview' %}", {
@@ -106,7 +112,6 @@
         .then(data => {
             if (data.questions) {
                 questions = data.questions;
-                currentQuestionIndex = 0;
                 document.getElementById("questionText").innerText = questions[currentQuestionIndex];
             }
         });
@@ -140,9 +145,21 @@
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
                 document.getElementById("questionText").innerText = questions[currentQuestionIndex];
-                document.getElementById("answerInput").value = ""; // Clear input for next answer
+                document.getElementById("answerInput").value = "";
             } else {
-                document.getElementById("mockInterviewModal").click(); // Close modal after last question
+                let interviewModal = bootstrap.Modal.getInstance(document.getElementById("mockInterviewModal"));
+                interviewModal.hide();
+
+                setTimeout(() => {
+                    let feedbackModal = new bootstrap.Modal(document.getElementById("feedbackModal"));
+                    feedbackModal.show();
+                }, 500);
+
+                // Reset interview state for next time
+                setTimeout(() => {
+                    document.getElementById("startInterview").style.display = "block"; 
+                    document.getElementById("submitAnswer").style.display = "none";
+                }, 500);
             }
         });
     });
@@ -160,16 +177,7 @@
         });
     });
 
-    // Speech-to-Text API (For Voice Input)
-    document.getElementById("recordAnswer").addEventListener("click", function () {
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = "en-US";
-        recognition.start();
-        recognition.onresult = function (event) {
-            document.getElementById("answerInput").value = event.results[0][0].transcript;
-        };
-    });
-
 </script>
+
 
 {% endblock %}

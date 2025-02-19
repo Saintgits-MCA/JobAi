@@ -93,38 +93,6 @@
         </form>
        </div>
        <br><br>
-       <div class="container1 ms-3 mt-3">
-            <!-- Danger Zone -->
-            <div class="mt-3">
-                <h3 class="ms-4 text-center">Change Password</h3>
-                <form id="change_pwd" action="" method="POST">
-                    {% csrf_token %}
-                           <!-- New Password Field -->
-                <div class="col-md-6 ms-5 ps-5 pb-1">
-                    <div class="form-group">
-                        <label for="password1" class="form-label fw-bold">New Password:</label><span class="ms-2 text-danger"> *</span>
-                        <input type="password" name="password" id="password1" class="form-control ms-1 w-100" required>
-                    </div>
-                </div>
-                <!-- Confirm Password Field -->
-                <div class="col-md-6 ms-5 ps-5 pb-1">
-                    <div class="form-group">
-                        <label for="password" class="form-label fw-bold">Confirm Password:</label><span class="ms-2 text-danger"> *</span>
-                        <div class="form-control" style="width: 100%;">
-                        <input type="password" name="password" id="password" class="no-border" style="width: 93%;" required>
-                        <i class="fas fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
-                    </div> </div>
-                </div>
-            </div>
-
-            <!-- Save Button -->
-            <div class="text-center mt-2">
-                <button type="submit" class="btn btn-block btn-primary w-75 mb-3">Reset Password</button>
-            </div>
-                        
-                 </form>
-            </div>    
-       </div>
        <div class="container mt-1">
         <h5 class="fw-bold text-center">Danger Zone</h5>
         <a href="{%url 'delete_user'%}"><button type="button" class="fw-bold w-75 ms-5 ps-5 mt-3 btn btn-danger" onclick="return confirm('Do you want to Delete your Profile?')">Delete Profile</button></a>
