@@ -44,19 +44,21 @@ hr{
     font-size: 40px;
     margin-bottom: 31px;
 }
-table {
+.table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 50px;
-    margin-left: 15px;
+    margin-left: 12px;
+    max-height: 400px;
+    overflow-y: auto;
   }
   .table-div
   {
    padding-top: 0.5px;
     background: white;
     margin-top: 25px;
-    padding-left: 15px;
-    width: 90%;
+    /* padding-left: 5px; */
+    width: 94%;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
@@ -79,7 +81,6 @@ table {
   @media screen and (max-width: 768px) {
     table {
       display: block;
-      overflow-x: auto;
     }
   
     th, td {

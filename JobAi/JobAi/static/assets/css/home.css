@@ -27,7 +27,7 @@ body {
     background: var(--sidebar-bg);
     color: white;
     padding: 5px;
-    height: 145vh;
+    max-height: 135vh;
 }
 
 
