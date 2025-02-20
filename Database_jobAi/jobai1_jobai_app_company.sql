@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `jobai1` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `jobai1`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: jobai1
@@ -31,11 +29,12 @@ CREATE TABLE `jobai_app_company` (
   `email` varchar(254) NOT NULL,
   `address` varchar(255) NOT NULL,
   `company_type_id` bigint NOT NULL,
+  `profile_img` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `JobAi_App_company_company_type_id_8745eff7_fk_JobAi_App` (`company_type_id`),
   CONSTRAINT `JobAi_App_company_company_type_id_8745eff7_fk_JobAi_App` FOREIGN KEY (`company_type_id`) REFERENCES `jobai_app_company_type_master` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +43,7 @@ CREATE TABLE `jobai_app_company` (
 
 LOCK TABLES `jobai_app_company` WRITE;
 /*!40000 ALTER TABLE `jobai_app_company` DISABLE KEYS */;
-INSERT INTO `jobai_app_company` VALUES (1,'admin','Infosys','admin@infosys.org','Thiruvananthapuram,Kerala,India',1),(2,'admin@tcs','TATA CONSULTING SERVICES','admin@tcs.org','Thiruvananthapuram,Kerala,India',1),(3,'admin@hcl','HCL','admin@hcl.org','Bangalore,Karnataka,India',2),(5,'admin','Tisser Technologies','admin@tisser.org','Kottayam,Kerala,India',3),(6,'admin','Cognizant','admin@cognizant.org','Kochi,Kerala,India',1);
+INSERT INTO `jobai_app_company` VALUES (1,'admin','Infosys','admin@infosys.org','Thiruvananthapuram,Kerala,India',1,'company_images/infosys.jpg'),(2,'admin@tcs','TATA CONSULTING SERVICES','admin@tcs.org','Thiruvananthapuram,Kerala,India',1,'company_images/tcs-logo1.jpg'),(3,'admin@hcl','HCL Technologies','admin@hcl.org','Bangalore,Karnataka,India',2,'company_images/hcl.jpeg'),(6,'admin','Cognizant','admin@cognizant.org','Kochi,Kerala,India',1,'company_images/cognizant.jpg'),(7,'admin','6D Technologies','admin@6d.org','Kochi,Kerala,India',3,'company_images/images.jpeg');
 /*!40000 ALTER TABLE `jobai_app_company` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -57,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-17 19:20:09
+-- Dump completed on 2025-02-19 21:53:30

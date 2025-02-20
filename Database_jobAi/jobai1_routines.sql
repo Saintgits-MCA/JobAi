@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `jobai1` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `jobai1`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: jobai1
@@ -18,10 +16,6 @@ USE `jobai1`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping events for database 'jobai1'
---
-
---
 -- Dumping routines for database 'jobai1'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -34,4 +28,4 @@ USE `jobai1`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-17 19:20:15
+-- Dump completed on 2025-02-19 21:53:32

@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `jobai1` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `jobai1`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: jobai1
@@ -18,31 +16,27 @@ USE `jobai1`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `jobai_app_jobseeker_resume`
+-- Table structure for table `jobai_app_job_title`
 --
 
-DROP TABLE IF EXISTS `jobai_app_jobseeker_resume`;
+DROP TABLE IF EXISTS `jobai_app_job_title`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `jobai_app_jobseeker_resume` (
+CREATE TABLE `jobai_app_job_title` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `file` varchar(100) NOT NULL,
-  `uploaded_at` datetime(6) NOT NULL,
-  `user_id` bigint DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `JobAi_App_jobseeker__user_id_5170ab0a_fk_JobAi_App` (`user_id`),
-  CONSTRAINT `JobAi_App_jobseeker__user_id_5170ab0a_fk_JobAi_App` FOREIGN KEY (`user_id`) REFERENCES `jobai_app_jobseeker_registration` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `job_title` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `jobai_app_jobseeker_resume`
+-- Dumping data for table `jobai_app_job_title`
 --
 
-LOCK TABLES `jobai_app_jobseeker_resume` WRITE;
-/*!40000 ALTER TABLE `jobai_app_jobseeker_resume` DISABLE KEYS */;
-INSERT INTO `jobai_app_jobseeker_resume` VALUES (5,'documents/CV_Sample_OlzUYV9.docx','2025-02-17 11:42:24.492515',5);
-/*!40000 ALTER TABLE `jobai_app_jobseeker_resume` ENABLE KEYS */;
+LOCK TABLES `jobai_app_job_title` WRITE;
+/*!40000 ALTER TABLE `jobai_app_job_title` DISABLE KEYS */;
+INSERT INTO `jobai_app_job_title` VALUES (1,'Django Developer'),(2,'FullStack Developer'),(3,'.NET Developer'),(4,'Cyber Security Analyst'),(5,'Java Developer'),(6,'Web Designer'),(7,'Database  Analyst'),(8,'Mern Stack Developer');
+/*!40000 ALTER TABLE `jobai_app_job_title` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-17 19:20:12
+-- Dump completed on 2025-02-19 21:53:27

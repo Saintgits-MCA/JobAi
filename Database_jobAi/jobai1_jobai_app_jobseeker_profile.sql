@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `jobai1` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `jobai1`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: jobai1
@@ -37,10 +35,11 @@ CREATE TABLE `jobai_app_jobseeker_profile` (
   `skills` longtext,
   `resume` varchar(100) DEFAULT NULL,
   `user_id` bigint DEFAULT NULL,
+  `profile_img` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,7 +48,7 @@ CREATE TABLE `jobai_app_jobseeker_profile` (
 
 LOCK TABLES `jobai_app_jobseeker_profile` WRITE;
 /*!40000 ALTER TABLE `jobai_app_jobseeker_profile` DISABLE KEYS */;
-INSERT INTO `jobai_app_jobseeker_profile` VALUES (1,'Prudhwi Raj','prudhwirajk@gmail.com','9378373783','24-April-2002','MCA','Frontend Developer','APJ Abdulkalam Technological University','Kottayam,Kerala,India','Python, Java','',1),(2,'Jayaraj J Pillai','jayu123@gmail.com','7586342510','24-April-2002','MCA','Frontend Developer','APJ Abdulkalam Technological University','Kottayam,Kerala,India','Python, Java','',5);
+INSERT INTO `jobai_app_jobseeker_profile` VALUES (1,'Aslam Salam','aslamsalam3491@gmail.com','623508419','08-Sept-2002','MCA','FullStack Developer','APJ Abdulkalam Technological University','Thiruvalla,Pathanamthitta,Kerala,India','Python, Javascript,HTML,CSS','documents/CV_Sample_XGIcHOI.docx',4,'images/aslam_salam.jpeg');
 /*!40000 ALTER TABLE `jobai_app_jobseeker_profile` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -62,4 +61,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-17 19:20:14
+-- Dump completed on 2025-02-19 21:53:28

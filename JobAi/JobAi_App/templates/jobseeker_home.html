@@ -51,6 +51,10 @@
 .sidebar{
     height: 142vh;
 }
+.input[type='file']
+{
+    display: none;
+}
 </style>
 <div class="main-content">
     <h2 id="profile">Jobseeker Profile Setup</h2><br><br>
@@ -103,8 +107,8 @@
                 <!-- Left Column -->
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="name" class="fw-bold">Upload your Image<span class="text-danger ms-2">*</span></label>
-                        <input type="file" id="image" name="image"
+                        <label for="ImageUpload" class="fw-bold">Upload your Image<span class="text-danger ms-2">*</span></label>
+                        <input type="file" id="image" name="image" accept=".jpg, .jpeg"
                             class="input1  toggleInput"  required>
                     </div>
                     <div class="mb-3">
