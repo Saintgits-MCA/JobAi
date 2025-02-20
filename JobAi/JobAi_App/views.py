@@ -9,12 +9,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.contrib.auth import logout
 from django.core.files.storage import FileSystemStorage
+from django.db.models import Q
 # from weasyprint import HTML
 from docx import Document
 from django.conf import settings
 from .models import *
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
+from django.template.loader import render_to_string
 
 openai.api_key = settings.OPENAI_API_KEY
 
@@ -309,14 +311,36 @@ def company_logout(request):
 
 
 def search_job(request):
+    # Get the jobseeker name from session and check if the profile exists
     fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():
-            return redirect('home')
-    jobs = company_joblist.objects.all()  # Fetch all jobs from the database
-    jobseeker=jobseeker_profile.objects.get(name=fname)
-    return render(request, 'search-job.html', {"fname":fname, 'jobs': jobs,"jsdt":jobseeker})
+        return redirect('home')
+    
+    jobseeker = jobseeker_profile.objects.get(name=fname)
+    jobs = company_joblist.objects.all()
 
-
+    # Get search parameters from GET request
+    search_query = request.GET.get('search', '')
+    location_query = request.GET.get('location', '')
+    
+    # Filter by search query. For the foreign key job_title, traverse to its text field.
+    if search_query:
+        jobs = jobs.filter(
+        Q(job_title__job_title__exact=search_query) |
+        Q(company__name__exact=search_query) |
+        Q(job_type__exact=search_query)
+        )
+    
+    # Filter by location query
+    if location_query:
+        jobs = jobs.filter(location__exact=location_query)
+    
+    context = {
+        "fname": fname,
+        "jobs": jobs,
+        "jsdt": jobseeker,
+    }
+    return render(request, 'search-job.html', context)
 def coverletter(request):
     job=job_title.objects.all()
     company = Company.objects.all()

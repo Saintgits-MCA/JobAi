@@ -1,50 +1,55 @@
-// script.js
-
-// Function to filter jobs based on the search input
-function filterJobs() {
-    const searchInput = document.getElementById('searchInput').value.toLowerCase();
-    const rows = document.querySelectorAll('#jobTable tbody tr');
-
-    rows.forEach(row => {
-        const jobTitle = row.cells[0].textContent.toLowerCase();
-        const company = row.cells[1].textContent.toLowerCase();
-        const location = row.cells[2].textContent.toLowerCase();
-
-        if (jobTitle.includes(searchInput) || company.includes(searchInput) || location.includes(searchInput)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
+document.addEventListener("DOMContentLoaded", function() {
+    // Get references to elements.
+    const searchInput = document.querySelector("input[name='search']");
+    const locationInput = document.querySelector("input[name='location']");
+    const searchButton = document.getElementById("search-btn");
+    const tableBody = document.querySelector("tbody");
+  
+    if (!searchInput || !locationInput || !searchButton || !tableBody) {
+      console.error("One or more required elements are missing.");
+      return;
+    }
+  
+    searchButton.addEventListener("click", function(event) {
+      event.preventDefault(); // Prevent default behavior (if button is in a form)
+  
+      // Read input values.
+      const searchValue = searchInput.value.trim();
+      const locationValue = locationInput.value.trim();
+  
+      // Construct the URL using our URL pattern defined in urls.py.
+      const url = `{%url 'search-job'%}?search=${encodeURIComponent(searchValue)}&location=${encodeURIComponent(locationValue)}`;
+      console.log("AJAX request URL:", url);
+  
+      fetch(url, {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest"  // Let the server know this is an AJAX call.
         }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Network error: " + response.status);
+          }
+          return response.text();
+        })
+        .then(html => {
+          console.log("Received HTML length:", html.length);
+          // Parse the returned HTML.
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, "text/html");
+          const newTbody = doc.querySelector("tbody");
+  
+          if (newTbody) {
+            tableBody.innerHTML = newTbody.innerHTML;
+            console.log("Table updated successfully.");
+          } else {
+            console.error("Could not find <tbody> in the AJAX response.");
+            console.log("Response snippet:", html.substring(0, 300));
+          }
+        })
+        .catch(error => {
+          console.error("Error during fetch:", error);
+        });
     });
-}
-
-// Sorting functionality for table columns
-document.querySelectorAll('th').forEach((header, index) => {
-    header.addEventListener('click', () => {
-        sortTable(index);
-    });
-});
-
-function sortTable(columnIndex) {
-    const table = document.getElementById('jobTable');
-    const rows = Array.from(table.rows).slice(1);
-    const isAscending = table.querySelector(`th:nth-child(${columnIndex + 1})`).classList.contains('ascending');
-
-    rows.sort((a, b) => {
-        const aText = a.cells[columnIndex].textContent.trim();
-        const bText = b.cells[columnIndex].textContent.trim();
-
-        if (columnIndex === 3) {  // If sorting by date
-            return isAscending ? new Date(aText) - new Date(bText) : new Date(bText) - new Date(aText);
-        }
-
-        return isAscending ? aText.localeCompare(bText) : bText.localeCompare(aText);
-    });
-
-    rows.forEach(row => table.appendChild(row)); // Reorder the rows
-
-    // Toggle the sorting state (ascending or descending)
-    table.querySelectorAll('th').forEach(th => th.classList.remove('ascending', 'descending'));
-    table.querySelector(`th:nth-child(${columnIndex + 1})`).classList.toggle('ascending', !isAscending);
-    table.querySelector(`th:nth-child(${columnIndex + 1})`).classList.toggle('descending', isAscending);
-}
+  });
+  
