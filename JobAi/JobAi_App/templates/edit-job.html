@@ -89,8 +89,13 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Job Type</label><span class="text-danger mx-2">*</span>
-                    <input type="text" class="form-control" name="job_type" id="job_type" value="{{ jobobg.job_type }}"
+                    <select class="form-control" name="job_type" id="job_type" 
                         required>
+                        <option value="{{ jobobg.job_type }}" selected disabled>{{ jobobg.job_type }}</option>
+                        <option value="Full Time">Full Time</option>
+                        <option value="Part Time">Part Time</option>
+                        <option value="Work From Home/Remote">Work From Home/Remote</option>
+                    </select>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Job Posting Date</label><span class="text-danger mx-2">*</span>

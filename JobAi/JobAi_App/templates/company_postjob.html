@@ -79,7 +79,12 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Job Type</label><span class="text-danger mx-2">*</span>
-                    <input type="text" class="form-control" name="Job_type" placeholder="Enter Job Type(Full Time,Part time,Work from Home etc.)" required>
+                    <select  class="form-control" name="Job_type" required>
+                        <option value="" selected disabled>---Choose Job Type---</option>
+                        <option value="Full Time">Full Time</option>
+                        <option value="Part Time">Part Time</option>
+                        <option value="Work From Home/Remote">Work From Home/Remote</option>
+                    </select>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label" for="Job Posting Date">Job Posting Date</label><span class="text-danger mx-2">*</span>

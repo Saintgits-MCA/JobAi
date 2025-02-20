@@ -326,9 +326,9 @@ def search_job(request):
     # Filter by search query. For the foreign key job_title, traverse to its text field.
     if search_query:
         jobs = jobs.filter(
-        Q(job_title__job_title__exact=search_query) |
-        Q(company__name__exact=search_query) |
-        Q(job_type__exact=search_query)
+        Q(job_title__job_title__startswith=search_query) |
+        Q(company__name__startswith=search_query) |
+        Q(job_type__startswith=search_query)
         )
     
     # Filter by location query
@@ -627,7 +627,7 @@ def company_dashboard(request):
         cid = request.session.get('company_id')
         company = Company.objects.get(id=cid)
         # Fetch all job listings for the logged-in company
-        compjobdt = company_joblist.objects.get(company=cid)
+        compjobdt = company_joblist.objects.filter(company=cid)
         # If no jobs exist, show the default page
         if not compjobdt.exists():
             count=0
