@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 <style>
     #message-container {
@@ -9,6 +10,21 @@
         right: 20px;
         width: 700px;
         z-index: 1000;
+    }
+    .collapse-toggle {
+        display: inline-block;
+        transition: transform 0.3s ease;
+    }
+    .collapse-toggle:hover .down-icon {
+        transform: scale(1.2);
+    }
+    /* Rotate icon when the collapse is shown */
+    #companiesCollapse.show ~ .card .collapse-toggle .down-icon {
+        transform: rotate(180deg);
+    }
+    /* Alternatively, use JavaScript to toggle a class for rotation */
+    .rotate {
+        transform: rotate(180deg) !important;
     }
 </style>
 
@@ -53,33 +69,39 @@
                     </div>
                 </div>
 
-                <!-- Companies Section -->
-                <div id="company-tab" class="tab-pane fade">
-                    <div class="card p-3 mb-3">
-                        <h5>Companies Available</h5>
-                        <p>You have the opportunity to apply to jobs posted by <b>{{ compcount }}</b> companies.</p>
-                    </div>
-
-                    <div class="row">
-                        {% for i in company %}
-                        <div class="col-md-6 mb-4">
-                            <div class="card job-card px-2 text-justify">
-                                <div class="d-flex align-items-center">
-                                    <img src="{{i.profile_img.url}}" class="rounded-circle me-3" width="40">
-                                    <h5 class="job-title ms-2 text-dark">{{ i.name }}</h5>
-                                </div>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <p class="text-muted">No companies available.</p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Companies Section -->
+<div id="company-tab" class="tab-pane fade">
+    <div class="card p-3 mb-3">
+      <h5>Companies Available</h5>
+      <p>You have the opportunity to apply to jobs posted by <b>{{ compcount }}</b> companies.</p>
+      <!-- Down arrow icon -->
+      <div class="d-flex justify-content-center">
+        <a class="collapse-toggle" data-bs-toggle="collapse" href="#companiesCollapse" role="button" aria-expanded="false" aria-controls="companiesCollapse">
+          <i class="bi bi-chevron-double-down down-icon"></i>
+        </a>
+      </div>
     </div>
-</div>
+  
+    <!-- Collapsible div for company list -->
+    <div class="collapse" id="companiesCollapse">
+      <div class="row">
+        {% for i in company %}
+        <div class="col-md-6 mb-4">
+          <div class="card job-card px-2 text-justify">
+            <div class="d-flex align-items-center">
+              <img src="{{ i.profile_img.url }}" class="rounded-circle me-3" width="40">
+              <h5 class="job-title ms-2 text-dark">{{ i.name }}</h5>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">No companies available.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 
+  
 <!-- Messages Alert -->
 {% if messages %}
     {% for message in messages %}
@@ -115,6 +137,25 @@
             setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
         }
     }, 5000);
+    document.addEventListener("DOMContentLoaded", function() {
+      var collapseToggle = document.querySelector('.collapse-toggle');
+      var downIcon = document.querySelector('.down-icon');
+      var companiesCollapse = document.getElementById('companiesCollapse');
+  
+      companiesCollapse.addEventListener('shown.bs.collapse', function () {
+        // When shown, change icon to an upward chevron
+        downIcon.classList.remove('bi-chevron-double-down');
+        downIcon.classList.add('bi-chevron-double-up');
+        // Optionally add rotation animation
+        downIcon.classList.add('rotate');
+      });
+  
+      companiesCollapse.addEventListener('hidden.bs.collapse', function () {
+        // When hidden, revert to the downward chevron
+        downIcon.classList.remove('bi-chevron-double-up', 'rotate');
+        downIcon.classList.add('bi-chevron-double-down');
+      });
+    });
 </script>
 
 {% endblock %}

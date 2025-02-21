@@ -4,7 +4,7 @@ from django.db import connection
 from django.shortcuts import get_object_or_404, render, redirect
 import os
 import re
-import json
+import json,PyPDF2
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.contrib.auth import logout
@@ -15,10 +15,50 @@ from docx import Document
 from django.conf import settings
 from .models import *
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
 
 openai.api_key = settings.OPENAI_API_KEY
+
+def convert_docx_to_json(docx_path, filename):
+    """Convert a .docx file to JSON format and save it to media folder"""
+    document = Document(docx_path)
+    data = {"paragraphs": []}
+
+    for para in document.paragraphs:
+        data["paragraphs"].append(para.text)
+    
+    json_path = os.path.join(settings.MEDIA_ROOT, "json", filename + ".json")
+    
+    try:
+        with open(json_path, "w") as json_file:
+            json.dump(data, json_file, indent=4)
+    except Exception as e:
+        print(f"Error saving JSON file: {e}")
+    
+    return json.dumps(data, indent=4)
+# Create your views here.
+
+
+def jobseeker_login(request):
+    if request.method == "POST":
+        Email = request.POST.get("email")
+        Password = request.POST.get("password")
+        try:
+            jobseeker = Jobseeker_Registration.objects.get(email=Email, password=Password)
+            request.session['jobseeker_name'] = jobseeker.name
+            request.session['jobseeker_id'] = jobseeker.id
+            request.session['jobseeker_email'] = jobseeker.email
+            request.session['jobseeker_phone'] = jobseeker.phone
+            messages.success(request, "Login Successfully")
+            return redirect('jobseeker_dashboard')  # Redirect to a dashboard or home page after login
+        except Jobseeker_Registration.DoesNotExist:
+            messages.error(request, "Invalid Email or Password")
+    return render(request, 'jobseeker_login.html')
 
 def extract_resume_details(content):
     """Extracts key details like name, skills, address, highest_qualification, job_preference, university name, date of birth, email, and phone number from the resume content."""
@@ -40,7 +80,7 @@ def extract_resume_details(content):
     qualification_keywords = ["Bachelor's Degree", "MCA", "Master of Computer Application", "PhD", "B.Sc", "M.Sc", "B.Tech Computer Science", "M.Tech Computer Science", "MBA"]
     job_preferences_keywords = ["Software Engineer", "Data Scientist", "Backend Developer", "Frontend Developer", "Project Manager"]
     university_keywords = ["University", "Institute", "College"]
-    skills_keywords = ["Python", "Java", "C++", "Django", "SQL", "Machine Learning", "Artificial Intelligence", "React", "JavaScript", "HTML", "CSS", "Git"]
+    skills_keywords = ["Python", "Java", "C++", "Django", "SQL", "Machine Learning", "Artificial Intelligence", "React", "JavaScript", "HTML", "CSS", "Git","Data Analytics"]
     address_keywords = ["State", "Country", "District"]
     indian_states = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"]
     
@@ -89,44 +129,6 @@ def extract_resume_details(content):
     
     return details
 
-
-def convert_docx_to_json(docx_path, filename):
-    """Convert a .docx file to JSON format and save it to media folder"""
-    document = Document(docx_path)
-    data = {"paragraphs": []}
-
-    for para in document.paragraphs:
-        data["paragraphs"].append(para.text)
-    
-    json_path = os.path.join(settings.MEDIA_ROOT, "json", filename + ".json")
-    
-    try:
-        with open(json_path, "w") as json_file:
-            json.dump(data, json_file, indent=4)
-    except Exception as e:
-        print(f"Error saving JSON file: {e}")
-    
-    return json.dumps(data, indent=4)
-# Create your views here.
-
-
-def jobseeker_login(request):
-    if request.method == "POST":
-        Email = request.POST.get("email")
-        Password = request.POST.get("password")
-        try:
-            jobseeker = Jobseeker_Registration.objects.get(email=Email, password=Password)
-            request.session['jobseeker_name'] = jobseeker.name
-            request.session['jobseeker_id'] = jobseeker.id
-            request.session['jobseeker_email'] = jobseeker.email
-            request.session['jobseeker_phone'] = jobseeker.phone
-            messages.success(request, "Login Successfully")
-            return redirect('jobseeker_dashboard')  # Redirect to a dashboard or home page after login
-        except Jobseeker_Registration.DoesNotExist:
-            messages.error(request, "Invalid Email or Password")
-    return render(request, 'jobseeker_login.html')
-
-
 def jobseeker_home(request):
     content = ""
     alert_message = ""
@@ -135,7 +137,8 @@ def jobseeker_home(request):
     jobseek_email = request.session.get('jobseeker_email')
     phone = request.session.get('jobseeker_phone')
     extracted_details = None
-    show_modal=False
+    show_modal = False
+
     if request.method == "POST":
         uploaded_file = request.FILES.get("word_file")
 
@@ -145,53 +148,59 @@ def jobseeker_home(request):
             return redirect("home")
 
         if uploaded_file:
-            # Validate file extension before saving
-            allowed_extensions = ('.doc', '.docx')
+            # Allowed extensions now include PDFs and Word documents
+            allowed_extensions = ('.doc', '.docx', '.pdf')
             file_extension = os.path.splitext(uploaded_file.name)[1].lower()
-            
             if file_extension not in allowed_extensions:
-                messages.error(request, "Invalid file format. Only .doc and .docx files are allowed. PDFs are not accepted.")
+                messages.error(request, "Invalid file format. Only .doc, .docx, and .pdf files are allowed.")
                 return redirect("home")  # Prevents further execution
 
             try:
-                jobseeker_profile.objects.get(user_id=uid)
-            except jobseeker_profile.DoesNotExist:
-                show_modal = True  # Show modal if profile does not exist
+                try:
+                    jobseeker_profile.objects.get(user_id=uid)
+                except jobseeker_profile.DoesNotExist:
+                    show_modal = True
 
-                # Ensure media directories exist
                 documents_dir = os.path.join(settings.MEDIA_ROOT, "documents")
-                json_dir = os.path.join(settings.MEDIA_ROOT, "json")
                 os.makedirs(documents_dir, exist_ok=True)
-                os.makedirs(json_dir, exist_ok=True)
 
-                # Save the uploaded file (only after validation)
                 fs = FileSystemStorage(location=documents_dir)
-                file_path = fs.save(uploaded_file.name, uploaded_file)
-                file_path = fs.path(file_path)
+                saved_filename = fs.save(uploaded_file.name, uploaded_file)
+                file_path = fs.path(saved_filename)
 
-                # Read the Word document content
-                document = Document(file_path)
-                paragraphs = [p.text for p in document.paragraphs if p.text.strip()]
-                content = "\n".join(paragraphs)
+                # Extract text based on file type
+                if file_extension in ('.doc', '.docx'):
+                    # Use python-docx for Word documents
+                    document = Document(file_path)
+                    paragraphs = [p.text for p in document.paragraphs if p.text.strip()]
+                    content = "\n".join(paragraphs)
+                elif file_extension == '.pdf':
+                    pdf_file = open(file_path, 'rb')
+                    pdf_reader = PyPDF2.PdfReader(pdf_file)
+                    content = ""
+                    for page in pdf_reader.pages:
+                        if page.extract_text():
+                            content += page.extract_text() + "\n"
+                    pdf_file.close()
 
-                # Extract resume details
+                # Remove the file after processing to avoid multiple copies
+                os.remove(file_path)
+
+                # Extract resume details using OpenAI
                 extracted_details = extract_resume_details(content)
-
-                # Check if essential details are missing
-                if not extracted_details.get("name") or not extracted_details.get("email") or not extracted_details.get("phone"):
+                essential_fields = ["name", "email", "phone","address","skills","university"]
+                if any(not extracted_details.get(field) for field in essential_fields):
                     messages.error(request, "Failed to extract essential details from your resume. Check your file and try again.")
-                    # Delete the saved file if details are not extracted
-                    os.remove(file_path)
                     return redirect("home")
 
-                # Save the resume in the database only after successful validation
+                # Save the resume file in the database after successful extraction
                 jobseeker_resumeobj = jobseeker_resume(file=uploaded_file, user_id=uid)
                 jobseeker_resumeobj.save()
 
-                # messages.success(request, "Resume uploaded successfully!")
-
+                messages.success(request, "Resume uploaded and processed successfully!")
             except Exception as e:
-                messages.error(request, f"Error reading document: {str(e)}")
+                messages.error(request, f"Error processing document: {str(e)}")
+                return redirect("home")
 
     context = {
         "resume_details": extracted_details,
@@ -199,13 +208,14 @@ def jobseeker_home(request):
         "fname": fname,
         "email": jobseek_email,
         "phone": phone,
-        "show_modal":show_modal
+        "show_modal": show_modal
     }
-    if not jobseeker_profile.objects.filter(name=fname).exists() and not jobseeker_resume.objects.filter(user=uid):
-        messages.error(request, "Complete this Profile Registration and enjoy all features of this portal")
-        redirect('home')
-    return render(request, "jobseeker_home.html", context)
 
+    if not jobseeker_profile.objects.filter(name=fname).exists() and not jobseeker_resume.objects.filter(user=uid).exists():
+        # messages.error(request, "Complete this Profile Registration and enjoy all features of this portal")
+        redirect('home')
+
+    return render(request, "jobseeker_home.html", context)
 
 def jobseeker_profile_update(request):
     userid=request.session.get('jobseeker_id')
@@ -291,6 +301,39 @@ def Register(request):
 
 
 def Forgot_pwd(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # Even if the user does not exist, we do not reveal this information.
+            # messages.success(request, "If an account exists for this email, you will receive a password reset link.")
+            return redirect("jobseeker_login")  # or any other page
+
+        # Generate password reset token and uid
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        reset_link = request.build_absolute_uri(
+            reverse("password_reset_confirm", kwargs={"uidb64": uid, "token": token})
+        )
+
+        # Render email content using a template (optional)
+        email_subject = "Password Reset Request"
+        email_message = render_to_string("emails/password_reset_email.html", {
+            "user": user,
+            "reset_link": reset_link,
+        })
+
+        send_mail(
+            email_subject,
+            email_message,
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            fail_silently=False,
+        )
+
+        messages.success(request, "If an account exists for this email, you will receive a password reset link.")
+        return redirect("jobseeker_login")
     return render(request, 'forgot-password.html')
 
 
@@ -326,14 +369,14 @@ def search_job(request):
     # Filter by search query. For the foreign key job_title, traverse to its text field.
     if search_query:
         jobs = jobs.filter(
-        Q(job_title__job_title__startswith=search_query) |
-        Q(company__name__startswith=search_query) |
-        Q(job_type__startswith=search_query)
+        Q(job_title__job_title__istartswith=search_query) |
+        Q(company__name__icontains=search_query) |
+        Q(job_type__icontains=search_query)
         )
     
     # Filter by location query
     if location_query:
-        jobs = jobs.filter(location__exact=location_query)
+        jobs = jobs.filter(location__icontains=location_query)
     
     context = {
         "fname": fname,

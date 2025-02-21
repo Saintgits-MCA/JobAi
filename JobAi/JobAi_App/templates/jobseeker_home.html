@@ -57,8 +57,9 @@
 }
 </style>
 <div class="main-content">
+    <div class="bg-danger w-full fw-bold ms-1 text-center text-light">Complete Profile Setup to access features of this portal.</div>
     <h2 id="profile">Jobseeker Profile Setup</h2><br><br>
-
+    
     <div class="container w-50 mt-4" style="margin-right: 250px;margin-left: 25px;">
         <h5 class="text-center">Upload Your Resume in doc,docx format <span class="text-danger ms-2">*</span></h5>
         <button type="button" class="btn btn-primary ms-5 w-75" data-bs-toggle="modal" data-bs-target="#uploadResumeModal">
@@ -151,7 +152,7 @@
                             placeholder="Enter University/Institution of Highest Qualification" value="{{resume_details.university}}" required>
                     </div>
                     <div class="mb-3">
-                        <label for="skills" class="fw-bold">Skills<span class="text-danger ms-2">*</span></label><input type="text" id="skills" name="skills"
+                        <label for="skills" class="fw-bold">Technical Skills<span class="text-danger ms-2">*</span></label><input type="text" id="skills" name="skills"
                             class="input1 input-bg toggleInput" placeholder="Enter your Skills" value="{{resume_details.skills}}" required
                             required>
                     </div>
