@@ -57,8 +57,33 @@ def jobseeker_login(request):
             messages.error(request, "Invalid Email or Password")
     return render(request, 'jobseeker_login.html')
 
+def extract_text_from_pdf(file_path):
+    """
+    Extract text from a PDF file using pdfplumber with improved accuracy.
+    This function handles multiple pages, normalizes whitespace, and
+    attempts to capture text that might be in different layout layers.
+    """
+    import pdfplumber
+    extracted_text = []
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            for page in pdf.pages:
+                # Extract text from all available layers on the page
+                page_text = page.extract_text(x_tolerance=1, y_tolerance=1)
+                if page_text:
+                    # Normalize whitespace and remove extra line breaks
+                    normalized_text = "\n".join(line.strip() for line in page_text.splitlines() if line.strip())
+                    extracted_text.append(normalized_text)
+    except Exception as e:
+        raise Exception(f"PDF extraction error: {e}")
+    
+    return "\n".join(extracted_text)
+
+
 def extract_resume_details(content):
     """Extracts key details like name, skills, address, highest_qualification, job_preference, university name, date of birth, email, and phone number from the resume content."""
+    import re
+
     details = {
         "name": "",
         "skills": "",
@@ -71,60 +96,85 @@ def extract_resume_details(content):
         "phone": ""
     }
     
+    # Define patterns and keywords
     email_pattern = r"[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+"
     phone_pattern = r"\+?\d{10,15}"
     dob_pattern = r"\b(\d{1,2}[-/ ](?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[-/ ]\d{2,4}|\d{1,2}[-/]\d{1,2}[-/]\d{2,4})\b"
     qualification_keywords = ["Bachelor's Degree", "MCA", "Master of Computer Application", "PhD", "B.Sc", "M.Sc", "B.Tech Computer Science", "M.Tech Computer Science", "MBA"]
     job_preferences_keywords = ["Software Engineer", "Data Scientist", "Backend Developer", "Frontend Developer", "Project Manager"]
     university_keywords = ["University", "Institute", "College"]
-    skills_keywords = ["Python", "Java", "C++", "Django", "SQL", "Machine Learning", "Artificial Intelligence", "React", "JavaScript", "HTML", "CSS", "Git","Data Analytics"]
+    skills_keywords = ["Python", "Java", "C++", "Django", "SQL", "Machine Learning", "Artificial Intelligence", "React", "JavaScript", "HTML", "CSS", "Git", "Data Analytics"]
     address_keywords = ["State", "Country", "District"]
     indian_states = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"]
     
-    resume_data = {}  # Dictionary to store extracted details
+    # Use a set for skills to prevent duplicates
+    skills_found = set()
     
+    # Process content line-by-line
     lines = content.split("\n")
     for line in lines:
         line = line.strip()
+        if not line:
+            continue
         
-        if not details["name"] and re.match(r"^[A-Z][a-z]+\s[A-Z][a-z]+", line):
-            details["name"] = line
+        # Extract name: assume first occurrence of two or more capitalized words is the candidate's name
+        if not details["name"]:
+            name_match = re.match(r"^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)", line)
+            if name_match:
+                details["name"] = name_match.group(1)
         
-        if not details["email"] and re.search(email_pattern, line):
-            details["email"] = re.search(email_pattern, line).group()
+        # Extract email
+        if not details["email"]:
+            email_match = re.search(email_pattern, line)
+            if email_match:
+                details["email"] = email_match.group()
         
-        if not details["phone"] and re.search(phone_pattern, line):
-            details["phone"] = re.search(phone_pattern, line).group()
+        # Extract phone
+        if not details["phone"]:
+            phone_match = re.search(phone_pattern, line)
+            if phone_match:
+                details["phone"] = phone_match.group()
         
-        if not details["dob"] and re.search(dob_pattern, line):
-            details["dob"] = re.search(dob_pattern, line).group()
+        # Extract date of birth
+        if not details["dob"]:
+            dob_match = re.search(dob_pattern, line, flags=re.IGNORECASE)
+            if dob_match:
+                details["dob"] = dob_match.group(1)
         
-        if any(keyword.lower() in line.lower() for keyword in address_keywords) or any(state.lower() in line.lower() for state in indian_states):
-            details["address"] = line
+        # Extract address if line contains address-related keywords or Indian states
+        if not details["address"]:
+            if any(kw.lower() in line.lower() for kw in address_keywords) or any(state.lower() in line.lower() for state in indian_states):
+                details["address"] = line
         
-        for qualification in qualification_keywords:
-            if qualification.lower() in line.lower():
-                details["highest_qualification"] = qualification
-                break
-                
-        for job in job_preferences_keywords:
-            if job.lower() in line.lower():
-                details["job_preference"] = job
-                break
-                
-        for university in university_keywords:
-            if university.lower() in line.lower():
-                details["university"] = line
-                break
-                
+        # Extract highest qualification
+        if not details["highest_qualification"]:
+            for qualification in qualification_keywords:
+                if qualification.lower() in line.lower():
+                    details["highest_qualification"] = qualification
+                    break
+        
+        # Extract job preference
+        if not details["job_preference"]:
+            for job in job_preferences_keywords:
+                if job.lower() in line.lower():
+                    details["job_preference"] = job
+                    break
+        
+        # Extract university: store the entire line if it contains any keyword
+        if not details["university"]:
+            for uni_kw in university_keywords:
+                if uni_kw.lower() in line.lower():
+                    details["university"] = line
+                    break
+        
+        # Accumulate skills from the line
         for skill in skills_keywords:
             if skill.lower() in line.lower():
-                details["skills"] += skill + ", "
+                skills_found.add(skill)
     
-    details["skills"] = details["skills"].rstrip(", ")
-    resume_data.update(details)  # Storing extracted details in the list
-    
+    details["skills"] = ", ".join(sorted(skills_found))
     return details
+
 
 def jobseeker_home(request):
     content = ""
@@ -145,12 +195,11 @@ def jobseeker_home(request):
             return redirect("home")
 
         if uploaded_file:
-            # Allowed extensions now include PDFs and Word documents
-            allowed_extensions = ('.doc', '.docx', '.pdf')
+            allowed_extensions = ('.doc', '.docx')
             file_extension = os.path.splitext(uploaded_file.name)[1].lower()
             if file_extension not in allowed_extensions:
-                messages.error(request, "Invalid file format. Only .doc, .docx, and .pdf files are allowed.")
-                return redirect("home")  # Prevents further execution
+                messages.error(request, "Invalid file format. Only .doc, .docx files are allowed.")
+                return redirect("home")
 
             try:
                 try:
@@ -165,27 +214,18 @@ def jobseeker_home(request):
                 saved_filename = fs.save(uploaded_file.name, uploaded_file)
                 file_path = fs.path(saved_filename)
 
-                # Extract text based on file type
+                # Enhanced extraction based on file type
                 if file_extension in ('.doc', '.docx'):
-                    # Use python-docx for Word documents
                     document = Document(file_path)
                     paragraphs = [p.text for p in document.paragraphs if p.text.strip()]
                     content = "\n".join(paragraphs)
-                elif file_extension == '.pdf':
-                    pdf_file = open(file_path, 'rb')
-                    pdf_reader = PyPDF2.PdfReader(pdf_file)
-                    content = ""
-                    for page in pdf_reader.pages:
-                        if page.extract_text():
-                            content += page.extract_text() + "\n"
-                    pdf_file.close()
 
-                # Remove the file after processing to avoid multiple copies
+                # Remove the file after processing
                 os.remove(file_path)
 
-                # Extract resume details using OpenAI
+                # Extract resume details using the improved extraction function
                 extracted_details = extract_resume_details(content)
-                essential_fields = ["name", "email", "phone","address","skills","university"]
+                essential_fields = ["name", "email", "phone", "address", "skills", "university"]
                 if any(not extracted_details.get(field) for field in essential_fields):
                     messages.error(request, "Failed to extract essential details from your resume. Check your file and try again.")
                     return redirect("home")
@@ -194,25 +234,24 @@ def jobseeker_home(request):
                 jobseeker_resumeobj = jobseeker_resume(file=uploaded_file, user_id=uid)
                 jobseeker_resumeobj.save()
 
-                messages.success(request, "Resume uploaded and processed successfully!")
             except Exception as e:
                 messages.error(request, f"Error processing document: {str(e)}")
                 return redirect("home")
-
+    resume = jobseeker_resume.objects.filter(user_id=uid)
     context = {
         "resume_details": extracted_details,
         "alert_message": alert_message,
         "fname": fname,
         "email": jobseek_email,
         "phone": phone,
-        "show_modal": show_modal
+        "show_modal": show_modal,
+        "resume": resume
     }
 
     if not jobseeker_profile.objects.filter(name=fname).exists() and not jobseeker_resume.objects.filter(user=uid).exists():
-        # messages.error(request, "Complete this Profile Registration and enjoy all features of this portal")
         redirect('home')
-
     return render(request, "jobseeker_home.html", context)
+
 
 def jobseeker_profile_update(request):
     userid=request.session.get('jobseeker_id')
@@ -349,12 +388,14 @@ def user_base(request):
 def jobseeker_logout(request):
     logout(request)
     request.session.clear()
+    messages.success(request,"Logout Successfully")
     return render(request, 'jobseeker_login.html')
 
 
 def company_logout(request):
     logout(request)
     request.session.clear()
+    messages.success(request,"Logout Successfully")
     return render(request, 'company_login.html')
 
 
@@ -494,7 +535,8 @@ def support(request):
     fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():
             return redirect('home')
-    return render(request, 'support.html', {"fname":fname})
+    jobseeker=jobseeker_profile.objects.get(name=fname)
+    return render(request, 'support.html', {"fname":fname,"jsdt":jobseeker})
 
 
 def mockinterview(request):
@@ -522,7 +564,12 @@ def mockinterview(request):
                 messages=[{"role": "system", "content": prompt}]
             )
 
-            questions = response["choices"][0]["message"]["content"].strip().split("\n")
+            content = response["choices"][0]["message"]["content"].strip()
+            # Split questions by newline and filter out empty strings
+            questions = [q for q in content.split("\n") if q.strip()]
+            # Ensure that exactly 5 questions are returned
+            if len(questions) != 5:
+                return JsonResponse({"error": "Failed to generate exactly 5 interview questions. Please try again."}, status=400)
             return JsonResponse({"questions": questions})
 
         else:
