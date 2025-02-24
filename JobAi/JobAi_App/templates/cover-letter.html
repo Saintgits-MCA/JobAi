@@ -34,10 +34,10 @@
 <body>
     <div class="main-content">
         <h2 id="cover-letter" class="mb-3">AI Cover Letter Generator</h2>
-        <div style="margin-top: 90px;">
+        <div style="margin-top: 90px;" class="ms-3">
             <div class="cover-letter-generator coverletterbox w-100" style="margin-bottom: 50px;">
                 <div class="formcoverletter">
-                    <form class="formcover" method="POST" action="{%url 'ai_cover_letter'%}">
+                    <form class="formcover ms-5 ps-3" method="POST" action="{%url 'ai_cover_letter'%}">
                         {% csrf_token %}
                         <div class="coverletterformdiv">
                             <div class="row">

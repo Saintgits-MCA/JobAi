@@ -3,34 +3,79 @@
 {% block content %}
 
 <head>
-    <script src="{% static 'assets/js/search.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'assets/css/search-job.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/search-bar.css' %}">
-    <style>
-        body {
-            overflow-x: hidden;
-        }
-        /* Container for vertical scrolling */
-        .table-wrapper {
-            max-height: 450px;
-            overflow-y: auto;
-            overflow-x:unset;
-        }
-    </style>
+  <script src="{% static 'assets/js/search.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'assets/css/search-job.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/search-bar.css' %}">
+  <style>
+    body {
+      overflow-x: hidden;
+    }
+
+    /* Container that wraps both the header table and scrollable body */
+    .table-container {
+      width: 100%;
+    }
+
+    /* Header table (non-scrollable) */
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .header-table thead th {
+      background: #007bff; /* Your theme color */
+      color: white;
+      padding: 5px;
+      text-align: left;
+      /* You can add more styling if needed */
+    }
+
+    /* Scrollable container for the body */
+    .table-wrapper {
+      max-height: 400px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* Body table (scrollable part) */
+    .body-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .body-table tbody tr td {
+      text-align: left;
+      padding: 6px;
+      vertical-align: middle; /* centers content vertically */
+
+    }
+/* “No job postings” styling */
+.no-jobs {
+      width: 100%;
+      text-align: center;
+      font-weight: 600;
+      color: #555;
+    }
+    /* Optional hover highlight */
+    .body-table tr:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
 </head>
 
 <body>
-    <h2 id="search-job">Search Job</h2>
-    <br><br>
-    <center><form method="get" action="{% url 'search-job' %}"  class="mt-2 w-full">
-    <div class="join w-full flex-col lg:flex-row mx-3">
+  <h2 id="search-job">Search Job</h2>
+  <br><br>
+  <center>
+    <form method="get" action="{% url 'search-job' %}" class="mt-2 w-full">
+      <div class="join w-full flex-col lg:flex-row mx-3">
         <!-- Main Search Input -->
         <input
           type="text"
           name="search"
           id="searchInput"
           class="input input-lg input-bordered join-item w-full mb-2 lg:mb-0"
-          placeholder="Job Title, Company, or Keyword"
+          placeholder="Job Title or  Company"
         />
       
         <!-- City Input -->
@@ -43,54 +88,98 @@
         />
       
         <!-- Search Button -->
-        <button type="submit"
-          type="submit-btn"
+        <button
+          type="submit"
           class="btn btn-success text-white join-item btn-lg w-full lg:w-auto"
         >
           <span>Search</span>
-          <!-- Icon (Optional) -->
-          <i class="fas fa-search"></i>  </button>
-    </div></form></center>
-      <a href="{%url 'search-job'%}"><button class="btn btn-secondary  ms-3" style="border-radius: 10px;background-color: rgb(65, 2, 112);"><i class='fas fa-filter'></i> Clear All Filters</button></a>
-          <div class="table-wrapper mt-3">
-        <table class="table table-striped table-hover">
-            <thead class="table-primary">
-                <tr class="">
-                    <th>#</th>
-                    <th>Job Number</th>
-                    <th>Job Title</th>
-                    <th>Company</th>
-                    <th>Job Type</th>
-                    <th>Location</th>
-                    <th>Eligibility</th>
-                    <th>Last Date</th>
-                    <th>Apply</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if jobs %}
-                    {% for job in jobs %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ job.job_number }}</td>
-                            <td>{{ job.job_title.job_title }}</td>
-                            <td>{{ job.company.name }}</td>
-                            <td>{{ job.job_type }}</td>
-                            <td>{{ job.location }}</td>
-                            <td>{{ job.highest_qualification }}</td>
-                            <td>{{ job.Lastdate }}</td>
-                            <td>
-                                <a href="#" class="btn btn-primary btn-sm">Apply</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="10" class="text-center">No job postings available.</td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </form>
+  </center>
+
+  <a href="{% url 'search-job' %}">
+    <button
+      class="btn btn-secondary ms-3"
+      style="border-radius: 10px; background-color: rgb(65, 2, 112);"
+    >
+      <i class='fas fa-filter'></i> Clear All Filters
+    </button>
+  </a>
+
+  <!-- Table Container -->
+  <div class="table-container mt-4 ms-3 mb-3">
+    <!-- Header Table -->
+    <table class="header-table">
+      <!-- Use consistent widths in the colgroup -->
+      <colgroup>
+        <col style="width: 5%;"  >
+        <col style="width: 12%;" >
+        <col style="width: 13%;">
+        <col style="width: 14%;">
+        <col style="width: 12%;">
+        <col style="width: 14%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+      </colgroup>
+      <thead class="table-primary">
+        <tr>
+          <th>#</th>
+          <th>Job Number</th>
+          <th>Job Title</th>
+          <th>Company</th>
+          <th>Job Type</th>
+          <th>Location</th>
+          <th>Eligibility</th>
+          <th>Last Date</th>
+          <th>Apply</th>
+        </tr>
+      </thead>
+    </table>
+
+    <!-- Scrollable Body -->
+    <div class="table-wrapper">
+      <table class="table-striped table-hover">
+        <colgroup>
+          <col style="width: 5%;">
+          <col style="width: 12%;">
+          <col style="width: 12%;">
+          <col style="width: 15%;">
+          <col style="width: 12%;">
+          <col style="width: 14%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+        </colgroup>
+        <tbody>
+          {% if jobs %}
+            {% for job in jobs %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ job.job_number }}</td>
+                <td>{{ job.job_title.job_title }}</td>
+                <td>{{ job.company.name }}</td>
+                <td>{{ job.job_type }}</td>
+                <td>{{ job.location }}</td>
+                <td>{{ job.highest_qualification }}</td>
+                <td>{{ job.Lastdate }}</td>
+                <td>
+                  <a href="#" class="btn btn-primary btn-sm">Apply</a>
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr class="w-100">
+                <td colspan="8" class="no-jobs ps-5">No job postings available.</td>
+              <td colspan="2" class="no-jobs"></td>
+              <td colspan="1" class="no-jobs"></td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
     </div>
+  </div>
 </body>
 {% endblock %}

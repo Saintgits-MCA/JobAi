@@ -87,6 +87,7 @@ DATABASES = {
     }
 }
 
+SITE_URL = "http://127.0.0.1:8000"  # Change for production
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -143,4 +144,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'tecknohow.132@gmail.com'
-EMAIL_HOST_PASSWORD = 'Qsdr345#@123'
+EMAIL_HOST_PASSWORD = 'aspd opan fwdr btow'

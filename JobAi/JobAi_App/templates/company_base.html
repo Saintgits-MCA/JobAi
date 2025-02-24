@@ -198,25 +198,25 @@
     <!-- Sidebar -->
     <div class="sidebar">
        
-        <ul class="sidebar-menu">
+        <ul class="sidebar-menu pb-3">
             
             <center><img src="{{ compdt.profile_img.url }}" alt="" height="85px" class="profile rounded-circle ms-3 mt-0"
                     style="border-radius:25px;"></center>
-            <h6 class="text-center fw-bold fs-5">{{cname}}</h6>
-            <li class="fw-bold mx-3"><a href="{% url 'company_dashboard' %}"><i class="fas fa-home mx-2"></i> <span
+            <h6 class="text-center mt-1 fw-bold fs-5">{{cname}}</h6>
+            <li class="fw-bold mx-3 mt-4"><a href="{% url 'company_dashboard' %}"><i class="fas fa-home mx-2"></i> <span
                         class="mx-2">Dashboard</span></a></li>
             <li class="fw-bold mx-3"><a href="{% url 'job_listing' %}"><i class="fas fa-briefcase mx-2"></i> <span
                         class="mx-2">Jobs</span></a></li>
             <li class="fw-bold mx-3"><a href="#"><i class="fas fa-user mx-2"></i> <span
                         class="mx-2">Applicants</span></a></li>
-            <li class="fw-bold mx-3"><a href="#"><i class="fas fa-envelope mx-2"></i> <span
-                        class="mx-1">Cover Letters</span></a></li>
             <!-- <li><a href="#"><i class="fas fa-calendar"></i> <span class="mx-2">Meetings</span></a></li> -->
             <li class="fw-bold mx-3"><a href="{% url 'company_settings' %}"><i class="fas fa-cog mx-2"></i> <span
                         class="mx-2">Settings</span></a></li>
+                    </ul>
             <div class="sidebarFooter text-center mt-2">
                 <div class="sidebarFooterContent mb-2"><img src="{%static 'images/contact.png'%}" class="contact"
                         width="200px">
+                    
                     <p class="contactMain mb-1 fw-bold mt-2">Contact Us <i class="fas fa-address-book"></i></p>
                     <div class="contactUs">
                         <p class="align-items-left">tecknohow.132@gmail.com <br>
@@ -224,7 +224,6 @@
                     </div>
                 </div>
             </div>
-        </ul>
     </div>
 
     <!-- Main Content -->

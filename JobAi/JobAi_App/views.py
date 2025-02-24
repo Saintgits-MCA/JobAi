@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import date, datetime
+import time
 import openai
 from django.db import connection
 from django.shortcuts import get_object_or_404, render, redirect
@@ -16,10 +17,6 @@ from django.conf import settings
 from .models import *
 from django.contrib import messages
 from django.template.loader import render_to_string
-from django.urls import reverse
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 
 openai.api_key = settings.OPENAI_API_KEY
@@ -299,42 +296,50 @@ def Register(request):
             return render(request, 'jobseeker_register.html')
     return render(request, 'jobseeker_register.html')
 
+def reset_password(request, user_id):
+    try:
+        user = Jobseeker_Registration.objects.get(pk=user_id)
+    except Jobseeker_Registration.DoesNotExist:
+        messages.error(request, "Invalid password reset link.")
+        return redirect("forgot_password")
+
+    if request.method == "POST":
+        new_password = request.POST.get("get_password")
+        confirm_password = request.POST.get("confirm_password")
+
+        if new_password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+        else:
+            user.password = new_password  # This should be hashed (use Django's set_password)
+           
+            user.save()
+            messages.success(request, "Your password has been reset successfully.")
+            return redirect("jobseeker_login")  # Redirect after reset
+
+    return render(request, "j_reset_password.html", {"user_id":user_id})
 
 def Forgot_pwd(request):
     if request.method == "POST":
         email = request.POST.get("email")
         try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            # Even if the user does not exist, we do not reveal this information.
-            # messages.success(request, "If an account exists for this email, you will receive a password reset link.")
-            return redirect("jobseeker_login")  # or any other page
+            user = Jobseeker_Registration.objects.get(email=email)
+            uid=user.id
+            # Send email without link
+            reset_url = f"{settings.SITE_URL}/reset_password/{uid}/"
+            
+            # Send the email
+            send_mail(
+                subject="Password Reset Request",
+                message=f"Click the link below to reset your password:\n{reset_url}",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=False,
+            )
+            messages.success(request, "Password reset instructions have been sent to your email.")
+        except Jobseeker_Registration.DoesNotExist:
+            messages.error(request, "Email not found. Please enter a registered email.")
 
-        # Generate password reset token and uid
-        token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        reset_link = request.build_absolute_uri(
-            reverse("password_reset_confirm", kwargs={"uidb64": uid, "token": token})
-        )
-
-        # Render email content using a template (optional)
-        email_subject = "Password Reset Request"
-        email_message = render_to_string("emails/password_reset_email.html", {
-            "user": user,
-            "reset_link": reset_link,
-        })
-
-        send_mail(
-            email_subject,
-            email_message,
-            settings.EMAIL_HOST_USER,
-            [user.email],
-            fail_silently=False,
-        )
-
-        messages.success(request, "If an account exists for this email, you will receive a password reset link.")
-        return redirect("jobseeker_login")
-    return render(request, 'forgot-password.html')
+    return render(request, "forgot-password.html")
 
 
 def user_base(request):
@@ -659,8 +664,47 @@ def jobs(request):
         return render(request, 'job_position.html')
     return render(request, 'job_position.html')
 
-    
+def company_reset_pwd(request,comp_id):
+    try:
+        comp = Company.objects.get(pk=comp_id)
+    except Company.DoesNotExist:
+        messages.error(request, "Invalid password reset link.")
+        return redirect("forgot_password")
+
+    if request.method == "POST":
+        new_password = request.POST.get("get_password")
+        confirm_password = request.POST.get("confirm_password")
+
+        if new_password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+        else:
+            comp.password = new_password  # This should be hashed (use Django's set_password)
+            comp.save()
+            messages.success(request, "Your password has been reset successfully.")
+            return redirect("company_login")  # Redirect after reset
+
+    return render(request, "company_reset_password.html", {"comp_id":comp_id})
 def company_forgot_password(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            cmpny = Company.objects.get(email=email)
+            uid=cmpny.id
+            # Send email without link
+            reset_url = f"{settings.SITE_URL}/company_reset_password/{uid}/"
+            
+            # Send the email
+            send_mail(
+                subject="Password Reset Request",
+                message=f"Click the link below to reset your password:\n{reset_url}",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=False,
+            )
+            
+            messages.success(request, "Password reset instructions have been sent to your email.")
+        except Company.DoesNotExist:
+            messages.error(request, "Email not found. Please enter a registered email.")
     return render(request, 'company_forgot_pwd.html')
 
 
@@ -674,7 +718,7 @@ def company_dashboard(request):
         # If no jobs exist, show the default page
         if not compjobdt.exists():
             count=0
-            return render(request, 'company_dashboard.html', {"cname": cname,"count":count})
+            return render(request, 'company_dashboard.html', {"cname": cname,"count":count,"compdt":company})
         
         # Get expired jobs
        
