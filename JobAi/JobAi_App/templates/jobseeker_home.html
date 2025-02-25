@@ -23,13 +23,26 @@
     z-index: 1000;
 }
 
+#msg-container2 {
+    position: fixed;
+    margin-top: 90px;
+    right: 20px;
+    width: 300px;
+    z-index: 1000;
+}
+
 .alert {
     padding: 15px;
     border-radius: 5px;
     margin-bottom: 10px;
     animation: fadeOut 5s ease-in-out forwards;
 }
-
+.alert1 {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    animation: fadeOut 20s ease-in-out forwards;
+}
 .alert-success {
     background-color: #d4edda;
     color: #155724;
@@ -56,8 +69,35 @@
     display: none;
 }
 </style>
+<div class="alert1 alert-danger"  id="msg-container2" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            
+            <!-- Modal Header with "X" Close Button -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Warning!</h5>
+                <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close" onclick="closeMessageModal()">X</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                    <div  role="alert1">
+                        Complete your profile to get access to all features of this portal.
+                        Use <a href="https://www.ilovepdf.com/pdf_to_word"><strong>ilovepdf</strong></a> for converting resumes to doc/docx format.
+                    </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                  </div>
+
+        </div>
+    </div>
+</div>
+
+
 <div class="main-content">
-    <div class="bg-danger w-full fw-bold ms-1 text-center text-light">Complete Profile Setup to access features of this portal.</div>
     <h2 id="profile">Jobseeker Profile Setup</h2><br><br>
     
     <div class="container w-50 mt-4" style="margin-right: 250px;margin-left: 25px;">

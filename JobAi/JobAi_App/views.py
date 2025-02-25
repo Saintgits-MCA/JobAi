@@ -1,12 +1,9 @@
-from datetime import date, datetime
-import time
+from datetime import date
 import openai
 from django.db import connection
 from django.shortcuts import get_object_or_404, render, redirect
 import os
-import re
-import json,PyPDF2
-from django.views.decorators.csrf import csrf_exempt
+import json
 from django.http import JsonResponse
 from django.contrib.auth import logout
 from django.core.files.storage import FileSystemStorage
@@ -14,12 +11,12 @@ from django.db.models import Q
 # from weasyprint import HTML
 from docx import Document
 from django.conf import settings
-from .models import *
+from .models import * #noqa
 from django.contrib import messages
-from django.template.loader import render_to_string
 from django.core.mail import send_mail
 
 openai.api_key = settings.OPENAI_API_KEY
+
 
 def convert_docx_to_json(docx_path, filename):
     """Convert a .docx file to JSON format and save it to media folder"""
@@ -57,27 +54,28 @@ def jobseeker_login(request):
             messages.error(request, "Invalid Email or Password")
     return render(request, 'jobseeker_login.html')
 
-def extract_text_from_pdf(file_path):
-    """
-    Extract text from a PDF file using pdfplumber with improved accuracy.
-    This function handles multiple pages, normalizes whitespace, and
-    attempts to capture text that might be in different layout layers.
-    """
-    import pdfplumber
-    extracted_text = []
-    try:
-        with pdfplumber.open(file_path) as pdf:
-            for page in pdf.pages:
-                # Extract text from all available layers on the page
-                page_text = page.extract_text(x_tolerance=1, y_tolerance=1)
-                if page_text:
-                    # Normalize whitespace and remove extra line breaks
-                    normalized_text = "\n".join(line.strip() for line in page_text.splitlines() if line.strip())
-                    extracted_text.append(normalized_text)
-    except Exception as e:
-        raise Exception(f"PDF extraction error: {e}")
+
+# def extract_text_from_pdf(file_path):
+#     """
+#     Extract text from a PDF file using pdfplumber with improved accuracy.
+#     This function handles multiple pages, normalizes whitespace, and
+#     attempts to capture text that might be in different layout layers.
+#     """
+#     import pdfplumber
+#     extracted_text = []
+#     try:
+#         with pdfplumber.open(file_path) as pdf:
+#             for page in pdf.pages:
+#                 # Extract text from all available layers on the page
+#                 page_text = page.extract_text(x_tolerance=1, y_tolerance=1)
+#                 if page_text:
+#                     # Normalize whitespace and remove extra line breaks
+#                     normalized_text = "\n".join(line.strip() for line in page_text.splitlines() if line.strip())
+#                     extracted_text.append(normalized_text)
+#     except Exception as e:
+#         raise Exception(f"PDF extraction error: {e}")
     
-    return "\n".join(extracted_text)
+#     return "\n".join(extracted_text)
 
 
 def extract_resume_details(content):
@@ -254,7 +252,7 @@ def jobseeker_home(request):
 
 
 def jobseeker_profile_update(request):
-    userid=request.session.get('jobseeker_id')
+    userid = request.session.get('jobseeker_id')
     dob = ""
     phone = ""
     address = ""
@@ -270,7 +268,7 @@ def jobseeker_profile_update(request):
         qualification = request.POST.get('Education')
         university = request.POST.get('University')
         skills = request.POST.get('skills')
-        image=request.FILES.get('image')
+        image = request.FILES.get('image')
         job_preference = request.POST.get('job_preferences')
         # Fetch the first resume for the user (if multiple exist)
         resume = jobseeker_resume.objects.filter(user=userid).first()
@@ -289,12 +287,12 @@ def jobseeker_profile_update(request):
             jobseeker_obj.university = university
             jobseeker_obj.address = address
             jobseeker_obj.phone = phone
-            jobseeker_obj.profile_img=image
-            jobseeker_obj.user_id=userid
-            jobseeker_obj.resume=cv
+            jobseeker_obj.profile_img = image
+            jobseeker_obj.user_id = userid
+            jobseeker_obj.resume = cv
             jobseeker_obj.save()
-            request.session['address']=jobseeker_obj.address
-            request.session['dob']=jobseeker_obj.dob
+            request.session['address'] = jobseeker_obj.address
+            request.session['dob'] = jobseeker_obj.dob
             messages.success(request, "Updated profile successfully.Now you can use whole features of this portal.")
     return redirect('home')
 
@@ -304,13 +302,13 @@ def main(request):
 
 
 def base(request):
-    jbid=request.session.get('jobseeker_id')
+    jbid = request.session.get('jobseeker_id')
     if jobseeker_profile.objects.filter(user=jbid).exists():
-        jsdt=jobseeker_profile.objects.get(user=jbid)
-        return render(request,'base.html',jsdt)
+        jsdt = jobseeker_profile.objects.get(user=jbid)
+        return render(request, 'base.html', jsdt)
     else:
-        jsdt=None
-    return render(request, 'base.html',jsdt)
+        jsdt = None
+    return render(request, 'base.html', jsdt)
 
 
 def Register(request):
@@ -321,7 +319,7 @@ def Register(request):
         name = request.POST.get('name')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        phone=request.POST.get('Phone')
+        phone = request.POST.get('Phone')
         if Jobseeker_Registration.objects.filter(name=name).exists() or Jobseeker_Registration.objects.filter(email=email).exists():
             messages.error(request, "A Jobseeker with this name and/or email already exists.You can Login directly.")
         else:
@@ -329,11 +327,12 @@ def Register(request):
             jobseeker_obj.name = name
             jobseeker_obj.email = email
             jobseeker_obj.password = password
-            jobseeker_obj.phone=phone
+            jobseeker_obj.phone = phone
             jobseeker_obj.save()
             messages.success(request, "Jobseeker registered successfully!.Email will be your Username")
             return render(request, 'jobseeker_register.html')
     return render(request, 'jobseeker_register.html')
+
 
 def reset_password(request, user_id):
     try:
@@ -357,12 +356,13 @@ def reset_password(request, user_id):
 
     return render(request, "j_reset_password.html", {"user_id":user_id})
 
+
 def Forgot_pwd(request):
     if request.method == "POST":
         email = request.POST.get("email")
         try:
             user = Jobseeker_Registration.objects.get(email=email)
-            uid=user.id
+            uid = user.id
             # Send email without link
             reset_url = f"{settings.SITE_URL}/reset_password/{uid}/"
             
@@ -388,14 +388,14 @@ def user_base(request):
 def jobseeker_logout(request):
     logout(request)
     request.session.clear()
-    messages.success(request,"Logout Successfully")
+    messages.success(request, "Logout Successfully")
     return render(request, 'jobseeker_login.html')
 
 
 def company_logout(request):
     logout(request)
     request.session.clear()
-    messages.success(request,"Logout Successfully")
+    messages.success(request, "Logout Successfully")
     return render(request, 'company_login.html')
 
 
@@ -415,8 +415,8 @@ def search_job(request):
     # Filter by search query. For the foreign key job_title, traverse to its text field.
     if search_query:
         jobs = jobs.filter(
-        Q(job_title__job_title__istartswith=search_query) |
-        Q(company__name__icontains=search_query) |
+        Q(job_title__job_title__istartswith=search_query) | 
+        Q(company__name__icontains=search_query) | 
         Q(job_type__icontains=search_query)
         )
     
@@ -430,15 +430,16 @@ def search_job(request):
         "jsdt": jobseeker,
     }
     return render(request, 'search-job.html', context)
+
+
 def coverletter(request):
-    job=job_title.objects.all()
+    job = job_title.objects.all()
     company = Company.objects.all()
     fname = request.session.get('jobseeker_name')
     email = request.session.get('jobseeker_email')
-    phoneno=request.session.get('jobseeker_phone')
+    phoneno = request.session.get('jobseeker_phone')
     if not jobseeker_profile.objects.filter(name=fname).exists():
         return redirect('home')
-    
 
     if request.method == "POST":
         # Get form data
@@ -449,15 +450,15 @@ def coverletter(request):
         skills = request.POST.get("skills", "Your Skills")
         job_type = request.POST.get("jobtype", "Job Type")
         phone = request.POST.get("phone", "Phone Number")
-        address=request.POST.get("Address")
-        eligibility=request.POST.get('eligibility')
-        ldate=date.today().strftime('%d-%m-%Y')
+        address = request.POST.get("Address")
+        eligibility = request.POST.get('eligibility')
+        ldate = date.today().strftime('%d-%m-%Y')
         try:
             company_obj = Company.objects.get(id=company_id)
             company_name = company_obj.name
-            company_loc=company_obj.address
-            job_position=job_title.objects.get(id=position)
-            jobs=job_position.job_title
+            company_loc = company_obj.address
+            job_position = job_title.objects.get(id=position)
+            jobs = job_position.job_title
         except Company.DoesNotExist:
             company_name = "Unknown Company"
 
@@ -471,7 +472,8 @@ Address the letter to {hr_name}, incorporating the company's full address. Highl
 Include the date ({ldate}) at the beginning and conclude with a proper closing, using the candidate’s full name instead of placeholders. Keep the letter concise, engaging, and directly relevant to the job opportunity.
 """
         
-        response = openai.ChatCompletion.create(
+        response = openai.ChatCompletion.create(# pylint: disable=undefined-variable
+
              model="gpt-4o-mini",
   store=True,
   messages=[
@@ -480,7 +482,7 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
         )
 
         cover_letter = response["choices"][0]["message"]["content"].strip()
-        jsdt=jobseeker_profile.objects.get(email=email)
+        jsdt = jobseeker_profile.objects.get(email=email)
         return render(request, "cover-letter.html", {
             "fname": fname,
             "email": email,
@@ -490,7 +492,7 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
             "jsdt":jsdt,
             "job":job
         })
-    jsdt=jobseeker_profile.objects.get(email=email)
+    jsdt = jobseeker_profile.objects.get(email=email)
     return render(request, "cover-letter.html", {
         "fname": fname,
         "company": company,
@@ -501,13 +503,13 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
     })
 
 
-def settings_view(request):    
-    jbid=request.session.get('jobseeker_id')
+def settings_view(request): 
+    jbid = request.session.get('jobseeker_id')
     try: 
-        jsdt=jobseeker_profile.objects.get(user_id=jbid)
+        jsdt = jobseeker_profile.objects.get(user_id=jbid)
         fname = request.session.get('jobseeker_name')
         jobseek_email = request.session.get('jobseeker_email') 
-        phone=request.session.get('jobseeker_phone')
+        phone = request.session.get('jobseeker_phone')
         # address=request.session.get("address")
         context = {
             'jsdt':jsdt,
@@ -518,7 +520,7 @@ def settings_view(request):
         return render(request, 'settings_view.html', context)
     except:
         
-        jsdt=Jobseeker_Registration.objects.filter(id=jbid)
+        jsdt = Jobseeker_Registration.objects.filter(id=jbid)
         fname = request.session.get('jobseeker_name')
         if not jobseeker_profile.objects.filter(name=fname).exists():
             return redirect('home')
@@ -527,23 +529,22 @@ def settings_view(request):
                 "fname":fname,
               
             }
-        return render(request,'settings_view.html', context)
-        
+        return render(request, 'settings_view.html', context)
 
 
 def support(request):
     fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():
             return redirect('home')
-    jobseeker=jobseeker_profile.objects.get(name=fname)
-    return render(request, 'support.html', {"fname":fname,"jsdt":jobseeker})
+    jobseeker = jobseeker_profile.objects.get(name=fname)
+    return render(request, 'support.html', {"fname":fname, "jsdt":jobseeker})
 
 
 def mockinterview(request):
     fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():
             return redirect('home')
-    jobs=job_title.objects.all()
+    jobs = job_title.objects.all()
     if request.method == "POST":
         job_id = request.POST.get("job_title")
         user_answer = request.POST.get("answer", None)
@@ -559,7 +560,8 @@ def mockinterview(request):
         if user_answer is None:
             # Generate exactly 5 interview questions for the given job title
             prompt = f"Provide exactly 5 professional interview questions for a {job.job_title} role. Do not include any introduction or explanation. List them one after another."
-            response = openai.ChatCompletion.create(
+            response = openai.ChatCompletion.create(# pylint: disable=undefined-variable
+
                 model="gpt-4o-mini",
                 messages=[{"role": "system", "content": prompt}]
             )
@@ -575,22 +577,22 @@ def mockinterview(request):
         else:
             # Evaluate the user answer
             prompt = f"Evaluate this job interview response for a {job.job_title} role and provide constructive feedback. Do not include any introduction or pleasantries. Answer concisely.\n\nAnswer: {user_answer}"
-            response = openai.ChatCompletion.create(
+            response = openai.ChatCompletion.create(# pylint: disable=undefined-variable
                 model="gpt-4o-mini",
                 messages=[{"role": "system", "content": prompt}]
             )
             feedback = response["choices"][0]["message"]["content"].strip()
             return JsonResponse({"feedback": feedback})
-    jobseeker=jobseeker_profile.objects.get(name=fname)
-    return render(request, 'mock-interview.html', {'job': jobs,"fname":fname,"jsdt":jobseeker})
+    jobseeker = jobseeker_profile.objects.get(name=fname)
+    return render(request, 'mock-interview.html', {'job': jobs, "fname":fname, "jsdt":jobseeker})
 
 
 def autoapply(request):
     fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():
         return redirect('home')
-    jobseeker=jobseeker_profile.objects.get(name=fname)
-    return render(request, 'auto-apply.html', {"fname":fname,"jsdt":jobseeker})
+    jobseeker = jobseeker_profile.objects.get(name=fname)
+    return render(request, 'auto-apply.html', {"fname":fname, "jsdt":jobseeker})
 
 
 def user_type(request):
@@ -622,7 +624,7 @@ def company_registration(request):
         password = request.POST.get('password')
         company_type = request.POST.get("CompanyType")  # This returns a string
         company_address = request.POST.get('Address')
-        comp_logo=request.FILES.get('company_logo')
+        comp_logo = request.FILES.get('company_logo')
         # Check if a company with the same name or email already exists
         if Company.objects.filter(name=name).exists() or Company.objects.filter(email=email).exists():
             messages.error(request, "A company with this name or email already exists. You can Login.")
@@ -634,7 +636,7 @@ def company_registration(request):
             companyobj.email = email
             companyobj.company_type_id = company_type
             companyobj.address = company_address
-            companyobj.profile_img=comp_logo
+            companyobj.profile_img = comp_logo
             companyobj.save()
             messages.success(request, "Company registered successfully!.Email will be your Username")
             return redirect('company_registration')
@@ -668,11 +670,12 @@ def delete_job(request):
         
     return render(request, 'company_jobs.html', {'cname': cname})
 
+
 def delete_user_profile(request):
-    jid=request.session.get('jobseeker_id')
-    user=get_object_or_404(jobseeker_profile, user=jid)
+    jid = request.session.get('jobseeker_id')
+    user = get_object_or_404(jobseeker_profile, user=jid)
     user.delete()
-    resume=get_object_or_404(jobseeker_resume, user=jid)
+    resume = get_object_or_404(jobseeker_resume, user=jid)
     resume.delete()
     # Reset auto-increment (adjust for your database)
     with connection.cursor() as cursor:
@@ -680,7 +683,7 @@ def delete_user_profile(request):
         cursor.execute("ALTER TABLE jobai1.jobai_app_jobseeker_resume AUTO_INCREMENT = 1")
         messages.success(request, "Profile deleted successfully")
         return redirect('settings_view')
-    jsdt=Jobseeker_Registration.objects.get(id=jid)
+    jsdt = Jobseeker_Registration.objects.get(id=jid)
     fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():
         return redirect('home')
@@ -689,7 +692,8 @@ def delete_user_profile(request):
                 "fname":fname,
               
             }
-    return render(request,'settings_view.html', context)
+    return render(request, 'settings_view.html', context)
+
 
 def company_type(request):
     if request.method == "POST":
@@ -701,6 +705,7 @@ def company_type(request):
         return render(request, 'company_type.html')
     return render(request, 'company_type.html')
 
+
 def jobs(request):
     if request.method == "POST":
         job_title1 = request.POST.get('job')
@@ -711,7 +716,8 @@ def jobs(request):
         return render(request, 'job_position.html')
     return render(request, 'job_position.html')
 
-def company_reset_pwd(request,comp_id):
+
+def company_reset_pwd(request, comp_id):
     try:
         comp = Company.objects.get(pk=comp_id)
     except Company.DoesNotExist:
@@ -731,12 +737,14 @@ def company_reset_pwd(request,comp_id):
             return redirect("company_login")  # Redirect after reset
 
     return render(request, "company_reset_password.html", {"comp_id":comp_id})
+
+
 def company_forgot_password(request):
     if request.method == "POST":
         email = request.POST.get("email")
         try:
             cmpny = Company.objects.get(email=email)
-            uid=cmpny.id
+            uid = cmpny.id
             # Send email without link
             reset_url = f"{settings.SITE_URL}/company_reset_password/{uid}/"
             
@@ -764,8 +772,8 @@ def company_dashboard(request):
         compjobdt = company_joblist.objects.filter(company=cid)
         # If no jobs exist, show the default page
         if not compjobdt.exists():
-            count=0
-            return render(request, 'company_dashboard.html', {"cname": cname,"count":count,"compdt":company})
+            count = 0
+            return render(request, 'company_dashboard.html', {"cname": cname, "count":count, "compdt":company})
         
         # Get expired jobs
        
@@ -779,7 +787,7 @@ def company_dashboard(request):
         return render(request, 'company_dashboard.html', context)
     except Exception as e:
         # Handle unexpected errors
-        return render(request, 'company_dashboard.html', {"cname": cname,"compdt":company, "error": str(e)})
+        return render(request, 'company_dashboard.html', {"cname": cname, "compdt":company, "error": str(e)})
 
     
 def company_settings(request):
@@ -792,16 +800,16 @@ def company_settings(request):
     company = Company.objects.get(id=cid)
     context = {
             "cname":cname, "cmail":cmail, "cloc":cloc,
-            "ctype":ctype,"cid":cid,"compdt":company
+            "ctype":ctype, "cid":cid, "compdt":company
         } 
-    if request.method=="POST":
-        comp_logo=request.FILES.get('company_logo')
-        comp=Company.objects.get(id=cid)
-        if comp_logo:          
-            comp.profile_img=comp_logo
+    if request.method == "POST":
+        comp_logo = request.FILES.get('company_logo')
+        comp = Company.objects.get(id=cid)
+        if comp_logo: 
+            comp.profile_img = comp_logo
             comp.save()
-            messages.success(request,"Logo Uploaded successfully!!")    
-        return render(request, 'company_settings_view.html',context)
+            messages.success(request, "Logo Uploaded successfully!!")    
+        return render(request, 'company_settings_view.html', context)
     return render(request, 'company_settings_view.html', context)
 
 
@@ -814,7 +822,7 @@ def company_jobs(request):
         compjobdt = company_joblist.objects.filter(company=cid)
         # If no jobs exist, show the default page
         if not compjobdt.exists():
-            return render(request, 'company_jobs.html', {"cname": cname,"compdt":company})
+            return render(request, 'company_jobs.html', {"cname": cname, "compdt":company})
         
         # Iterate through each job for the company
         jobs_list = []
@@ -847,11 +855,11 @@ def company_jobs(request):
     
     except Exception as e:
         # Handle unexpected errors
-        return render(request, 'company_jobs.html', {"cname": cname,'compdt':company, "error": str(e)})
+        return render(request, 'company_jobs.html', {"cname": cname, 'compdt':company, "error": str(e)})
 
 
 def company_postjob(request):
-    job=job_title.objects.all()
+    job = job_title.objects.all()
     cid = request.session.get('company_id')
     company = Company.objects.get(id=cid)
     if request.method == "POST":
@@ -883,16 +891,16 @@ def company_postjob(request):
             companyjob_obj.save()
             messages.success(request, "Job Posted Successfully!!")        
     cname = request.session.get('company_name')
-    return render(request, 'company_postjob.html', {"cname":cname,"compdt":company, 'cdate':date.today().strftime("%Y-%m-%d"),"job":job})
+    return render(request, 'company_postjob.html', {"cname":cname, "compdt":company, 'cdate':date.today().strftime("%Y-%m-%d"), "job":job})
 
 
 def edit_job(request):
-    job=job_title.objects.all()
+    job = job_title.objects.all()
     cid = request.session.get('company_id')
     cname = request.session.get('company_name')
     company = Company.objects.get(id=cid)
     if request.method == "POST":
-        job_id  = request.POST.get('job_id')
+        job_id = request.POST.get('job_id')
         job_number = request.POST.get('job_number')
         job_position = request.POST.get('job_title')
         job_description = request.POST.get('job_description')
@@ -922,25 +930,25 @@ def edit_job(request):
         companyjob_obj.save()
         messages.success(request, "Job Edited Successfully!!") 
         return redirect('job_listing')
-    jobid=request.GET.get('ids')
-    jobobg=company_joblist.objects.get(id=jobid)
-    context={
+    jobid = request.GET.get('ids')
+    jobobg = company_joblist.objects.get(id=jobid)
+    context = {
         'jobobg':jobobg,
         "cname":cname,
         "job":job,
         "compdt":company
     }
-    return render(request, 'edit-job.html',context)
+    return render(request, 'edit-job.html', context)
+
 
 def jobseeker_dashboard(request):
-    fname=request.session.get('jobseeker_name')
+    fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():
         return redirect('home')
-    ccount=company_joblist.objects.all()
-    company=Company.objects.all()
-    jcount=ccount.count()
-    compcount=company.count()
-    jobseeker=jobseeker_profile.objects.get(name=fname)
-    return render(request,'jobseeker_dashboard.html',{"fname":fname,"jcount":jcount,"compcount":compcount,"company":company,"jsdt":jobseeker})
-
+    ccount = company_joblist.objects.all()
+    company = Company.objects.all()
+    jcount = ccount.count()
+    compcount = company.count()
+    jobseeker = jobseeker_profile.objects.get(name=fname)
+    return render(request, 'jobseeker_dashboard.html', {"fname":fname, "jcount":jcount, "compcount":compcount, "company":company, "jsdt":jobseeker})
 
