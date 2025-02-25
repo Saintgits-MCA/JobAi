@@ -2,6 +2,7 @@
 {% load static %}
 {% block content %}
 <style>
+ 
   .scrollable-table {
     max-height: 400px;
     overflow-y: auto;
@@ -47,6 +48,7 @@
     color: #555;
     padding: 20px;
   }
+  
 </style>
 
 <div class="container mt-4">
@@ -57,12 +59,13 @@
     <div class="scrollable-table">
       <table class="table table-striped table-bordered">
         <colgroup>
-          <col style="width: 20%;">
-          <col style="width: 20%;">
-          <col style="width: 20%;">
-          <col style="width: 20%;">
-          <col style="width: 30%;">
-          <col style="width: 30%;">
+          <col style="width: 25%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 15%;">
+          <col style="width: 10%;">
+          <col style="width: 15%;">
+          <col style="width: 15%;">
         </colgroup>
         <thead>
           <tr>
@@ -95,12 +98,12 @@
   {% endif %}
 
   <div class="mt-4">
-    <form method="post" action="{%url 'auto-apply'%}">
+    <form method="POST" action="{% url 'auto-apply' %}">
       {% csrf_token %}
       <button type="submit" class="btn btn-primary w-100">Auto Apply Now</button>
     </form>
   </div>
-
+{{apps}}
 </div>
 {% if messages %}
         <!-- Modal -->
@@ -137,6 +140,14 @@
             function closeMessageModal() {
                 document.getElementById("message-container").style.display = "none";
             }
+            setTimeout(function() {
+        let messageContainer = document.getElementById("message-container");
+        if (messageContainer) {
+            messageContainer.style.transition = "opacity 0.5s";
+            messageContainer.style.opacity = "1"; // Fade out effect
+            setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
+        }
+    }, 5000);
         </script>
     {% endif %}
     {%endblock%}

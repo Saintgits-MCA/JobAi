@@ -3,39 +3,48 @@
 {% block content %}
 <style>
     #message-container {
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    width: 700px;
-    z-index: 1000;
-}
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        width: 700px;
+        z-index: 1000;
+    }
 
-.alert {
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    animation: fadeOut 5s ease-in-out forwards;
-}
+    .alert {
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        animation: fadeOut 5s ease-in-out forwards;
+    }
 
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
 
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
 
-/* CSS Animation to Fade Out */
-@keyframes fadeOut {
-    0% { opacity: 1; }
-    80% { opacity: 1; }  /* Stay visible for a while */
-    100% { opacity: 0; display: none; }
-}
+    /* CSS Animation to Fade Out */
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
 
+        80% {
+            opacity: 1;
+        }
+
+        /* Stay visible for a while */
+        100% {
+            opacity: 0;
+            display: none;
+        }
+    }
 </style>
 <div class="container-fluid mt-4">
     <div class="row">
@@ -45,7 +54,8 @@
             <!-- Profile Overview -->
             <div class="card shadow-sm p-4 mb-4">
                 <div class="d-flex align-items-center">
-                    <img src="{{compdt.profile_img.url}}" alt="Profile" class="rounded-circle me-3" width="100px" height="80px">
+                    <img src="{{compdt.profile_img.url}}" alt="Profile" class="rounded-circle me-3" width="100px"
+                        height="80px">
                     <div>
                         <h5 class="mb-1">Welcome Back, {{cname}}!</h5>
                         <p class="text-muted">Manage your jobs, candidates, and settings easily.</p>
@@ -71,78 +81,76 @@
                         <p>You have <b>{{count}}</b> job(s) posted.</p>
                         <a href="{%url 'Post Job' %}"><button class="btn btn-primary">+ Post New Job</button></a>
                     </div>
-                    
+
                 </div>
 
                 <!-- Applications Section -->
                 <div id="applications" class="tab-pane fade">
                     <div class="card p-3 mb-3">
                         <h5>New Applicants</h5>
-                        <p>You have <b>6</b> new applications.</p>
+                        <p>You have <b>{{pcount}}</b> new applications.</p>
                     </div>
 
                     <div class="list-group">
+                        {% for i in participants %}
                         <a href="#" class="list-group-item list-group-item-action">
                             <div class="d-flex align-items-center">
-                                <img src="{% static 'images/user1.png' %}" class="rounded-circle me-3" width="40">
+                                <img src="{{i.jobseeker.user.profile_img}}" class="rounded-circle me-3" width="40">
                                 <div>
-                                    <h6 class="mb-0">David Lee</h6>
-                                    <small class="text-muted">Applied for Blog Writer</small>
+
+                                    <h6 class="mb-0">{{i.jobseeker.user.name}}</h6>
+                                    <small class="text-muted">{{i.company_joblist.job_title.job_title}}</small>
+
                                 </div>
                             </div>
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex align-items-center">
-                                <img src="{% static 'images/user2.png' %}" class="rounded-circle me-3" width="40">
-                                <div>
-                                    <h6 class="mb-0">Jenny Kim</h6>
-                                    <small class="text-muted">Applied for Infrastructure Engineer</small>
-                                </div>
-                            </div>
-                        </a>
+                        {%endfor%}
+
                     </div>
                 </div>
             </div>
-            </div>
-                </div>
-    </div>
-</div>
-{% if messages %}
-    <!-- Modal -->
-    {% for message in messages %}
-    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"  id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                
-                <!-- Modal Header with "X" Close Button -->
-                <div class="modal-header">
-                    <h5 class="modal-title" id="messageModalLabel">Notification</h5>
-                    <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close" onclick="closeMessageModal()">X</button>
-                       </div>
-
-                <!-- Modal Body -->
-                <div class="modal-body">
-                    
-                        <div  role="alert">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-
-                <!-- Modal Footer -->
-                <div class="modal-footer">
-                </div>
-
-            </div>
         </div>
     </div>
+</div>
+</div>
+{% if messages %}
+<!-- Modal -->
+{% for message in messages %}
+<div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"
+    id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-    <!-- JavaScript to Auto-Close on Click -->
-    <script>
-        function closeMessageModal() {
-            document.getElementById("message-container").style.display = "none";
-        }
-    </script>
+            <!-- Modal Header with "X" Close Button -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="closeMessageModal()">X</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <div role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to Auto-Close on Click -->
+<script>
+    function closeMessageModal() {
+        document.getElementById("message-container").style.display = "none";
+    }
+</script>
 {% endif %}
 
 

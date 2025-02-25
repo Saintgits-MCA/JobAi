@@ -67,9 +67,7 @@ class company_joblist(models.Model):
     highest_qualification = models.CharField(max_length=255, blank=True, null=True)
     skills_required = models.TextField(blank=True, null=True)
     dateofpublish=models.DateField(max_length=20,null=True)
-    Lastdate=models.DateField(max_length=20,null=True)
-    def __str__(self):
-        return self.name 
+    Lastdate=models.DateField(max_length=20,null=True) 
     
 
     

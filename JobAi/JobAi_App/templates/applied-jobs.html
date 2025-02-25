@@ -55,31 +55,33 @@
   
   {% if jobs %}
     <div class="scrollable-table">
-      <table class="table table-striped table-bordered">
+      <table class="table table-striped table-bordered" >
         <colgroup>
+          <col style="width: 15%;">
           <col style="width: 20%;">
-          <col style="width: 20%;">
-          <col style="width: 20%;">
-          <col style="width: 20%;">
-          <col style="width: 30%;">
-          <col style="width: 30%;">
+          <col style="width: 15%;">
+          <col style="width: 15%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
         </colgroup>
         <thead>
           <tr>
+            <th>Application ID</th>
             <th>Job Title</th>
             <th>Company</th>
             <th>Location</th>
-            <th>Published On</th>
+            <th>Applied At</th>
             <th>Last Date</th>
           </tr>
         </thead>
         <tbody>
           {% for job in jobs %}
             <tr>
+              <td>{{job.id}}</td>
               <td>{{ job.company_joblist.job_title.job_title }}</td>
               <td>{{ job.company_joblist.company.name }}</td>
               <td>{{ job.company_joblist.location }}</td>
-              <td>{{ job.company_joblist.dateofpublish|date:"M d, Y" }}</td>
+              <td>{{ job.applied_at|date:"M d, Y" }}</td>
               <td>{{job.company_joblist.Lastdate|date:"M d, Y" }}</td>
             </tr>
           {% endfor %}

@@ -628,58 +628,62 @@ def auto_apply_jobs(jobseeker, max_apply=3):
     - Limits to max_apply new applications.
     """
     # Get list of job IDs that the jobseeker has already applied for
-    applied_job_ids = JobApplication.objects.filter(jobseeker=jobseeker).values_list('job_id', flat=True)
-    
+    applied_job_ids = JobApplication.objects.filter(jobseeker=jobseeker).values_list('company_joblist_id', flat=True)
+
     # Get matching jobs based on skills and eligibility
     matching_jobs = match_jobs(jobseeker)
-    
-    # Exclude jobs already applied to and order by dateofpublish descending
+
+    # Exclude jobs already applied for
     available_jobs = [job for job in matching_jobs if job.id not in applied_job_ids]
+
+    # Sort by dateofpublish (newest first), handling None values
     available_jobs.sort(key=lambda x: x.dateofpublish or "", reverse=True)
-    
+
     applications_made = 0
     for job in available_jobs[:max_apply]:
         try:
-            JobApplication.objects.create(jobseeker=jobseeker, job=job)
+            JobApplication.objects.create(jobseeker=jobseeker, company_joblist=job)
             applications_made += 1
         except Exception as e:
+            print(f"Error applying for {job.job_title}: {e}")
             continue
 
     return applications_made, available_jobs
 
 def autoapply(request):
-    fname = request.session.get('jobseeker_name')
-    if not fname or not jobseeker_profile.objects.filter(name=fname).exists():
-        messages.error(request, "You must be logged in and have a profile to auto-apply.")
-        return redirect('jobseeker_login')
+    # Use session to retrieve jobseeker email instead of just name
+    fname=request.session.get('jobseeker_name')
+    jobseeker_email = request.session.get('jobseeker_email')
+    if not jobseeker_email or not jobseeker_profile.objects.filter(email=jobseeker_email).exists():
+        messages.error(request, "Jobseeker profile not found.")
+        return redirect('home')
 
-    jobseeker = jobseeker_profile.objects.get(name=fname)
+    jobseeker = jobseeker_profile.objects.get(email=jobseeker_email)
     recommended_jobs = match_jobs(jobseeker)
 
-    # On POST, perform auto-apply action
+    # On POST request, perform auto-apply action
     if request.method == "POST":
         applications, _ = auto_apply_jobs(jobseeker, max_apply=3)
         if applications:
             messages.success(request, f"Auto-applied to {applications} job(s) successfully!")
         else:
             messages.info(request, "No new matching jobs available for auto-apply.")
-        return redirect('auto-apply')
-    
+        redirect('auto-apply')
+
     context = {
-        "fname": fname,
+        "jobseeker_email": jobseeker_email,
         "jsdt": jobseeker,
+        "fname":fname,
         "recommended_jobs": recommended_jobs,
     }
     return render(request, "auto-apply.html", context)
 
 def applied_jobs(request):
     fname = request.session.get('jobseeker_name')
+    if not fname or not jobseeker_profile.objects.filter(name=fname).exists():
+        return redirect('home')
     profile=jobseeker_profile.objects.get(name=fname)
     profile_id=profile.id
-    if not fname or not jobseeker_profile.objects.filter(name=fname).exists():
-        messages.error(request, "You must be logged in and have a profile to auto-apply.")
-        return redirect('jobseeker_login')
-
     jobseeker = jobseeker_profile.objects.get(name=fname)
     jobs=JobApplication.objects.filter(jobseeker_id=profile_id)
     context = {
@@ -862,13 +866,17 @@ def company_dashboard(request):
     try:
         cname = request.session.get('company_name')
         cid = request.session.get('company_id')
-        company = Company.objects.get(id=cid)
+        comp = Company.objects.get(id=cid)
         # Fetch all job listings for the logged-in company
-        compjobdt = company_joblist.objects.filter(company=cid)
+        compjobdt = company_joblist.objects.filter(company_id=cid)
+        # jid=company_joblist.objects.filter(company_id=cid)
+        # cjid=jid.id
+        participants=JobApplication.objects.filter(company_joblist__company_id=cid).order_by('-id')[:3]
+        pcount=participants.count()
         # If no jobs exist, show the default page
         if not compjobdt.exists():
             count = 0
-            return render(request, 'company_dashboard.html', {"cname": cname, "count":count, "compdt":company})
+            return render(request, 'company_dashboard.html', {"cname": cname, "count":count, "compdt":comp,"pcount":pcount,"participants":participants}) # type: ignore
         
         # Get expired jobs
        
@@ -877,12 +885,14 @@ def company_dashboard(request):
             # "jobs": expiredyet,
             "cname": cname,
             "count":count,
-            "compdt":company
+            "compdt":comp,
+            "pcount":pcount,
+            "participants":participants
         }
         return render(request, 'company_dashboard.html', context)
     except Exception as e:
         # Handle unexpected errors
-        return render(request, 'company_dashboard.html', {"cname": cname, "compdt":company, "error": str(e)})
+        return render(request, 'company_dashboard.html', {"cname": cname, "compdt":comp, "error": str(e)})
 
     
 def company_settings(request):
