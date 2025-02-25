@@ -100,3 +100,15 @@ class ResumeDetails(models.Model):
 class UploadedFile(models.Model):
     file = models.FileField(upload_to='uploads/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    
+### **New Job Application Table**
+class JobApplication(models.Model):
+    jobseeker = models.ForeignKey(jobseeker_profile, on_delete=models.CASCADE, related_name='applications')
+    company_joblist = models.ForeignKey(company_joblist, on_delete=models.CASCADE, related_name='applications')
+    applied_at = models.DateTimeField(auto_now_add=True)  # Tracks when applied
+
+    class Meta:
+        unique_together = ('jobseeker', 'company_joblist')  # Ensures unique applications per jobseeker-job
+
+    def __str__(self):
+        return f"{self.jobseeker.name} applied for {self.job.job_title} at {self.job.company.name}"

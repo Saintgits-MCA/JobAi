@@ -586,14 +586,109 @@ def mockinterview(request):
     jobseeker = jobseeker_profile.objects.get(name=fname)
     return render(request, 'mock-interview.html', {'job': jobs, "fname":fname, "jsdt":jobseeker})
 
+def parse_list(text):
+    """
+    Parse a comma-separated string into a set of lowercase trimmed items.
+    """
+    if text:
+        return set([item.strip().lower() for item in text.split(",") if item.strip()])
+    return set()
+
+def match_jobs(jobseeker):
+    """
+    Match jobs based on overlapping skills and jobseeker's highest qualification.
+    Returns a QuerySet of matching company_joblist jobs.
+    """
+    # Parse jobseeker skills and qualification
+    seeker_skills = parse_list(jobseeker.skills)
+    seeker_qual = jobseeker.highest_qualification.strip().lower() if jobseeker.highest_qualification else ""
+    
+    # Fetch all jobs (this could be optimized with a filter, but for now we'll do it in Python)
+    all_jobs = company_joblist.objects.all()
+    matching_jobs = []
+    for job in all_jobs:
+        job_skills = parse_list(job.skills_required)
+        # Check for any common skills
+        if not seeker_skills.intersection(job_skills):
+            continue
+        # Check eligibility: if job.highest_qualification exists, see if it matches the seeker qualification
+        if job.highest_qualification:
+            # Split eligibility criteria if multiple (assuming comma-separated)
+            eligibility_set = parse_list(job.highest_qualification)
+            if seeker_qual and seeker_qual not in eligibility_set:
+                continue
+        matching_jobs.append(job)
+    return matching_jobs
+
+def auto_apply_jobs(jobseeker, max_apply=3):
+    """
+    Auto-apply function:
+    - Shortlists matching jobs (using skills and eligibility).
+    - Excludes jobs that the jobseeker has already applied for.
+    - Limits to max_apply new applications.
+    """
+    # Get list of job IDs that the jobseeker has already applied for
+    applied_job_ids = JobApplication.objects.filter(jobseeker=jobseeker).values_list('job_id', flat=True)
+    
+    # Get matching jobs based on skills and eligibility
+    matching_jobs = match_jobs(jobseeker)
+    
+    # Exclude jobs already applied to and order by dateofpublish descending
+    available_jobs = [job for job in matching_jobs if job.id not in applied_job_ids]
+    available_jobs.sort(key=lambda x: x.dateofpublish or "", reverse=True)
+    
+    applications_made = 0
+    for job in available_jobs[:max_apply]:
+        try:
+            JobApplication.objects.create(jobseeker=jobseeker, job=job)
+            applications_made += 1
+        except Exception as e:
+            continue
+
+    return applications_made, available_jobs
 
 def autoapply(request):
     fname = request.session.get('jobseeker_name')
-    if not jobseeker_profile.objects.filter(name=fname).exists():
-        return redirect('home')
-    jobseeker = jobseeker_profile.objects.get(name=fname)
-    return render(request, 'auto-apply.html', {"fname":fname, "jsdt":jobseeker})
+    if not fname or not jobseeker_profile.objects.filter(name=fname).exists():
+        messages.error(request, "You must be logged in and have a profile to auto-apply.")
+        return redirect('jobseeker_login')
 
+    jobseeker = jobseeker_profile.objects.get(name=fname)
+    recommended_jobs = match_jobs(jobseeker)
+
+    # On POST, perform auto-apply action
+    if request.method == "POST":
+        applications, _ = auto_apply_jobs(jobseeker, max_apply=3)
+        if applications:
+            messages.success(request, f"Auto-applied to {applications} job(s) successfully!")
+        else:
+            messages.info(request, "No new matching jobs available for auto-apply.")
+        return redirect('auto-apply')
+    
+    context = {
+        "fname": fname,
+        "jsdt": jobseeker,
+        "recommended_jobs": recommended_jobs,
+    }
+    return render(request, "auto-apply.html", context)
+
+def applied_jobs(request):
+    fname = request.session.get('jobseeker_name')
+    profile=jobseeker_profile.objects.get(name=fname)
+    profile_id=profile.id
+    if not fname or not jobseeker_profile.objects.filter(name=fname).exists():
+        messages.error(request, "You must be logged in and have a profile to auto-apply.")
+        return redirect('jobseeker_login')
+
+    jobseeker = jobseeker_profile.objects.get(name=fname)
+    jobs=JobApplication.objects.filter(jobseeker_id=profile_id)
+    context = {
+        "fname": fname,
+        "jsdt": jobseeker,
+        "jobs":jobs
+        # "recommended_jobs": recommended_jobs,
+    }
+    return render(request,'applied-jobs.html',context)
 
 def user_type(request):
     return render(request, 'user-type.html')
@@ -946,9 +1041,13 @@ def jobseeker_dashboard(request):
     if not jobseeker_profile.objects.filter(name=fname).exists():
         return redirect('home')
     ccount = company_joblist.objects.all()
+    profile=jobseeker_profile.objects.get(name=fname)
+    profile_id=profile.id
+    applied_jcount=JobApplication.objects.filter(jobseeker_id=profile_id)
+    ajcount=applied_jcount.count()
     company = Company.objects.all()
     jcount = ccount.count()
     compcount = company.count()
     jobseeker = jobseeker_profile.objects.get(name=fname)
-    return render(request, 'jobseeker_dashboard.html', {"fname":fname, "jcount":jcount, "compcount":compcount, "company":company, "jsdt":jobseeker})
+    return render(request, 'jobseeker_dashboard.html', {"fname":fname, "jcount":jcount, "compcount":compcount, "company":company, "jsdt":jobseeker,"ajcount":ajcount})
 

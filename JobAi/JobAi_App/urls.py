@@ -38,7 +38,8 @@ urlpatterns = [
     path('user_support/',views.support,name='support'),
     path('company_password_reset/',views.company_forgot_password,name='Company Password Reset'),
     path('auto-apply/',views.autoapply,name='auto-apply'),
-    path('mock-interview/',views.mockinterview,name='mock-interview')
+    path('mock-interview/',views.mockinterview,name='mock-interview'),
+    path('applied_jobs',views.applied_jobs,name="applied-jobs")
 ]
 if settings.DEBUG:
     urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
