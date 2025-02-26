@@ -10,9 +10,61 @@
 	<title>JobAi | AI-Powered Job Search Tools</title>
 	<meta name="description">
 	<script defer src="{% static 'assets/js/alpine.min.js' %}" type="b014f77004e53e5bad1cb140-text/javascript"></script>
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'assets/css/index.css'%}">
+	<link rel="stylesheet" href="{% static 'assets/css/index.css'%}">
+</head>
+<style>
+	.new-section {
+		text-align: center;
+		padding: 50px 20px;
+		background-color: #f8f9fa;
+	}
+
+	.new-section h2 {
+		font-size: 28px;
+		font-weight: bold;
+		margin-bottom: 30px;
+	}
+
+	.content-box {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 20px;
+	}
+
+	.box-item {
+		background: white;
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		text-align: center;
+		width: 250px;
+		transition: transform 0.3s ease-in-out;
+	}
+
+	.box-item:hover {
+		transform: translateY(-5px);
+	}
+
+	.box-item i {
+		font-size: 50px;
+		margin-bottom: 20px;
+	}
+
+	.box-item h3 {
+		font-size: 18px;
+		font-weight: bold;
+		margin-bottom: 10px;
+	}
+
+	.box-item p {
+		font-size: 14px;
+		color: #666;
+	}
+</style>
+
 <body
 	class="grid grid-cols-[1fr_1rem_repeat(2,min(37.5rem,calc(50%-1rem)))_1rem_1fr] bg-top bg-no-repeat [background-size:200vw] lg:[background-size:100%_62rem] [:where(&>*)]:[grid-column:3/5]"
 	style="background-image: url('static/images/bg1.png');opacity: 0.9;">
@@ -21,7 +73,8 @@
 	<nav class="navbar px-0 flex justify-between items-start">
 		<div class="flex flex-col sm:flex-row gap-4 justify-start mt-2">
 			<a href="">
-				<img src="{% static 'images/JobAi2.png'%}" alt="JobAi" class="h-10" style="height: 90px;border-radius: 25px;box-shadow: 0 0 20px rgb(48, 35, 229);">
+				<img src="{% static 'images/JobAi2.png'%}" alt="JobAi" class="h-10"
+					style="height: 90px;border-radius: 25px;box-shadow: 0 0 20px rgb(48, 35, 229);">
 			</a>
 
 		</div>
@@ -30,9 +83,10 @@
 			<ul class="menu menu-horizontal gap-0 max-sm:p-0 text-xs lg:text-sm">
 				<li> <a href="#" class="font-bold text-white hover:bg-black flex items-center text-lg">Home</a></li>
 				<li><a href="#FAQ" class="font-bold text-lg text-white hover:bg-black  flex items-center">
-					FAQ
-				</a></li>
-				<li><a href="{% url 'user-type' %}" class="font-bold text-lg text-white hover:bg-black  flex items-center">
+						FAQ
+					</a></li>
+				<li><a href="{% url 'user-type' %}"
+						class="font-bold text-lg text-white hover:bg-black  flex items-center">
 						Login
 					</a></li>
 			</ul>
@@ -41,10 +95,16 @@
 	</nav>
 	<!-- hero -->
 	<div
-		class="grid place-content-center items-center gap-y-6 overflow-hidden [grid-column:3/5] lg:h-[clamp(40rem,calc(100vh-4rem),50rem)] lg:justify-between lg:[grid-column:3/7] lg:[grid-template-columns:subgrid]" >
+		class="grid place-content-center items-center gap-y-6 overflow-hidden [grid-column:3/5] lg:h-[clamp(40rem,calc(100vh-4rem),50rem)] lg:justify-between lg:[grid-column:3/7] lg:[grid-template-columns:subgrid]">
 		<div class="z-[1] flex flex-col items-start gap-6 py-6">
 			<h1 class="relative font-title text-[clamp(4rem,20vw,3.75rem)] leading-none">
-				<b style="color:white;background-color: #1E3A8A;border-radius: 15px;text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Automate</b> <span class="font-bold" style="color: #0e0d0d;"> your</span><br /><span class='font-bold' style="color: #080808;">job search</span> <span class="font-bold" style="color:white;background-color:#1E3A8A;border-radius: 15px;text-shadow: 2px 2px 4px rgba(0,0,0,0.2);"> with AI </span></h1>
+				<b
+					style="color:white;background-color: #1E3A8A;border-radius: 15px;text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Automate</b>
+				<span class="font-bold" style="color: #0e0d0d;"> your</span><br /><span class='font-bold'
+					style="color: #080808;">job search</span> <span class="font-bold"
+					style="color:white;background-color:#1E3A8A;border-radius: 15px;text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+					with AI </span>
+			</h1>
 			<p class="text-lg [text-wrap:balance] font-bold opacity-90" style="color:rgb(1, 5, 26);">
 				Get a job specific cover letter, resume and followup email instantly – undetected! </p>
 			<div class="flex flex-col gap-4 sm:flex-row">
@@ -82,7 +142,7 @@
 						<div class="w-0 animate-[command-2_10s_steps(27)_infinite] overflow-hidden whitespace-nowrap">
 							Finding jobs <span class="text-success">✔︎</span>
 						</div>
-						
+
 						<div class="w-0 animate-[command-3_10s_steps(27)_infinite] overflow-hidden whitespace-nowrap">
 							Generating cover letter <span class="text-success">✔︎</span>
 						</div>
@@ -96,7 +156,7 @@
 				</div>
 				<div class="flex rotate-90 flex-col max-lg:-my-12 lg:rotate-0 lg:text-white/60">
 					<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
-						class="animate-[path-1_30s_infinite]"  style="color: rgb(60, 18, 188);">
+						class="animate-[path-1_30s_infinite]" style="color: rgb(60, 18, 188);">
 						<path d="M98 2C45.5 2 56 98 2 98" stroke="currentColor" stroke-dasharray="4"
 							class="animate-[dash_2s_linear_infinite]" />
 					</svg>
@@ -106,7 +166,7 @@
 							class="animate-[dash_2s_linear_infinite]" />
 					</svg>
 					<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
-						class="animate-[path-3_30s_infinite]"  style="color: rgb(60, 18, 188);">
+						class="animate-[path-3_30s_infinite]" style="color: rgb(60, 18, 188);">
 						<path d="M98 98C54.5 98 44 2 2 2" stroke="currentColor" stroke-dasharray="4"
 							class="animate-[dash_2s_linear_infinite]" />
 					</svg>
@@ -154,7 +214,7 @@
 	</h2>
 
 	<!-- top features -->
-	<div class="grid gap-1 py-1 lg:grid-cols-3" >
+	<div class="grid gap-1 py-1 lg:grid-cols-3">
 		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
 			<!-- <div class="aspect-square p-2 bg-accent font-title font-bold text-xl rounded-full grid place-content-center">
         <svg class="text-accent-content" width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 24L20 34L40 14" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -208,7 +268,8 @@
 			<figure
 				class="grid w-64 transition-transform duration-500 hover:scale-105 [&>*]:[grid-column:1/1] [&>*]:[grid-row:1/1]">
 				<div class="-rotate-3 rounded bg-base-300 shadow-lg brightness-95"></div>
-				<img class="z-[1] rounded shadow-lg" src="{% static 'images/ai-job-interview1.avif' %}" style="height: 290px;"/>
+				<img class="z-[1] rounded shadow-lg" src="{% static 'images/ai-job-interview1.avif' %}"
+					style="height: 290px;" />
 			</figure>
 		</div>
 		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
@@ -260,23 +321,23 @@
 			<h2 class="text-center text-lg font-extralight uppercase tracking-widest text-base-content/50">
 				Get hired by top companies worldwide </h2>
 			<div class="mx-auto max-w-7xl text-center [text-wrap:balance]">
-				<img class="m-6 inline-block brightness-50 invert" src="{% static 'images/coinbase.webp' %}"
-					alt="ai apply" width="158" height="48" />
-				<img class="m-6 inline-block brightness-50 invert" src="{% static 'images/spotify.webp' %}"
+				<img class="m-6 inline-block brightness-75" src="{% static 'images/tcs.png' %}" alt="ai apply"
+					style="height: 90px;" />
+				<img class="m-6 inline-block brightness-75" src="{% static 'images/cognizant.png' %}"
 					alt="find a job with ai" width="158" height="48" />
-				<img class="m-6 inline-block brightness-50 invert" src="{% static 'images/microsoft.webp' %}"
+				<img class="m-6 inline-block brightness-75" src="{% static 'images/infosys.png' %}"
 					alt="job application ai" width="158" height="48" />
-				<img class="m-6 inline-block brightness-50 invert" src="{% static 'images/meta.webp' %}"
-					alt="cover letter generator" width="158" height="48" />
-				<img class="m-6 inline-block brightness-50 invert" src="{% static 'images/spacex.webp' %}"
-					alt="resume builder" width="158" height="48" />
+				<img class="m-6 inline-block brightness-75" src="{% static 'images/6dtechnologies.png' %}"
+					alt="cover letter generator" style="height: 100px;width:280px" />
+				<img class="m-6 inline-block brightness-75" src="{% static 'images/hcl.png' %}" alt="resume builder"
+					width="158" height="48" />
 			</div>
 		</div>
 	</div>
 
 	<!-- services -->
 	<h2 class="py-32 text-center font-title text-4xl [text-wrap:balance] sm:text-5xl">
-		You are <span class='font-bold'>90% more likely</span> to get hired if you use JobAi </h2>
+		You are <span class='font-bold'>80% more likely</span> to get hired if you use JobAi </h2>
 	<div class="grid items-end gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-24">
 
 		<div class="flex flex-col gap-6">
@@ -300,7 +361,7 @@
 			<img loading="lazy" src="{% static 'images/ai-job-interview-fresh.jpg' %}" alt="ai cover letter"
 				class="rounded-box" />
 		</div>
-		
+
 
 	</div>
 	<svg class="my-10 w-full stroke-base-content/10 stroke-2" width="1000" height="152" viewBox="0 0 1000 152"
@@ -316,6 +377,33 @@
 	<div class="text-center">
 		<a class="btn-cta btn btn-primary btn-lg btn-wide" href="{% url 'user-type' %}">Let's Start Now</a>
 	</div>
+	<section class="new-section mt-5">
+		<div class="container">
+			<h2 class="fw-bold">We don't stop until you're hired</h2>
+			<div class="content-box">
+				<div class="box-item">
+					<i class="fas fa-wand-magic-sparkles text-primary"></i>
+					<h3>Automate your job search</h3>
+					<p>We continuously search to find your top matches.</p>
+				</div>
+				<div class="box-item">
+					<i class="fas fa-trophy text-secondary"></i>
+					<h3>Wake up to your best matches</h3>
+					<p>Start each day with a list of new roles matched to your skills and preferences.</p>
+				</div>
+				<div class="box-item">
+					<i class="fas fa-bolt-lightning text-success"></i>
+					<h3>10x your job applications</h3>
+					<p>Submit 10x as many applications with less effort than one manual application.</p>
+				</div>
+				<div class="box-item">
+					<i class="fas fa-clock text-warning"></i>
+					<h3>Reclaim valuable hours every week</h3>
+					<p>Reclaim your time by letting our AI handle the grunt work of job searching.</p>
+				</div>
+			</div>
+		</div>
+	</section>
 
 	<!-- testimonial -->
 	<div class="h-32"></div>
@@ -335,8 +423,8 @@
 			<input type="radio" name="faq" />
 			<div class="collapse-title text-xl font-medium">What if I'm missing a feature?</div>
 			<div class="collapse-content">
-				<p>If you're missing a feature anywhere on our platform, reach out to us at <a
-						href="#" class="__cf_email__"
+				<p>If you're missing a feature anywhere on our platform, reach out to us at <a href="#"
+						class="__cf_email__"
 						data-cfemail="55262025253a272115343c342525392c7b363a">[email&#160;protected]</a> and we will try
 					our absolute best to meet your needs and expectations.</p>
 			</div>
@@ -380,8 +468,9 @@
 		</a>
 
 		<nav class="my-4 flex flex-col">
-			<img src="{% static 'images/JobAi2.png'%}" alt="JobAi" class="h-10" style="height: 50px;border-radius: 25px;box-shadow: 0 0 15px rgb(48, 35, 229);">
-	<br>		<a href="#">Privacy Policy</a>
+			<img src="{% static 'images/JobAi2.png'%}" alt="JobAi" class="h-10"
+				style="height: 50px;border-radius: 25px;box-shadow: 0 0 15px rgb(48, 35, 229);">
+			<br> <a href="#">Privacy Policy</a>
 			<a href="#">Terms of Service</a>
 			<a href="#">Affiliate Program</a>
 			<a href="#">Student discount</a>
@@ -389,22 +478,16 @@
 
 		</aside>
 		<nav>
-			<h3 class="footer-title">Tools</h3>
+			<h3 class="footer-title mt-5 pt-5">Tools</h3>
 			<a href="{%url 'user-type' %}">Auto Apply To Jobs</a>
 			<a href="{%url 'user-type' %}">AI Cover Letter</a>
 			<a href="{%url 'user-type' %}">AI Job Interview</a>
 		</nav>
 		<nav>
-			<h3 class="footer-title">Blog</h3>
-			<a href="#" >How to write a
-				resignation letter</a>
-			<a href="#" >Structuring your resume
-				objective for a career change</a>
-			<a href="#" >Should my resume be in reverse
-				chronological order?</a>
-			<a href="#" >How to make a resume for your first
-				job</a>
-			<a href="#" >All Posts</a>
+			<h3 class="footer-title mt-5 pt-5">Customer Support</h3>
+			<a href="tel:+919562766835"><i class="fas fa-regular fa-mobile-screen-button"> (+91) 95627-66835</i></a>
+			<a href="mailto:tecknohow.132@gmail.com" class="nav-link" onmouseover="this.style.textDecoration='none'"><i
+					class="fa-regular fa-envelope"></i> <i style="font-weight: bold;color: #666;">tecknohow.132@gmail.com</i></a>
 		</nav>
 	</footer>
 	<footer class="footer border-t border-base-content/5 p-8 py-4">

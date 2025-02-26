@@ -101,11 +101,11 @@
     <h2 id="profile">Jobseeker Profile Setup</h2><br><br>
     
     <div class="container w-50 mt-4" style="margin-right: 250px;margin-left: 25px;">
-        <h5 class="text-center">Upload Your Resume in doc,docx format <span class="text-danger ms-2">*</span></h5>
+        <h5 class="text-center">Upload Your Resume<span class="text-danger ms-2">*</span></h5>
         <button type="button" class="btn btn-primary ms-5 w-75" data-bs-toggle="modal" data-bs-target="#uploadResumeModal">
-            <i class="me-2  fas fa-upload"></i>Upload Resume
-        </button>
-        
+            <i class="me-2  bi bi-upload"></i>Upload
+        </button><br>
+        <small class="ms-5 ps-3 text-muted">Only <strong>.doc</strong> and <strong>.docx</strong> files are supported.</small>
         <!-- Upload Resume Modal -->
         <div class="modal fade" id="uploadResumeModal" tabindex="-1" aria-labelledby="uploadResumeModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -115,7 +115,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <h4 class="text-center">Upload Resume in .doc, .docx format</h4>
+                        <h4 class="text-center">Upload Resume in .doc/.docx format</h4>
                         <form action="{% url 'home' %}" method="POST" id="uploadForm" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="file" id="fileInput" name="word_file" class="form-control" accept=".doc,.docx" required>
