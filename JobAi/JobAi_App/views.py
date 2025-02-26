@@ -14,6 +14,7 @@ from django.conf import settings
 from .models import * #noqa
 from django.contrib import messages
 from django.core.mail import send_mail
+from itertools import groupby
 
 openai.api_key = settings.OPENAI_API_KEY
 
@@ -53,30 +54,6 @@ def jobseeker_login(request):
         except Jobseeker_Registration.DoesNotExist:
             messages.error(request, "Invalid Email or Password")
     return render(request, 'jobseeker_login.html')
-
-
-# def extract_text_from_pdf(file_path):
-#     """
-#     Extract text from a PDF file using pdfplumber with improved accuracy.
-#     This function handles multiple pages, normalizes whitespace, and
-#     attempts to capture text that might be in different layout layers.
-#     """
-#     import pdfplumber
-#     extracted_text = []
-#     try:
-#         with pdfplumber.open(file_path) as pdf:
-#             for page in pdf.pages:
-#                 # Extract text from all available layers on the page
-#                 page_text = page.extract_text(x_tolerance=1, y_tolerance=1)
-#                 if page_text:
-#                     # Normalize whitespace and remove extra line breaks
-#                     normalized_text = "\n".join(line.strip() for line in page_text.splitlines() if line.strip())
-#                     extracted_text.append(normalized_text)
-#     except Exception as e:
-#         raise Exception(f"PDF extraction error: {e}")
-    
-#     return "\n".join(extracted_text)
-
 
 def extract_resume_details(content):
     """Extracts key details like name, skills, address, highest_qualification, job_preference, university name, date of birth, email, and phone number from the resume content."""
@@ -620,7 +597,7 @@ def match_jobs(jobseeker):
         matching_jobs.append(job)
     return matching_jobs
 
-def auto_apply_jobs(jobseeker, max_apply=3):
+def auto_apply_jobs(jobseeker, max_apply=4):
     """
     Auto-apply function:
     - Shortlists matching jobs (using skills and eligibility).
@@ -660,10 +637,10 @@ def autoapply(request):
 
     jobseeker = jobseeker_profile.objects.get(email=jobseeker_email)
     recommended_jobs = match_jobs(jobseeker)
-
+    recommended_jobs=sorted(recommended_jobs, key=lambda x: x.Lastdate)
     # On POST request, perform auto-apply action
     if request.method == "POST":
-        applications, _ = auto_apply_jobs(jobseeker, max_apply=3)
+        applications, _ = auto_apply_jobs(jobseeker, max_apply=4)
         if applications:
             messages.success(request, f"Auto-applied to {applications} job(s) successfully!")
         else:
@@ -686,6 +663,7 @@ def applied_jobs(request):
     profile_id=profile.id
     jobseeker = jobseeker_profile.objects.get(name=fname)
     jobs=JobApplication.objects.filter(jobseeker_id=profile_id)
+    jobs=sorted(jobs, key=lambda x: x.id)
     context = {
         "fname": fname,
         "jsdt": jobseeker,
@@ -869,14 +847,13 @@ def company_dashboard(request):
         comp = Company.objects.get(id=cid)
         # Fetch all job listings for the logged-in company
         compjobdt = company_joblist.objects.filter(company_id=cid)
-        # jid=company_joblist.objects.filter(company_id=cid)
-        # cjid=jid.id
-        participants=JobApplication.objects.filter(company_joblist__company_id=cid).order_by('-id')[:3]
+        participants=JobApplication.objects.filter(company_joblist__company_id=cid)
+        latest_applications=participants.order_by('-id')[:3]
         pcount=participants.count()
         # If no jobs exist, show the default page
         if not compjobdt.exists():
             count = 0
-            return render(request, 'company_dashboard.html', {"cname": cname, "count":count, "compdt":comp,"pcount":pcount,"participants":participants}) # type: ignore
+            return render(request, 'company_dashboard.html', {"cname": cname, "count":count, "compdt":comp,"pcount":pcount,"participants":latest_applications}) # type: ignore
         
         # Get expired jobs
        
@@ -887,7 +864,7 @@ def company_dashboard(request):
             "count":count,
             "compdt":comp,
             "pcount":pcount,
-            "participants":participants
+            "participants":latest_applications
         }
         return render(request, 'company_dashboard.html', context)
     except Exception as e:
@@ -1045,7 +1022,24 @@ def edit_job(request):
     }
     return render(request, 'edit-job.html', context)
 
-
+def applications(request):
+    cid = request.session.get('company_id')
+    cname = request.session.get('company_name')
+    company = Company.objects.get(id=cid)
+    Applicants=JobApplication.objects.filter(company_joblist__company_id=cid)
+    # Sort the list of applicants by job title
+    Applicants = sorted(Applicants, key=lambda x: x.company_joblist.job_title.job_title)
+    # Group applicants by job title
+    grouped_applicants = {}
+    for job_title, group in groupby(Applicants, key=lambda x: x.company_joblist.job_title.job_title):
+            grouped_applicants[job_title] = list(group)
+    context = {
+        "cname":cname,
+        "compdt":company,
+        "Applicants":Applicants,
+        "grouped_applicants":grouped_applicants
+    }
+    return render(request,'applications.html',context)
 def jobseeker_dashboard(request):
     fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():

@@ -18,6 +18,7 @@ urlpatterns = [
     path('delete_job/',views.delete_job,name='delete_job'),
     path("edit_job/", views.edit_job, name="edit_job"),
     path('base/',views.user_base,name="base"),
+    path("applicants/",views.applications,name='job_applications'),
     path('company_login/',views.company_login,name="company_login"),
     path('user-type/',views.user_type,name="user-type"),
     path("settings/", views.settings_view, name="settings_view"),

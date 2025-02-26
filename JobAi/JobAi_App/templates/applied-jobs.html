@@ -7,6 +7,13 @@
     overflow-y: auto;
     overflow-x: auto;
   }
+  .header-table thead th {
+      background: #007bff; /* Your theme color */
+      color: white;
+      padding: 5px;
+      text-align: left;
+      /* You can add more styling if needed */
+    }
   #message-container {
     position: fixed;
     top: 20px;
@@ -55,9 +62,10 @@
   
   {% if jobs %}
     <div class="scrollable-table">
-      <table class="table table-striped table-bordered" >
+      <table class="table table-striped table-bordered header-table" >
         <colgroup>
-          <col style="width: 15%;">
+          <col style="width: 2%;">
+          <col style="width: 10%;">
           <col style="width: 20%;">
           <col style="width: 15%;">
           <col style="width: 15%;">
@@ -66,7 +74,8 @@
         </colgroup>
         <thead>
           <tr>
-            <th>Application ID</th>
+            <th>#</th>
+            <th>Appl. ID</th>
             <th>Job Title</th>
             <th>Company</th>
             <th>Location</th>
@@ -75,14 +84,15 @@
           </tr>
         </thead>
         <tbody>
-          {% for job in jobs %}
+          {% for job in jobs%}
             <tr>
+              <td>{{forloop.counter}}</td>
               <td>{{job.id}}</td>
               <td>{{ job.company_joblist.job_title.job_title }}</td>
               <td>{{ job.company_joblist.company.name }}</td>
               <td>{{ job.company_joblist.location }}</td>
-              <td>{{ job.applied_at|date:"M d, Y" }}</td>
-              <td>{{job.company_joblist.Lastdate|date:"M d, Y" }}</td>
+              <td>{{ job.applied_at|date:"d-M-Y" }}</td>
+              <td>{{job.company_joblist.Lastdate|date:"d-M-Y" }}</td>
             </tr>
           {% endfor %}
         </tbody>

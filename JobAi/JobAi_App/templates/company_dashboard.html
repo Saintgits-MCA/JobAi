@@ -52,7 +52,7 @@
         <!-- Right Side Content -->
         <div class="col-lg-9 col-md-12">
             <!-- Profile Overview -->
-            <div class="card shadow-sm p-4 mb-4">
+            <div class="card shadow-sm p-4 mb-2">
                 <div class="d-flex align-items-center">
                     <img src="{{compdt.profile_img.url}}" alt="Profile" class="rounded-circle me-3" width="100px"
                         height="80px">
@@ -78,7 +78,11 @@
                 <div id="jobs" class="tab-pane fade show active">
                     <div class="card p-3 mb-3">
                         <h5>Active Job Postings</h5>
+                        {% if count and count|add:0 > 0%}
                         <p>You have <b>{{count}}</b> job(s) posted.</p>
+                        {%else%}
+                        <p>You didn't Posted any Job yet.</p>
+                        {%endif%}
                         <a href="{%url 'Post Job' %}"><button class="btn btn-primary">+ Post New Job</button></a>
                     </div>
 
@@ -86,16 +90,21 @@
 
                 <!-- Applications Section -->
                 <div id="applications" class="tab-pane fade">
-                    <div class="card p-3 mb-3">
+                    <div class="card p-3 mb-2">
                         <h5>New Applicants</h5>
-                        <p>You have <b>{{pcount}}</b> new applications.</p>
+                        {% if pcount and pcount|add:0 > 0 %}
+                        <p>You have <b>{{ pcount }}</b> applications to jobs. Latest applications are listed below:</p>
+                    {% else %}
+                        <p>You didn't have any applicants for any of your jobs posted.</p>
+                    {% endif %}
+                        <a href="{%url 'job_applications' %}"><button class="btn btn-primary btn-sm"><i class="fas fa-eye text-white"></i>  View Applications</button></a>
                     </div>
 
                     <div class="list-group">
                         {% for i in participants %}
                         <a href="#" class="list-group-item list-group-item-action">
                             <div class="d-flex align-items-center">
-                                <img src="{{i.jobseeker.user.profile_img}}" class="rounded-circle me-3" width="40">
+                                <img src="{{i.jobseeker.profile_img.url}}" class="rounded-circle me-3" width="40">
                                 <div>
 
                                     <h6 class="mb-0">{{i.jobseeker.user.name}}</h6>
