@@ -10,15 +10,60 @@
 	<title>JobAi | AI-Powered Job Search Tools</title>
 	<meta name="description">
 	<script defer src="{% static 'assets/js/alpine.min.js' %}" type="b014f77004e53e5bad1cb140-text/javascript"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
 	<link rel="stylesheet" href="{% static 'assets/css/index.css'%}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 <style>
-	.new-section {
+.job-process {
+            max-width: 900px;
+            margin: 10px auto;
+            background: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            width: 100%;
+        }
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .step {
+            flex: 1;
+        }
+        .step-content {
+            background: linear-gradient(135deg, #ece9ff, #fce2e2);
+            padding: 7px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .cta-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background: blue;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cta-button:hover {
+            background: darkblue;
+        }
+.new-section {
 		text-align: center;
 		padding: 50px 20px;
 		background-color: #f8f9fa;
+		max-width: 200vh;
 	}
 
 	.new-section h2 {
@@ -105,7 +150,7 @@
 					style="color:white;background-color:#1E3A8A;border-radius: 15px;text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
 					with AI </span>
 			</h1>
-			<p class="text-lg [text-wrap:balance] font-bold opacity-90" style="color:rgb(1, 5, 26);">
+			<p class="text-lg [text-wrap:balance] font-bold opacity-90" style="color:#0c0c0c ;">
 				Get a job specific cover letter, resume and followup email instantly – undetected! </p>
 			<div class="flex flex-col gap-4 sm:flex-row">
 				<a href="{%url 'user-type' %}" class="btn btn-primary btn-lg px-10 group font-bolder" id="mainCTA">
@@ -186,13 +231,13 @@
 						</div>
 						<div
 							class="rounded-2xl border border-base-content/10 bg-base-100/5 p-3 lg:border-white/20 lg:p-5 lg:text-white">
-							<div class="text-sm font-bold">Accountant</div>
+							<div class="text-sm font-bold">Android Developer</div>
 							<div class="text-xs tracking-wider opacity-80">
 								Full-time, Berlin </div>
 						</div>
 						<div
 							class="rounded-2xl border border-base-content/10 bg-base-100/5 p-3 lg:border-white/20 lg:p-5 lg:text-white">
-							<div class="text-sm font-bold">Social Media Manager</div>
+							<div class="text-sm font-bold">Web Designer</div>
 							<div class="text-xs tracking-wider opacity-80">
 								Part-time, Remote </div>
 						</div>
@@ -264,12 +309,12 @@
         <svg class="text-accent-content" width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 24L20 34L40 14" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div> -->
 			<h3 class="text-center font-title text-xl font-bold">
-				AI Robotic Interview </h3>
+				AI Mock Interview </h3>
 			<figure
 				class="grid w-64 transition-transform duration-500 hover:scale-105 [&>*]:[grid-column:1/1] [&>*]:[grid-row:1/1]">
 				<div class="-rotate-3 rounded bg-base-300 shadow-lg brightness-95"></div>
 				<img class="z-[1] rounded shadow-lg" src="{% static 'images/ai-job-interview1.avif' %}"
-					style="height: 290px;" />
+					style="height: 300px;width: 490px;" />
 			</figure>
 		</div>
 		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
@@ -318,13 +363,13 @@
 	<!-- logos -->
 	<div class="mt-10 bg-base-200 py-24 [grid-column:1/7]">
 		<div class="mx-auto flex max-w-7xl flex-col gap-12">
-			<h2 class="text-center text-lg font-extralight uppercase tracking-widest text-base-content/50">
+			<h2 class="text-center text-lg font-bold uppercase tracking-widest text-base-content/50">
 				Get hired by top companies worldwide </h2>
 			<div class="mx-auto max-w-7xl text-center [text-wrap:balance]">
 				<img class="m-6 inline-block brightness-75" src="{% static 'images/tcs.png' %}" alt="ai apply"
 					style="height: 90px;" />
 				<img class="m-6 inline-block brightness-75" src="{% static 'images/cognizant.png' %}"
-					alt="find a job with ai" width="158" height="48" />
+					alt="find a job with ai" width="158" style="height: 204px;" />
 				<img class="m-6 inline-block brightness-75" src="{% static 'images/infosys.png' %}"
 					alt="job application ai" width="158" height="48" />
 				<img class="m-6 inline-block brightness-75" src="{% static 'images/6dtechnologies.png' %}"
@@ -335,11 +380,40 @@
 		</div>
 	</div>
 
+	<section class="new-section mt-5 ms-1 bg-base-200">
+		<div class="container">
+			<h2 class="font-bold">We don't stop until you're hired</h2>
+			<div class="content-box">
+				<div class="box-item">
+					<i class="fas fa-wand-magic-sparkles text-primary"></i>
+					<h3>Automate your job search</h3>
+					<p>We continuously search to find your top matches.</p>
+				</div>
+				<div class="box-item">
+					<i class="fas fa-trophy text-secondary"></i>
+					<h3>Wake up to your best matches</h3>
+					<p>Start each day with a list of new roles matched to your skills and preferences.</p>
+				</div>
+				<div class="box-item">
+					<i class="fas fa-bolt-lightning text-success"></i>
+					<h3>10x your job applications</h3>
+					<p>Submit 10x as many applications with less effort than one manual application.</p>
+				</div>
+				<div class="box-item">
+					<i class="fas fa-clock text-warning"></i>
+					<h3>Reclaim valuable hours every week</h3>
+					<p>Reclaim your time by letting our AI handle the grunt work of job searching.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
 	<!-- services -->
 	<h2 class="py-32 text-center font-title text-4xl [text-wrap:balance] sm:text-5xl">
 		You are <span class='font-bold'>80% more likely</span> to get hired if you use JobAi </h2>
+		<h2 class="ms-5 font-bold text-center" style="font-size: 30px;">Our Services</h2>
 	<div class="grid items-end gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-24">
-
 		<div class="flex flex-col gap-6">
 			<h3 class="text-xl font-bold">AI Cover Letter</h3>
 			<p class="text-sm">
@@ -373,39 +447,40 @@
 	<!-- cta -->
 	<h2 class="text-center font-title text-4xl sm:text-5xl">
 		We help job seekers to succeed </h2>
-	<div class="h-12"></div>
-	<div class="text-center">
-		<a class="btn-cta btn btn-primary btn-lg btn-wide" href="{% url 'user-type' %}">Let's Start Now</a>
-	</div>
-	<section class="new-section mt-5">
-		<div class="container">
-			<h2 class="fw-bold">We don't stop until you're hired</h2>
-			<div class="content-box">
-				<div class="box-item">
-					<i class="fas fa-wand-magic-sparkles text-primary"></i>
-					<h3>Automate your job search</h3>
-					<p>We continuously search to find your top matches.</p>
-				</div>
-				<div class="box-item">
-					<i class="fas fa-trophy text-secondary"></i>
-					<h3>Wake up to your best matches</h3>
-					<p>Start each day with a list of new roles matched to your skills and preferences.</p>
-				</div>
-				<div class="box-item">
-					<i class="fas fa-bolt-lightning text-success"></i>
-					<h3>10x your job applications</h3>
-					<p>Submit 10x as many applications with less effort than one manual application.</p>
-				</div>
-				<div class="box-item">
-					<i class="fas fa-clock text-warning"></i>
-					<h3>Reclaim valuable hours every week</h3>
-					<p>Reclaim your time by letting our AI handle the grunt work of job searching.</p>
-				</div>
-			</div>
-		</div>
-	</section>
+	<section class="job-process">
+        <h2 class="text-center font-mono" style="font-size: 25px;">Save time &mdash; skip the job application process</h2>
+        <div class="steps-container">
+            <div class="step">
+                <h3 class="font-bold text-center mb-3">We get to know you</h3>
+                <div class="step-content">
+                    <div class="card">
+                        <p>Your Job Preference</p>
+                        <strong>Django Developer&nbsp;<span class="fas fa-pencil mx-4 px-8 text-primary"></span></strong> 
+                    </div>
+                    <div class="card">
+                        <p>What all skills you have?</p>
+                        <strong>Python,HTML,CSS<span class="fas fa-pencil mx-4 px-8 text-primary"></span></strong> 
+                    </div>
+                </div>
+            </div>
+            <div class="step">
+                <h3 class="font-bold text-center mb-3">We find jobs for you</h3>
+                        <img src="{% static 'images/role-image.webp'%}" alt="Role Description">
+            </div>
+            <div class="step">
+                <h3 class="font-bold text-center mb-3">We apply for you</h3>
+				<img src="{% static 'images/we-apply.webp'%}" alt="Role Description">
+            </div>
+        </div>
+  </section>
 
-	<!-- testimonial -->
+	<div class="text-center">
+		<a class="btn-cta btn btn-primary btn-lg btn-wide" href="{% url 'user-type' %}"> Let's Start Now <span class="bi bi-arrow-up-right"></span>
+		</a>
+	</div>
+	
+
+	<!-- Frequently Asked Questions -->
 	<div class="h-32"></div>
 	<h2 class="py-10 text-center font-title text-4xl sm:text-5xl">
 		<span class="font-bold" id="FAQ">Frequently Asked Questions</span>
@@ -459,7 +534,6 @@
 			</div>
 		</div>
 	</div>
-
 	<!-- footer -->
 	<div class="h-32"></div>
 

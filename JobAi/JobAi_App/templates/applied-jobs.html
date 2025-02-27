@@ -55,10 +55,9 @@
     padding: 20px;
   }
 </style>
-
-<div class="container mt-4">
-  <h4>Applied Jobs</h4>
-  <p class="mt-3">Hello, {{ fname }}. Here are the applied jobs.</p>
+<h4 id="profile">Applied Jobs</h4>
+<div class="container">
+  <p class="mt-3 ms-5 mb-3">Hello, {{ fname }}. Here are the applied jobs.</p>
   
   {% if jobs %}
     <div class="scrollable-table">

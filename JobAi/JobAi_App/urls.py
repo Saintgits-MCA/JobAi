@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
 from .views import *
-from ctypes.test.test_pickling import name
 from django.conf.urls.static import static
 # from JobAi.JobAi_App.views import delete_user_profile
 
@@ -32,11 +31,13 @@ urlpatterns = [
     path('Post_Job/',views.company_postjob,name="Post Job"),
     path('company_settings/',views.company_settings,name="company_settings"),
     path('cover-letter/',views.coverletter,name='ai_cover_letter'),
-    path('delete_profile/',delete_user_profile,name="delete_user"),
+    path('change_password/',views.change_password,name="j_change_pwd"),
     path('Register/',views.Register,name='Register'),
     path('company_type/',views.company_type,name="company_type"),
     path('Forgot_Password/',views.Forgot_pwd,name='Forgot Password'),
     path('user_support/',views.support,name='support'),
+    # path('edit-profile/',views.edit_profile,name='edit_profile'),
+    # path('edit-profile-update/',views.edit_profile_update,name='edit_profile_update'),
     path('company_password_reset/',views.company_forgot_password,name='Company Password Reset'),
     path('auto-apply/',views.autoapply,name='auto-apply'),
     path('mock-interview/',views.mockinterview,name='mock-interview'),

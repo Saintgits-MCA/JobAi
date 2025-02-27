@@ -75,7 +75,7 @@ def extract_resume_details(content):
     email_pattern = r"[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+"
     phone_pattern = r"\+?\d{10,15}"
     dob_pattern = r"\b(\d{1,2}[-/ ](?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[-/ ]\d{2,4}|\d{1,2}[-/]\d{1,2}[-/]\d{2,4})\b"
-    qualification_keywords = ["Bachelor's Degree", "MCA", "Master of Computer Application", "PhD", "B.Sc", "M.Sc", "B.Tech Computer Science", "M.Tech Computer Science", "MBA"]
+    qualification_keywords = ["Bachelor's Degree", "MCA","Integrated MCA", "Master of Computer Application", "PhD", "B.Sc", "M.Sc", "B.Tech Computer Science", "M.Tech Computer Science", "MBA"]
     job_preferences_keywords = ["Software Engineer", "Data Scientist", "Backend Developer", "Frontend Developer", "Project Manager"]
     university_keywords = ["University", "Institute", "College"]
     skills_keywords = ["Python", "Java", "C++", "Django", "SQL", "Machine Learning", "Artificial Intelligence", "React", "JavaScript", "HTML", "CSS", "Git", "Data Analytics"]
@@ -723,6 +723,152 @@ def company_registration(request):
     }
     return render(request, 'company_registration.html', context)
 
+def change_password(request):
+    fname = request.session.get('jobseeker_name')
+    
+    if not fname or not jobseeker_profile.objects.filter(name=fname).exists():
+        return redirect('home')
+    
+    jobseeker = jobseeker_profile.objects.get(name=fname)
+    user=Jobseeker_Registration.objects.get(name=fname)
+    exist_pwd=user.password
+    if request.method == "POST":
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('get_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if exist_pwd != old_password:
+            messages.error(request, "Old password is incorrect.")
+        elif new_password != confirm_password:
+            messages.error(request, "New passwords do not match.")
+        elif len(new_password) < 4:
+            messages.error(request, "Password must be at least 6 characters long.")
+        else:
+            userobj=Jobseeker_Registration.objects.get(name=fname)
+            userobj.password=confirm_password
+            userobj.save()
+            messages.success(request, "Your password has been updated successfully!")
+
+    context = {"fname": fname, "jsdt": jobseeker}
+    return render(request, 'change_pwd.html', context)
+
+def edit_profile(request):
+    content = ""
+    alert_message = ""
+    fname = request.session.get('jobseeker_name')
+    uid = request.session.get('jobseeker_id')
+    jobseek_email = request.session.get('jobseeker_email')
+    phone = request.session.get('jobseeker_phone')
+    extracted_details = None
+    show_modal = False
+
+    if request.method == "POST":
+        uploaded_file = request.FILES.get("word_file")
+
+        # Check if a resume already exists for the user
+        if jobseeker_resume.objects.filter(user_id=uid).exists():
+            messages.error(request, "You have already uploaded a resume. You cannot upload another one.")
+            return redirect("edit_profile")
+
+        if uploaded_file:
+            allowed_extensions = ('.doc', '.docx')
+            file_extension = os.path.splitext(uploaded_file.name)[1].lower()
+            if file_extension not in allowed_extensions:
+                messages.error(request, "Invalid file format. Only .doc, .docx files are allowed.")
+                return redirect("edit_profile")
+
+            try:
+                try:
+                    jobseeker_profile.objects.get(user_id=uid)
+                except jobseeker_profile.DoesNotExist:
+                    show_modal = True
+
+                documents_dir = os.path.join(settings.MEDIA_ROOT, "documents")
+                os.makedirs(documents_dir, exist_ok=True)
+
+                fs = FileSystemStorage(location=documents_dir)
+                saved_filename = fs.save(uploaded_file.name, uploaded_file)
+                file_path = fs.path(saved_filename)
+
+                # Enhanced extraction based on file type
+                if file_extension in ('.doc', '.docx'):
+                    document = Document(file_path)
+                    paragraphs = [p.text for p in document.paragraphs if p.text.strip()]
+                    content = "\n".join(paragraphs)
+
+                # Remove the file after processing
+                os.remove(file_path)
+
+                # Extract resume details using the improved extraction function
+                extracted_details = extract_resume_details(content)
+                essential_fields = ["name", "email", "phone", "address", "skills", "university"]
+                if any(not extracted_details.get(field) for field in essential_fields):
+                    messages.error(request, "Failed to extract essential details from your resume. Check your file and try again.")
+                    return redirect("edit_profile")
+
+                # Save the resume file in the database after successful extraction
+                jobseeker_resumeobj = jobseeker_resume(file=uploaded_file, user_id=uid)
+                jobseeker_resumeobj.save()
+
+            except Exception as e:
+                messages.error(request, f"Error processing document: {str(e)}")
+                return redirect("edit_profile")
+    resume = jobseeker_resume.objects.filter(user_id=uid)
+    context = {
+        "resume_details": extracted_details,
+        "alert_message": alert_message,
+        "fname": fname,
+        "email": jobseek_email,
+        "phone": phone,
+        "show_modal": show_modal,
+        "resume": resume
+    }
+
+    if not jobseeker_profile.objects.filter(name=fname).exists() and not jobseeker_resume.objects.filter(user=uid).exists():
+        redirect('home')
+    return render(request, "edit_profile.html", context)
+
+def edit_profile_update(request):
+    fname = request.session.get('jobseeker_name')
+    userid = request.session.get('jobseeker_id')
+    dob = ""
+    phone = ""
+    address = ""
+    qualification = ""
+    skills = ""
+    job_preference = ""
+    if request.method == "POST": 
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        dob = request.POST.get('dob')
+        phone = request.POST.get('phone')
+        address = request.POST.get('Address')
+        qualification = request.POST.get('Education')
+        university = request.POST.get('University')
+        skills = request.POST.get('skills')
+        image = request.FILES.get('image')
+        job_preference = request.POST.get('job_preferences')
+        # Fetch the first resume for the user (if multiple exist)
+        resume = jobseeker_resume.objects.filter(user=userid).first()
+        cv = resume.file if resume else None  # Handle case where no resume exists
+        jobseeker_obj = jobseeker_profile.objects.get(name=fname)
+        jobseeker_obj.name = name
+        jobseeker_obj.email = email
+        jobseeker_obj.dob = dob
+        jobseeker_obj.highest_qualification = qualification
+        jobseeker_obj.skills = skills
+        jobseeker_obj.job_preference = job_preference
+        jobseeker_obj.university = university
+        jobseeker_obj.address = address
+        jobseeker_obj.phone = phone
+        jobseeker_obj.profile_img = image
+        jobseeker_obj.user_id = userid
+        jobseeker_obj.resume = cv
+        jobseeker_obj.save()
+        request.session['address'] = jobseeker_obj.address
+        request.session['dob'] = jobseeker_obj.dob
+        messages.success(request, "Updated profile successfully.Now you can use whole features of this portal.")
+    return redirect('edit_profile')
 
 def delete_job(request): 
     cname = request.session.get('company_name')
@@ -746,31 +892,6 @@ def delete_job(request):
         messages.error(request, "Attempt for deleting job item failed")
         
     return render(request, 'company_jobs.html', {'cname': cname})
-
-
-def delete_user_profile(request):
-    jid = request.session.get('jobseeker_id')
-    user = get_object_or_404(jobseeker_profile, user=jid)
-    user.delete()
-    resume = get_object_or_404(jobseeker_resume, user=jid)
-    resume.delete()
-    # Reset auto-increment (adjust for your database)
-    with connection.cursor() as cursor:
-        cursor.execute("ALTER TABLE jobai1.jobai_app_jobseeker_profile AUTO_INCREMENT = 1")
-        cursor.execute("ALTER TABLE jobai1.jobai_app_jobseeker_resume AUTO_INCREMENT = 1")
-        messages.success(request, "Profile deleted successfully")
-        return redirect('settings_view')
-    jsdt = Jobseeker_Registration.objects.get(id=jid)
-    fname = request.session.get('jobseeker_name')
-    if not jobseeker_profile.objects.filter(name=fname).exists():
-        return redirect('home')
-    context = {
-            'jsdt':jsdt,
-                "fname":fname,
-              
-            }
-    return render(request, 'settings_view.html', context)
-
 
 def company_type(request):
     if request.method == "POST":
