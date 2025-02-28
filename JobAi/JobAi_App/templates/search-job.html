@@ -11,53 +11,154 @@
       overflow-x: hidden;
     }
 
-    /* Container that wraps both the header table and scrollable body */
+    .sidebar {
+      max-height: 160vh;
+    }
+
+    /* Table container */
     .table-container {
       width: 100%;
+      position: relative;
     }
+/* Custom Scrollbar Styling */
+.table-wrapper::-webkit-scrollbar,body::-webkit-scrollbar {
+    width: 3px; /* Set scrollbar width */
+}
 
-    /* Header table (non-scrollable) */
-    .header-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+.table-wrapper::-webkit-scrollbar-track {
+    background: #f0f0f0; /* Light gray background */
+    border-radius: 5px; /* Rounded corners */
+}
 
-    .header-table thead th {
-      background: #007bff; /* Your theme color */
-      color: white;
-      padding: 5px;
-      text-align: left;
-      /* You can add more styling if needed */
-    }
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #007bff; /* Scrollbar color */
+    border-radius: 5px; /* Rounded corners */
+    border: 2px solid #f0f0f0; /* Creates padding effect */
+}
 
-    /* Scrollable container for the body */
-    .table-wrapper {
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #0056b3; /* Darker color on hover */
+}
+
+    table {
       max-height: 450px;
       overflow-y: auto;
-      overflow-x: hidden;
+      overflow-x: auto;
     }
 
-    /* Body table (scrollable part) */
-    .body-table {
+    /* Make the table layout fixed to align columns properly */
+    .job-table {
       width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
     }
 
-    .body-table tbody tr td {
-      text-align: left;
-      padding: 6px;
-      vertical-align: middle; /* centers content vertically */
-
+    /* Sticky header */
+    .job-table thead {
+      position: sticky;
+      top: 0;
+      color: white;
+      z-index: 10;
+      padding: 10px;
     }
-/* “No job postings” styling */
-.no-jobs {
+
+    th {
+      background-color: #007bff;
+    }
+
+    /* Scrollable tbody */
+    .table-wrapper {
+      max-height: 400px;
+      /* Set max height for scrolling */
+      overflow-y: auto;
+      display: block;
+    }
+
+    .table-wrapper tbody {
+      display: block;
       width: 100%;
+      overflow-y: auto;
+    }
+
+    .table-wrapper tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .table-wrapper td {
+      padding: 8px;
+      text-align: left;
+      vertical-align: middle;
+      overflow: hidden;
+    }
+
+    .job-table th:nth-child(1),
+    .job-table td:nth-child(1) {
+      width: 5%;
+    }
+
+    /* # */
+    .job-table th:nth-child(2),
+    .job-table td:nth-child(2) {
+      width: 12%;
+    }
+
+    /* Job Number */
+    .job-table th:nth-child(3),
+    .job-table td:nth-child(3) {
+      width: 18%;
+    }
+
+    /* Job Title */
+    .job-table th:nth-child(4),
+    .job-table td:nth-child(4) {
+      width: 18%;
+    }
+
+    /* Company */
+    .job-table th:nth-child(5),
+    .job-table td:nth-child(5) {
+      width: 10%;
+    }
+
+    /* Job Type */
+    .job-table th:nth-child(6),
+    .job-table td:nth-child(6) {
+      width: 20%;
+      word-wrap: break-word;
+    }
+
+    /* Location */
+    .job-table th:nth-child(7),
+    .job-table td:nth-child(7) {
+      width: 20%;
+    }
+
+    /* Eligibility */
+    .job-table th:nth-child(8),
+    .job-table td:nth-child(8) {
+      width: 15%;
+    }
+
+    /* Last Date */
+    .job-table th:nth-child(9),
+    .job-table td:nth-child(9) {
+      width: 9%;
+    }
+
+    /* Apply */
+
+
+    /* No job postings message */
+    .no-jobs {
       text-align: center;
       font-weight: 600;
       color: #555;
     }
-    /* Optional hover highlight */
-    .body-table tr:hover {
+
+    /* Hover effect */
+    .table-wrapper tbody tr:hover {
       background-color: #f5f5f5;
     }
   </style>
@@ -70,30 +171,17 @@
     <form method="get" action="{% url 'search-job' %}" class="mt-2 w-full">
       <div class="join w-full flex-col lg:flex-row mx-3">
         <!-- Main Search Input -->
-        <input
-          type="text"
-          name="search"
-          id="searchInput"
-          class="input input-lg input-bordered join-item w-full mb-2 lg:mb-0"
-          placeholder="Job Title or  Company"
-          value="{{ request.GET.search|default:'' }}"
-        />
-      
+        <input type="text" name="search" id="searchInput"
+          class="input input-lg input-bordered join-item w-full mb-2 lg:mb-0" placeholder="Job Title or Company"
+          value="{{ request.GET.search|default:'' }}" />
+
         <!-- City Input -->
-        <input
-          type="text"
-          name="location"
-          id="locationInput"
-          class="input input-lg input-bordered join-item w-25 mb-2 lg:mb-0"
-          placeholder="City"
-          value="{{ request.GET.location|default:'' }}"
-        />
-      
+        <input type="text" name="location" id="locationInput"
+          class="input input-lg input-bordered join-item w-25 mb-2 lg:mb-0" placeholder="City"
+          value="{{ request.GET.location|default:'' }}" />
+
         <!-- Search Button -->
-        <button
-          type="submit"
-          class="btn btn-success text-white join-item btn-lg w-full lg:w-auto"
-        >
+        <button type="submit" class="btn btn-success text-white join-item btn-lg w-full lg:w-auto">
           <span>Search</span>
           <i class="fas fa-search"></i>
         </button>
@@ -102,82 +190,47 @@
   </center>
 
   <a href="{% url 'search-job' %}">
-    <button
-      class="btn btn-secondary ms-3"
-      style="border-radius: 10px; background-color: rgb(65, 2, 112);"
-    >
+    <button class="btn btn-secondary ms-3" style="border-radius: 10px; background-color: rgb(65, 2, 112);">
       <i class='fas fa-filter'></i> Clear All Filters
     </button>
   </a>
 
   <!-- Table Container -->
   <div class="table-container mt-4 ms-3 mb-3">
-    <!-- Header Table -->
-    <table class="header-table">
-      <!-- Use consistent widths in the colgroup -->
-      <colgroup>
-        <col style="width: 5%;"  >
-        <col style="width: 12%;" >
-        <col style="width: 13%;">
-        <col style="width: 14%;">
-        <col style="width: 12%;">
-        <col style="width: 14%;">
-        <col style="width: 10%;">
-        <col style="width: 10%;">
-        <col style="width: 10%;">
-      </colgroup>
-      <thead class="table-primary">
-        <tr>
-          <th>#</th>
-          <th>Job Number</th>
-          <th>Job Title</th>
-          <th>Company</th>
-          <th>Job Type</th>
-          <th>Location</th>
-          <th>Eligibility</th>
-          <th>Last Date</th>
-          <th>Apply</th>
-        </tr>
-      </thead>
-    </table>
-
-    <!-- Scrollable Body -->
     <div class="table-wrapper">
-      <table class="table-striped table-hover">
-        <colgroup>
-          <col style="width: 5%;">
-          <col style="width: 12%;">
-          <col style="width: 12%;">
-          <col style="width: 15%;">
-          <col style="width: 12%;">
-          <col style="width: 14%;">
-          <col style="width: 10%;">
-          <col style="width: 10%;">
-          <col style="width: 10%;">
-        </colgroup>
+      <table class="job-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Job No.</th>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Eligibility</th>
+            <th>Last Date</th>
+            <th>Apply </th>
+          </tr>
+        </thead>
         <tbody>
           {% if jobs %}
-            {% for job in jobs %}
-              <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ job.job_number }}</td>
-                <td>{{ job.job_title.job_title }}</td>
-                <td>{{ job.company.name }}</td>
-                <td>{{ job.job_type }}</td>
-                <td>{{ job.location }}</td>
-                <td>{{ job.highest_qualification }}</td>
-                <td>{{ job.Lastdate }}</td>
-                <td>
-                  <a href="#" class="btn btn-primary btn-sm">Apply</a>
-                </td>
-              </tr>
-            {% endfor %}
+          {% for job in jobs %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ job.job_number }}</td>
+            <td>{{ job.job_title.job_title }}</td>
+            <td>{{ job.company.name }}</td>
+            <td>{{ job.job_type }}</td>
+            <td>{{ job.location }}</td>
+            <td>{{ job.highest_qualification }}</td>
+            <td>{{ job.Lastdate }}</td>
+            <td><a href="#" class="btn btn-primary btn-sm">Apply</a></td>
+          </tr>
+          {% endfor %}
           {% else %}
-            <tr class="w-100">
-                <td colspan="8" class="no-jobs ps-5">No job postings available.</td>
-              <td colspan="2" class="no-jobs"></td>
-              <td colspan="1" class="no-jobs"></td>
-            </tr>
+          <tr>
+            <td colspan="9" class="no-jobs">No job postings available.</td>
+          </tr>
           {% endif %}
         </tbody>
       </table>

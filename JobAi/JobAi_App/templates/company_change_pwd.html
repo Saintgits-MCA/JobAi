@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'company_base.html' %}
 {% load static %}
 {% block content %}
 <style>
@@ -61,19 +61,19 @@
         }
     }
 </style>
-<div class="main-content">
-    <h4 id="Profile" class="ms-5" style="font-size: 33px;">Jobseeker Change Password</h4>
-    <div class="container">
-        <div class="login-wrapper my-auto">
-            <form method="post" action="{%url 'j_change_pwd'%}">
+<div class="content ms-4">
+    <h4 id="Profile" style="font-size: 33px;">Company Change Password</h4>
+    <div class="container1 ps-4">
+        <div class="login-wrapper my-auto ms-5">
+            <form method="post" action="{%url 'company_ch_pwd'%}">
                 {% csrf_token %}<div class="password-container">
                     <label for="password">Old Password</label>
                     <div class="input-group form-group ">
-                        <div class="form-control w-120">
+                        <div class="form-control w-100  ms-4 ">
                             <input type="password" name="old_password" id="password1" placeholder="Enter Old Password"
-                                class="pass w-75" required>
+                                class="pass w-75 ps-1" required>
                             <span>
-                                <i class="fas fa-eye-slash eye-icon ms-5 ps-5" id="togglePassword1"
+                                <i class="fas fa-eye-slash eye-icon " id="togglePassword1"
                                     onclick="togglePassword1()"></i>
                             </span>
                         </div>
@@ -83,7 +83,7 @@
                 <div class="password-container">
                     <label for="password">New Password</label>
                     <div class="input-group form-group ">
-                        <div class="form-control w-120">
+                        <div class="form-control w-100  ms-4 ">
                             <input type="password" name="get_password" id="password" placeholder="Enter New Password"
                                 class="pass w-75" required>
                         </div>
@@ -92,17 +92,16 @@
                 <div class="password-container">
                     <label for="password">Confirm Password</label>
                     <div class="input-group form-group ">
-                        <div class="form-control w-120">
+                        <div class="form-control w-100 ms-4 ">
                             <input type="password" name="confirm_password" id="password2"
                                 placeholder="Enter Password Again" class="pass w-75" required>
                             <span>
-                                <i class="fas fa-eye-slash eye-icon ms-5 ps-5" id="togglePassword"
-                                    onclick="togglePassword()"></i>
+                                <i class="fas fa-eye-slash eye-icon" id="togglePassword" onclick="togglePassword()"></i>
                             </span>
                         </div>
                     </div>
                 </div>
-                <center><button name="Reset_pwd" id="Reset_pwd" class="btn btn-block btn-primary w-75 mt-2">Reset
+                <center><button name="Reset_pwd" id="Reset_pwd" class="btn btn-block btn-primary w-100 mt-3">Reset
                         Password</button></center>
             </form>
         </div>
