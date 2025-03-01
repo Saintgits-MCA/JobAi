@@ -21,6 +21,7 @@ urlpatterns = [
     path('company_login/',views.company_login,name="company_login"),
     path('user-type/',views.user_type,name="user-type"),
     path("settings/", views.settings_view, name="settings_view"),
+    path('delete_profile/',views.delete_user_profile,name='delete_profile'),
     path('search_job/',views.search_job,name='search-job'),
     path('reset_password/<int:user_id>/',views.reset_password,name="reset_password"),
     path('company_reset_password/<int:comp_id>/',views.company_reset_pwd,name="company_reset"),

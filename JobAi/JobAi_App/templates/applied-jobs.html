@@ -6,6 +6,11 @@
     max-height: 400px;
     overflow-y: auto;
     overflow-x: auto;
+    display: block;
+  }
+  .scrollable-table::-webkit-scrollbar
+  {
+    width: 1px;
   }
   .header-table thead th {
       background: #007bff; /* Your theme color */
@@ -54,6 +59,51 @@
     color: #555;
     padding: 20px;
   }
+  .scrollable-table table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto; /* Auto distributes column width */
+}
+
+.scrollable-table th, 
+.scrollable-table td {
+  padding: 10px;
+  border: 1px solid #dee2e6;
+  text-align: left;
+  vertical-align: middle;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.scrollable-table thead th {
+  position: sticky;
+  top: 0;
+  background: #007bff;
+  color: white;
+  padding: 12px;
+  z-index: 2;
+}
+
+/* Custom Column Widths for Better Readability */
+.scrollable-table colgroup col:nth-child(1) { width: 5%; }   /* # */
+.scrollable-table colgroup col:nth-child(2) { width: 12%; }  /* Ack. No. */
+.scrollable-table colgroup col:nth-child(3) { width: 18%; }  /* Appl. ID */
+.scrollable-table colgroup col:nth-child(4) { width: 20%; }  /* Job Title */
+.scrollable-table colgroup col:nth-child(5) { width: 15%; }  /* Company */
+.scrollable-table colgroup col:nth-child(6) { width: 12%; }  /* Location */
+.scrollable-table colgroup col:nth-child(7) { width: 15%; }  /* Applied At */
+.scrollable-table colgroup col:nth-child(8) { width: 10%; }  /* Last Date */
+.scrollable-table colgroup col:nth-child(9) { width: 12%; }  /* Application Status */
+
+/* Alternating Row Colors */
+.scrollable-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+/* Hover Effect */
+.scrollable-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
 </style>
 <h4 id="profile">Applied Jobs</h4>
 <div class="container">
@@ -62,7 +112,7 @@
   {% if jobs %}
     <div class="scrollable-table">
       <table class="table table-striped table-bordered header-table" >
-        <colgroup>
+        <!-- <colgroup>
           <col style="width: 2%;">
           <col style="width: 10%;">
           <col style="width: 10%;">
@@ -71,17 +121,18 @@
           <col style="width: 15%;">
           <col style="width: 10%;">
           <col style="width: 13%;">
-        </colgroup>
+        </colgroup> -->
         <thead>
           <tr>
             <th>#</th>
             <th>Ack. No.</th><!--company job number-->
-            <th>Appl. ID</th>
+            <th>App.ID</th>
             <th>Job Title</th>
             <th>Company</th>
             <th>Location</th>
             <th>Applied At</th>
             <th>Last Date</th>
+            <th>Application Status</th>
           </tr>
         </thead>
         <tbody>
@@ -95,6 +146,7 @@
               <td>{{ job.company_joblist.location }}</td>
               <td>{{ job.applied_at|date:"d-M-Y" }}</td>
               <td>{{job.company_joblist.Lastdate|date:"d-M-Y" }}</td>
+              <td>Applied</td>
             </tr>
           {% endfor %}
         </tbody>

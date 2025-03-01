@@ -59,6 +59,18 @@
     color: #555;
     padding: 20px;
   }
+  .scrollable-table th, 
+.scrollable-table td {
+  white-space: nowrap; /* Prevents text wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Adds "..." for overflow text */
+}
+  .scrollable-table th:nth-child(1) { width: 15%; } /* Job Title */
+.scrollable-table th:nth-child(2) { width: 20%; } /* Company */
+.scrollable-table th:nth-child(3) { width: 25%; } /* Required Skills */
+.scrollable-table th:nth-child(4) { width: 15%; } /* Eligibility */
+.scrollable-table th:nth-child(5) { width: 15%; } /* Location */
+.scrollable-table th:nth-child(6) { width: 10%; } /* Last Date */
 </style>
 
 <script>
@@ -106,6 +118,8 @@
       <table class="table table-striped table-bordered header-table">
         <thead>
           <tr>
+            <th>#</th>
+            <th>Ack. No.</th>
             <th>Job Title</th>
             <th>Company</th>
             <th>Required Skills</th>
@@ -117,6 +131,8 @@
         <tbody>
           {% for job in recommended_jobs %}
             <tr>
+              <td>{{forloop.counter}}</td>
+              <td>{{job.job_number}}</td>
               <td>{{ job.job_title.job_title }}</td>
               <td>{{ job.company.name }}</td>
               <td>{{ job.skills_required }}</td>
