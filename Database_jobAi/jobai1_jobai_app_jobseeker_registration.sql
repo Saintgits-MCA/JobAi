@@ -28,9 +28,10 @@ CREATE TABLE `jobai_app_jobseeker_registration` (
   `password` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
+  `last_login` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +40,7 @@ CREATE TABLE `jobai_app_jobseeker_registration` (
 
 LOCK TABLES `jobai_app_jobseeker_registration` WRITE;
 /*!40000 ALTER TABLE `jobai_app_jobseeker_registration` DISABLE KEYS */;
-INSERT INTO `jobai_app_jobseeker_registration` VALUES (1,'prudhwirajk@gmail.com','root','Prudhwi Raj','9562766835'),(2,'naveenpt04@gmail.com','root','Naveen Prince Thomas','7586342510'),(3,'jayu123@gmail.com','root','Jayaraj J Pillai','8586342510'),(4,'aslamsalam3491@gmail.com','root','Aslam Salam','623508419');
+INSERT INTO `jobai_app_jobseeker_registration` VALUES (1,'prudhwirajk@gmail.com','root','Prudhwi Raj','9562766835',NULL),(2,'naveenpt04@gmail.com','root','Naveen Prince Thomas','7586342510',NULL),(3,'jayaraj.inmca2025@saintgits.org','root','Jayaraj J Pillai','8586342510',NULL),(4,'aslamsalam3491@gmail.com','root','Aslam Salam','623508419',NULL),(5,'alentbinu@gmail.com','root','Alen T Binu','8346628123',NULL),(6,'jannagardner@gmail.com','root','Janna Gardner','9576628123',NULL),(7,'alan@gmail.com','root','Alan','9559686123',NULL);
 /*!40000 ALTER TABLE `jobai_app_jobseeker_registration` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-19 21:53:24
+-- Dump completed on 2025-03-01  7:24:28

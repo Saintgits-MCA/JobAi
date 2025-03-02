@@ -30,7 +30,7 @@ CREATE TABLE `jobai_app_jobseeker_resume` (
   PRIMARY KEY (`id`),
   KEY `JobAi_App_jobseeker__user_id_5170ab0a_fk_JobAi_App` (`user_id`),
   CONSTRAINT `JobAi_App_jobseeker__user_id_5170ab0a_fk_JobAi_App` FOREIGN KEY (`user_id`) REFERENCES `jobai_app_jobseeker_registration` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `jobai_app_jobseeker_resume` (
 
 LOCK TABLES `jobai_app_jobseeker_resume` WRITE;
 /*!40000 ALTER TABLE `jobai_app_jobseeker_resume` DISABLE KEYS */;
-INSERT INTO `jobai_app_jobseeker_resume` VALUES (1,'documents/CV_Sample_XGIcHOI.docx','2025-02-19 09:07:53.344495',4);
+INSERT INTO `jobai_app_jobseeker_resume` VALUES (1,'documents/Prudhwi_Raj_Krishna_V_CV.docx','2025-02-27 09:30:50.701918',1),(4,'documents/Prudhwi_Raj_Krishna_V_CV_y6g0x54.docx','2025-02-28 02:06:19.747042',3),(5,'documents/Janna_Gardner.docx','2025-03-01 00:51:38.785027',6);
 /*!40000 ALTER TABLE `jobai_app_jobseeker_resume` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-19 21:53:25
+-- Dump completed on 2025-03-01  7:24:34

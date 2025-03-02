@@ -39,7 +39,7 @@ CREATE TABLE `jobai_app_company_joblist` (
   KEY `JobAi_App_company_joblist_job_title_id_5b3f377e` (`job_title_id`),
   CONSTRAINT `JobAi_App_company_jo_company_id_5afbe075_fk_JobAi_App` FOREIGN KEY (`company_id`) REFERENCES `jobai_app_company` (`id`),
   CONSTRAINT `JobAi_App_company_jo_job_title_id_5b3f377e_fk_JobAi_App` FOREIGN KEY (`job_title_id`) REFERENCES `jobai_app_job_title` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,7 @@ CREATE TABLE `jobai_app_company_joblist` (
 
 LOCK TABLES `jobai_app_company_joblist` WRITE;
 /*!40000 ALTER TABLE `jobai_app_company_joblist` DISABLE KEYS */;
-INSERT INTO `jobai_app_company_joblist` VALUES (1,2,'1000220','-','Full Time','Bangalore,Karnataka','BE/Btech CSE ,MCA,Mtech CSE','Python,HTML,CSS,JavaScript,Django','2025-02-18','2025-05-15',6),(2,5,'1000227','-','Part Time','Kochi,Kerala,India','BE/Btech CSE ,MCA,Mtech CSE','Python,Redhat Course Certification','2025-02-19','2025-05-15',1),(4,5,'1000224','-','Full Time','Kochi,Kerala,India','MCA, Btech CSE','Java,MySQL/Any other Databases','2025-02-18','2025-04-23',2),(5,1,'1000229','-','Full Time','Bangalore,Karnataka','BE/Btech CSE , MCA, Mtech CSE','Python,HTML,CSS,JavaScript,Django','2025-02-19','2025-06-26',1),(6,7,'123456','-','Full Time','Hyderabad,Andhra Pradesh,India','BE/Btech CSE ,MCA,Mtech CSE','Python Jupyter/Anaconda,MySQL/Any other Databases,Knowledge in ML','2025-02-19','2025-05-28',1);
+INSERT INTO `jobai_app_company_joblist` VALUES (2,1,'132555','-','Full Time','Kochi,Thiruvananthapuram,Kozhikode','Integrated MCA,MCA','Python,HTML,CSS','2025-02-28','2025-05-26',1),(3,3,'14578895','-','Full Time','Thiruvananthapuram,Kochi','MCA,Integrated MCA','.NET, Visual Basic ,SQL','2025-02-28','2025-04-29',3),(5,1,'1000229','-','Full Time','Bangalore,Kochi','BE/Btech CSE','Python,HTML,CSS,JavaScript,Django','2025-02-19','2025-06-26',1),(6,7,'123456','-','Full Time','Hyderabad','BE/Btech CSE','Python Jupyter/Anaconda,MySQL/Any other Databases,Knowledge in ML','2025-02-19','2025-05-28',1),(7,8,'13457728','-','Full Time','Bangalore','MCA,Integrated MCA,BTech CSE','HTML,CSS,JavaScript,Nodejs,Reactjs,MySQL','2025-02-20','2025-10-29',1),(8,6,'13758959','-','Full Time','Bangalore,Remote ','MCA,Integrated MCA,BTech CSE','HTML,CSS,JavaScript,Nodejs,Reactjs,MySQL','2025-02-22','2025-04-30',2),(9,5,'245563','-','Full Time','Bangalore','Btech CSE','Java','2025-02-24','2025-04-25',7),(10,7,'234673378','-','Full Time','Kochi,Bangalore,Trivandrum','Btech CSE,MCA,Integrated MCA','HTML,CSS,JavaScript,Nodejs,React,Python,Angularjs','2025-02-28','2025-11-28',2);
 /*!40000 ALTER TABLE `jobai_app_company_joblist` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -61,4 +61,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-19 21:53:26
+-- Dump completed on 2025-03-01  7:24:23
