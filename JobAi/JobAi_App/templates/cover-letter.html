@@ -28,19 +28,30 @@
     background: #fff;
     text-align: left;
 }
+.coverletterbox
+{
+    margin-bottom: 50px;
+    background-color: rgb(238, 247, 250);
+    box-shadow:1px black;
+    border-radius: 5px;
 
+}
+.formcoverletter
+{
+    border-radius: 5px;
+}
 
 </style>
 <body>
     <div class="main-content">
         <h2 id="cover-letter" class="mb-3">AI Cover Letter Generator</h2>
         <div style="margin-top: 90px;" class="ms-3">
-            <div class="cover-letter-generator coverletterbox w-100" style="margin-bottom: 50px;">
+            <div class="cover-letter-generator coverletterbox w-100">
                 <div class="formcoverletter">
                     <form class="formcover ms-5 ps-3" method="POST" action="{%url 'ai_cover_letter'%}">
                         {% csrf_token %}
                         <div class="coverletterformdiv">
-                            <div class="row">
+                            <div class="row text-dark">
                                 <div class="col-lg-3">
                                     <div class="coverletterinputblock">
                                         <label class="coverletterlabel form-label">Job Title <span class="text-danger">*</span></label>
@@ -73,7 +84,7 @@
                                 <div class="col-lg-3">
                                     <div class="coverletterinputblock">
                                         <label class="coverletterlabel form-label">Write Cover Letter To <span class="text-danger">*</span></label>
-                                        <input required placeholder="Ex-> Albert, HR Manager, CEO" type="text" name="hrname" class="form-control">
+                                        <input required placeholder="Ex-> Albert, HR Manager, CEO" type="text" id="hrname" name="hrname" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -109,17 +120,17 @@
                             </div>
                             <div class="covergeneratorbutton">
                                 <center>
-                                    <button type="submit" class="ms-5 mt-4 btn btn-primary">
+                                    <button type="submit" class="ms-5 mt-4 btn btn-primary fw-bold" onclick="preventDefault();">
                                         <i class="bi bi-magic"></i> Generate Cover Letter
                                     </button>
                                     {% if cover_letter %}
                                     <!-- Button to Open Modal -->
-                                    <button type="button" class="btn btn-success mt-4 ms-3" id="view" data-bs-toggle="modal" data-bs-target="#coverLetterModal">
+                                    <button type="button" class="btn btn-success mt-4 ms-3 fw-bold" id="view" data-bs-toggle="modal" data-bs-target="#coverLetterModal">
                                        <i class="bi bi-eye"></i> View Cover Letter
                                     </button>
-                                    <button type="button" class="btn btn-danger mt-4 ms-3" onclick="resetbtn()" id="resetButton">
+                                    <button type="button" class="btn btn-warning text-white fw-bold mt-4 ms-3" onclick="resetbtn()" id="resetButton">
                                         <i class="bi bi-trash3-fill"></i> Reset
-                                     </button>
+                                     </button></center>
                                  
                                     <!-- Modal -->
                                     <div class="modal fade" id="coverLetterModal" tabindex="-1" aria-labelledby="coverLetterModalLabel" aria-hidden="true">
@@ -133,7 +144,7 @@
                                                 </div>
                                 
                                                 <!-- Modal Body -->
-                                                <div class="modal-body">
+                                                <div class="modal-body text-dark">
                                                     <div id="scrollable-container" class="scrollable-container">
                                                         <p id="coverLetterText" class="typing-effect">{{ cover_letter|linebreaks }}</p>
                                                     </div>
@@ -144,7 +155,7 @@
                                                     <button id="downloadPdfBtn" class="btn btn-success">
                                                         <i class="bi bi-download"></i> Download PDF
                                                     </button></a>
-                                                <a><button class="btn btn-info">
+                                                <a><button class="btn btn-info" id="sendEmailBtn">
                                                         <i class="bi bi-send-fill"></i> Send Cover Letter
                                                     </button></a>
                                                 </div>
@@ -165,6 +176,46 @@
 </body>
 
 <script>
+    document.getElementById('sendEmailBtn').addEventListener('click', function () {
+    var element = document.getElementById('scrollable-container');
+
+    if (!element) {
+        alert("Error: Cover letter content not found!");
+        return;
+    }
+
+    var originalHeight = element.style.maxHeight;
+    element.style.maxHeight = "none";  // Remove height restriction
+
+    var options = {
+        margin: 10,
+        filename: 'cover_letter.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // Generate the PDF as a Blob
+    html2pdf().set(options).from(element).outputPdf('blob').then(function (pdfBlob) {
+        element.style.maxHeight = originalHeight;  // Restore original height
+
+        var formData = new FormData();
+        formData.append("pdf", pdfBlob, "cover_letter.pdf");
+        // formData.append("email", document.getElementById("companyEmail").value); // Hidden field with recipient email
+        formData.append("csrfmiddlewaretoken", document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "{%url 'send_cover_letter_email'%}", true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                alert("Email sent successfully!");
+            } else {
+                alert("Error sending email: " + xhr.responseText);
+            }
+        };
+        xhr.send(formData);
+    });
+});
     function resetbtn() {
     console.log("Reset function called"); // Debugging
 
@@ -186,15 +237,6 @@
         console.log("Reset button not found");
     }
 
-    // Optionally Clear Cover Letter Text
-    let coverLetterText = document.getElementById("coverLetterText");
-    if (coverLetterText) {
-        coverLetterText.innerHTML = "";
-        console.log("Clearing cover letter text");
-    } else {
-        console.log("Cover letter text not found");
-    }
-
     // Hide Modal if Open
     let modalElement = document.getElementById("coverLetterModal");
     if (modalElement) {
@@ -208,6 +250,7 @@
     } else {
         console.log("Modal element not found");
     }
+    document.getElementById('hrname').value=""
 }
 
      // Function to trigger the typing effect after page load
@@ -221,7 +264,7 @@
             if (i < text.length) {
                 coverLetterText.innerHTML += text.charAt(i);
                 i++;
-                setTimeout(typeWriter, 50); // Adjust typing speed here
+                setTimeout(typeWriter, 5); // Adjust typing speed here
             }
         }
 
@@ -255,7 +298,15 @@
         element.style.maxHeight = originalHeight;  // Restore original height
     });
 });
-
+document.addEventListener("DOMContentLoaded", function () {
+    // Restore input values if available in session storage
+    let formElements = document.querySelectorAll("form input, form select");
+    formElements.forEach((element) => {
+        if (sessionStorage.getItem(element.name)) {
+            element.value = sessionStorage.getItem(element.name);
+        }
+    });
+});
 </script>
 
 {% endblock %}

@@ -1,6 +1,6 @@
 from datetime import date
 import openai
-from django.db import connection
+# from django.db import connection
 from django.shortcuts import get_object_or_404, render, redirect
 import os
 import json
@@ -15,6 +15,8 @@ from .models import * #noqa
 from django.contrib import messages
 from django.core.mail import send_mail
 from itertools import groupby
+from django.core.mail.message import EmailMessage
+import tempfile
 
 openai.api_key = settings.OPENAI_API_KEY
 
@@ -457,7 +459,7 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
     {"role": "user", "content": prompt}
   ]
         )
-
+        request.session['company_id']=company_id
         cover_letter = response["choices"][0]["message"]["content"].strip()
         jsdt = jobseeker_profile.objects.get(email=email)
         return render(request, "cover-letter.html", {
@@ -479,7 +481,33 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
         "jsdt":jsdt
     })
 
+def send_cover_letter_email(request):
+    fname=request.session.get('jobseeker_name')
+    if request.method == "POST":
+        cid = request.session.get("company_id")
+        pdf_file = request.FILES.get("pdf")
+        email=Company.objects.get(id=cid).email
+        if not cid or not pdf_file:
+            return JsonResponse({"message": "Missing email or PDF!"}, status=400)
 
+        # Save the uploaded PDF to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+            for chunk in pdf_file.chunks():
+                temp_pdf.write(chunk)
+
+            temp_pdf_path = temp_pdf.name
+
+        # Send email
+        email_message = EmailMessage(
+            subject=f"{ fname }'s Application",
+            body=f"Dear Hiring Manager,\n\nPlease find the attached cover letter.\n\nBest regards.\n{fname}",
+            from_email=settings.DEFAULT_FROM_EMAIL,  
+            to=[email],
+        )
+        email_message.attach_file(temp_pdf_path)
+        email_message.send()
+        return JsonResponse({"message": "Cover Letter sent successfully!"})
+    return JsonResponse({"message": "Invalid request method"}, status=400)
 def settings_view(request): 
     jbid = request.session.get('jobseeker_id')
     try: 
@@ -787,10 +815,11 @@ def delete_user_profile(request):
     
     if not fname or not jobseeker_profile.objects.filter(name=fname).exists():
         return redirect('home')
-    jobseeker = jobseeker_profile.objects.get(name=fname)
     if(JobApplication.objects.filter(jobseeker__name=fname).exists()):
         JobApplication.objects.filter(jobseeker__name=fname).delete()
-    jobseeker_profile.objects.get(name=fname).delete()
+        
+    jobseeker = jobseeker_profile.objects.get(name=fname)
+    jobseeker.delete()
     jobseeker_resume.objects.get(user__name=fname).delete()
     return redirect('settings_view')
     

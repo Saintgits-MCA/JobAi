@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-
 <div class="main-content">
     <h4 id="profile">AI Mock Interview</h4>
-    <h6 class="mt-3 fs-5  ms-5">Start Practicing with Mock Interview Questions.Note down the Questions for further preparation </h6>
+    <h6 class="text-dark mt-3 fs-5  ms-5">Start Practicing with Mock Interview Questions.Note down the Questions for further preparation </h6>
     <div class="container" style="margin-top: 90px;">
-        <div class="cover-letter-generator coverletterbox w-100" style="margin-bottom: 50px;">
+        <div class="cover-letter-generator coverletterbox w-100 pb-5 bg-white" style="margin-bottom: 50px;border-radius: 5px;box-shadow:0 2px 4px rgba(0, 0, 0, 0.1);">
             <div class="formcoverletter">
                 <form class="formcover" method="POST">
                     {% csrf_token %}
@@ -14,9 +13,9 @@
                            <div class="row mt-4">
                             <div class="col-lg-6">
                                 <div class="coverletterinputblock form-group ms-3">
-                                   <label class="form-label ms-1">Job Title</label><span class="text-danger mx-2">*</span>
+                                   <label class="form-label ms-1 text-dark">Job Position</label><span class="text-danger mx-2">*</span>
                                      <select id="jobTitleSelect" class="form-control ms-5 bs-4" name="job_title" required>
-                                        <option value="" selected disabled>--Choose Job Title---</option>
+                                        <option value="" selected disabled>--Choose Job Position---</option>
                                         {% for i in job %}
                                         <option value="{{ i.id }}">{{ i.job_title }}</option>
                                         {% endfor %}
@@ -43,11 +42,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">AI Mock Interview</h5>
-                    <button type="button" class="btn-close btn btn-danger text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">X</button>
                 </div>
                 <div class="modal-body">
-                    <h5 id="questionText" class="mt-3">Click 'Start Interview' to begin and wait ...</h5>
-                    <textarea id="answerInput" class="form-control mt-3"
+                    <h5 id="questionText" class="text-dark mt-3">Click 'Start Interview' to begin and wait ...</h5>
+                    <textarea id="answerInput" class="form-control mt-3 text-dark"
                         placeholder="Type your answer"></textarea>
                         <button class="btn btn-primary mt-3" id="toggleRecording"><i class="fas fa-microphone"></i> Start Answer</button>
                 </div>
@@ -69,7 +68,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="feedbackText"></p>
+                    <p id="feedbackText" class="text-dark fw-bold"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
