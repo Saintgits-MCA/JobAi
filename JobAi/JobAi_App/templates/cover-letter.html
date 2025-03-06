@@ -10,6 +10,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 <style>
+    .btn-custom
+    {
+        background-color: orange;
+    }
+    .btn-custom:hover{
+        background-color: darkorange;
+    }
     .typing-effect {
     font-family: 'Courier New', Courier, monospace;
     font-size: 18px;
@@ -55,8 +62,8 @@
                                 <div class="col-lg-3">
                                     <div class="coverletterinputblock">
                                         <label class="coverletterlabel form-label">Job Title <span class="text-danger">*</span></label>
-                                         <select type="text" class="form-control" name="job_title" required>
-                                            <option selected disabled value="">--Select Job Title--</option>
+                                         <select type="text" class="form-control" id="job_id" name="job_title" required>
+                                            <option selected disabled value="{{request.POST.job_title|default:''}}">--Select Job Title--</option>
                                               {% for i in job %}
                                               <option value="{{i.id}}" {% if i.id == jobobg.job_title_id %}selected{%endif%} >{{i.job_title}}</option>
                                             {%endfor%}
@@ -120,15 +127,15 @@
                             </div>
                             <div class="covergeneratorbutton">
                                 <center>
-                                    <button type="submit" class="ms-5 mt-4 btn btn-primary fw-bold" onclick="preventDefault();">
+                                    <button type="submit" class="ms-5 mt-4 btn btn-primary fw-bold">
                                         <i class="bi bi-magic"></i> Generate Cover Letter
                                     </button>
                                     {% if cover_letter %}
                                     <!-- Button to Open Modal -->
                                     <button type="button" class="btn btn-success mt-4 ms-3 fw-bold" id="view" data-bs-toggle="modal" data-bs-target="#coverLetterModal">
-                                       <i class="bi bi-eye"></i> View Cover Letter
+                                       <i class="bi bi-eye-fill"></i> View Cover Letter
                                     </button>
-                                    <button type="button" class="btn btn-warning text-white fw-bold mt-4 ms-3" onclick="resetbtn()" id="resetButton">
+                                    <button type="button" class="btn btn-custom text-white fw-bold mt-4 ms-3" onclick="resetbtn()" id="resetButton">
                                         <i class="bi bi-trash3-fill"></i> Reset
                                      </button></center>
                                  
@@ -155,8 +162,8 @@
                                                     <button id="downloadPdfBtn" class="btn btn-success">
                                                         <i class="bi bi-download"></i> Download PDF
                                                     </button></a>
-                                                <a><button class="btn btn-info" id="sendEmailBtn">
-                                                        <i class="bi bi-send-fill"></i> Send Cover Letter
+                                                <a><button class="btn btn-primary text-white" id="sendEmailBtn">
+                                                        <i class="bi bi-send-fill text-white fw-bold"></i> Send Cover Letter
                                                     </button></a>
                                                 </div>
                                 
@@ -201,7 +208,7 @@
 
         var formData = new FormData();
         formData.append("pdf", pdfBlob, "cover_letter.pdf");
-        // formData.append("email", document.getElementById("companyEmail").value); // Hidden field with recipient email
+        formData.append("job_id", document.getElementById("job_id").value); // Hidden field with recipient email
         formData.append("csrfmiddlewaretoken", document.querySelector('[name=csrfmiddlewaretoken]').value);
 
         var xhr = new XMLHttpRequest();

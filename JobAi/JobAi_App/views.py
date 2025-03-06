@@ -438,6 +438,7 @@ def coverletter(request):
             company_loc = company_obj.address
             job_position = job_title.objects.get(id=position)
             jobs = job_position.job_title
+            job_id=jobs
         except Company.DoesNotExist:
             company_name = "Unknown Company"
 
@@ -460,6 +461,7 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
   ]
         )
         request.session['company_id']=company_id
+        request.session['highest_qualification']=eligibility
         cover_letter = response["choices"][0]["message"]["content"].strip()
         jsdt = jobseeker_profile.objects.get(email=email)
         return render(request, "cover-letter.html", {
@@ -469,7 +471,8 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
             "company": company,
             "phone":phoneno,
             "jsdt":jsdt,
-            "job":job
+            "job":job,
+            "job_id":job_id
         })
     jsdt = jobseeker_profile.objects.get(email=email)
     return render(request, "cover-letter.html", {
@@ -483,13 +486,16 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
 
 def send_cover_letter_email(request):
     fname=request.session.get('jobseeker_name')
+    highest_qualification=request.session.get('highest_qualification')
+    
     if request.method == "POST":
         cid = request.session.get("company_id")
         pdf_file = request.FILES.get("pdf")
+        job_title_id=request.POST.get('job_id')
         email=Company.objects.get(id=cid).email
         if not cid or not pdf_file:
             return JsonResponse({"message": "Missing email or PDF!"}, status=400)
-
+        job=job_title.objects.get(id=job_title_id).job_title
         # Save the uploaded PDF to a temporary file
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
             for chunk in pdf_file.chunks():
@@ -499,8 +505,8 @@ def send_cover_letter_email(request):
 
         # Send email
         email_message = EmailMessage(
-            subject=f"{ fname }'s Application",
-            body=f"Dear Hiring Manager,\n\nPlease find the attached cover letter.\n\nBest regards.\n{fname}",
+            subject=f"{ fname }'s Job Application for { job }",
+            body=f" Dear Hiring Manager,\n\n I hope this email finds you well. I am writing to express my interest in the { job } position at your company. With my qualification in { highest_qualification }, I am eager to contribute my skills and expertise to your esteemed organization.\n\nI have attached my cover letter for your review.\n\n It highlights my skills and explains how my experience aligns with the requirements of the role. I would greatly appreciate the opportunity to discuss how I can be a valuable addition to your team.Please feel free to reach out if you require any further information. I look forward to the possibility of an interview at your convenience.\n\nThank you for your time and consideration.\n\nBest regards, \n\n{fname}",
             from_email=settings.DEFAULT_FROM_EMAIL,  
             to=[email],
         )

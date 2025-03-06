@@ -95,7 +95,7 @@
 .scrollable-table colgroup col:nth-child(4) { width: 20%; }  /* Job Title */
 .scrollable-table colgroup col:nth-child(5) { width: 15%; }  /* Company */
 .scrollable-table colgroup col:nth-child(6) { width: 12%; }  /* Location */
-.scrollable-table colgroup col:nth-child(7) { width: 15%; }  /* Applied At */
+.scrollable-table colgroup col:nth-child(7) { width: 20%; }  /* Applied At */
 .scrollable-table colgroup col:nth-child(8) { width: 10%; }  /* Last Date */
 .scrollable-table colgroup col:nth-child(9) { width: 12%; }  /* Application Status */
 
@@ -147,8 +147,8 @@
               <td>{{ job.company_joblist.job_title.job_title }}</td>
               <td>{{ job.company_joblist.company.name }}</td>
               <td>{{ job.company_joblist.location }}</td>
-              <td>{{ job.applied_at|date:"d-M-Y" }}</td>
-              <td>{{job.company_joblist.Lastdate|date:"d-M-Y" }}</td>
+              <td>{{ job.applied_at|date:"d M Y" }}</td>
+              <td>{{job.company_joblist.Lastdate|date:"d M Y" }}</td>
               <td>Applied</td>
             </tr>
           {% endfor %}
