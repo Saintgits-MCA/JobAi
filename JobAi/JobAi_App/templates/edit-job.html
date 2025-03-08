@@ -109,7 +109,15 @@
                 <input type="text" name="highest_qualification" id="highest_qualification" class="form-control"
                     value="{{ jobobg.highest_qualification }}" required>
             </div>
-
+            <div class="mb-3">
+                <label class="form-label">Percentage Criteria</label><span class="text-danger mx-2">*</span>
+                <select name="percentage" class="form-control" placeholder="Percentage Criteria  for Qualification">
+                    <option value="{{ jobobg.percent_criteria}}" selected disabled>{{ jobobg.percent_criteria }}</option>
+                    <option value="80%">Percentage >80%</option>
+                    <option value="70%">Percentage >70%</option>
+                    <option value="60%">Percentage >60%</option>
+                    </select>
+            </div>
             <div class="mb-3">
                 <label class="form-label">Skills Required</label><span class="text-danger mx-2">*</span>
                 <input type="text" name="skills_required" id="skills_required" class="form-control"
@@ -123,7 +131,6 @@
             </div>
 
             <button type="submit" class="btn btn-primary w-100 mb-3">Update Posted Job</button>
-            <!-- <a href="{% url 'job_listing' %}"><button class="btn btn-danger w-100 mb-3">Cancel</button></a> -->
         </form>
 
         <div id="message-container"></div>

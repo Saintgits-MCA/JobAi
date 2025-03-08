@@ -98,7 +98,15 @@
                 <label class="form-label">Eligibility Criteria</label><span class="text-danger mx-2">*</span>
                 <input type="text" name="highest_qualification" class="form-control" placeholder="Enter Highest Qualification Requirement">
             </div>
-
+            <div class="mb-3">
+                <label class="form-label">Percentage Criteria</label><span class="text-danger mx-2">*</span>
+                <select name="percentage" class="form-control" placeholder="Percentage Criteria  for Qualification">
+                    <option value="" selected disabled>--Select Percentage Cutoff for Eligibility--</option>
+                    <option value="80%">Percentage >80%</option>
+                    <option value="70%">Percentage >70%</option>
+                    <option value="60%">Percentage >60%</option>
+                    </select>
+            </div>
             <!-- Skills Required (Multi-Select) -->
             <div class="mb-3">
                 <label class="form-label">Skills Required</label><span class="text-danger mx-2">*</span>

@@ -74,7 +74,7 @@
                         <div class="form-group">
                             <label for="phone" class="form-label fw-bold">Date Of Birth:</label>
                             <input type="text" id="dob" name="dob" class="form-control ms-1 input-bg"
-                                value="{{ jsdt.dob }}" readonly>
+                                value="{{ jsdt.dob|date:'d-M-Y'}}" readonly>
                         </div>
                     </div>
                     <div class="col-md-6 mt-2">
@@ -82,6 +82,13 @@
                             <label for="Eligibility" class="form-label fw-bold">Highest Qualification:</label>
                             <input type="text" id="eligibility" name="eligibility" class="form-control ms-1 input-bg"
                                 value="{{ jsdt.highest_qualification }}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="form-group">
+                            <label for="percentage" class="form-label fw-bold">Percentage Obtained</label>
+                            <input type="text" id="percentage" name="percentage" class="form-control ms-1 input-bg"
+                                value="{{ jsdt.percentage }}" readonly>
                         </div>
                     </div>
                     <div class="col-md-6 mt-2">
@@ -101,7 +108,7 @@
                     {%if jsdt.resume%}
                     <div class="col-md-6 mt-2">
                         <div class="form-group">
-                            <label for="Resume" class="form-label fw-bold mt-4">Resume&emsp13; </label><br>
+                            <label for="Resume" class="form-label fw-bold">Resume&emsp13; </label><br>
                             <a id="Resume" name="Resume" href="{{jsdt.resume.url}}"
                                 class="nav-item text-decoration-none ms-3"><button type="button"
                                     class="btn btn-dark text-white" style="border-radius: 10px;"><i

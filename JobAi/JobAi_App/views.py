@@ -66,6 +66,8 @@ def extract_resume_details(content):
         "skills": "",
         "address": "",
         "highest_qualification": "",
+        "passout_year": "",
+        "percentage": "",
         "job_preference": "",
         "university": "",
         "dob": "",
@@ -76,7 +78,12 @@ def extract_resume_details(content):
     # Define patterns and keywords
     email_pattern = r"[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+"
     phone_pattern = r"\+?\d{10,15}"
-    dob_pattern = r"\b(\d{1,2}[-/ ](?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[-/ ]\d{2,4}|\d{1,2}[-/]\d{1,2}[-/]\d{2,4})\b"
+    # passout_year_pattern = r"\b(19\d{2}|20\d{2})\b"
+    percentage_pattern = r"(\d{1,2}\.\d{1,2}|\d{1,2})%"
+    dob_patterns = [
+        r"\b(\d{1,2})[-/ ](\d{1,2})[-/ ](\d{2,4})\b",  # Formats like DD/MM/YYYY, DD-MM-YYYY
+        r"\b(\d{1,2})[-/ ](Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[-/ ](\d{2,4})\b"  # Formats with month names
+    ]
     qualification_keywords = ["Bachelor's Degree","Integrated MCA","MCA", "Master of Computer Application", "PhD", "B.Sc", "M.Sc", "B.Tech Computer Science", "M.Tech Computer Science", "MBA"]
     job_preferences_keywords = ["Software Engineer", "Data Scientist", "Backend Developer", "Frontend Developer", "Project Manager"]
     university_keywords = ["University", "Institute", "College"]
@@ -112,11 +119,34 @@ def extract_resume_details(content):
             if phone_match:
                 details["phone"] = phone_match.group()
         
-        # Extract date of birth
+        # # Extract date of birth
+        # if not details["dob"]:
+        #     dob_match = re.search(dob_patterns, line, flags=re.IGNORECASE)
+        #     if dob_match:
+        #         details["dob"] = dob_match.group(1)
+        # Extract date of birth and format to YYYY-MM-DD (for HTML date input)
         if not details["dob"]:
-            dob_match = re.search(dob_pattern, line, flags=re.IGNORECASE)
-            if dob_match:
-                details["dob"] = dob_match.group(1)
+            for pattern in dob_patterns:
+                dob_match = re.search(pattern, line, flags=re.IGNORECASE)
+                if dob_match:
+                    try:
+                        if len(dob_match.groups()) == 3:
+                            day, month, year = dob_match.groups()
+                            if month.isdigit():
+                                formatted_date = f"{int(year):04d}-{int(month):02d}-{int(day):02d}"
+                            else:
+                                month_num = {
+                                    "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", 
+                                    "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"
+                                }.get(month[:3].capitalize(), "")
+                                if month_num:
+                                    formatted_date = f"{int(year):04d}-{month_num}-{int(day):02d}"
+                                else:
+                                    continue
+                            details["dob"] = formatted_date
+                            break
+                    except ValueError:
+                        continue
         
         # Extract address if line contains address-related keywords or Indian states
         if not details["address"]:
@@ -130,6 +160,12 @@ def extract_resume_details(content):
                     details["highest_qualification"] = qualification
                     break
         
+        # Extract percentage
+        if not details["percentage"]:
+            percentage_match = re.search(percentage_pattern, line)
+            if percentage_match:
+                details["percentage"] = percentage_match.group()
+                
         # Extract job preference
         if not details["job_preference"]:
             for job in job_preferences_keywords:
@@ -215,6 +251,7 @@ def jobseeker_home(request):
                 messages.error(request, f"Error processing document: {str(e)}")
                 return redirect("home")
     resume = jobseeker_resume.objects.filter(user_id=uid)
+    job=job_title.objects.all()
     context = {
         "resume_details": extracted_details,
         "alert_message": alert_message,
@@ -222,7 +259,8 @@ def jobseeker_home(request):
         "email": jobseek_email,
         "phone": phone,
         "show_modal": show_modal,
-        "resume": resume
+        "resume": resume,
+        "job":job
     }
 
     if not jobseeker_profile.objects.filter(name=fname).exists() and not jobseeker_resume.objects.filter(user=uid).exists():
@@ -246,13 +284,15 @@ def jobseeker_profile_update(request):
         address = request.POST.get('Address')
         qualification = request.POST.get('Education')
         university = request.POST.get('University')
+        percentage=request.POST.get('Percentage')
+        passout=request.POST.get('passout')
         skills = request.POST.get('skills')
         image = request.FILES.get('image')
         job_preference = request.POST.get('job_preferences')
         # Fetch the first resume for the user (if multiple exist)
         resume = jobseeker_resume.objects.filter(user=userid).first()
         cv = resume.file if resume else None  # Handle case where no resume exists
-        
+        job_preference=job_title.objects.get(id=job_preference).job_title
         if jobseeker_profile.objects.filter(name=name).exists() and jobseeker_profile.objects.filter(email=email).exists():
             messages.error(request, "A Jobseeker with this name and/or email already exists. Please use different details.")
         else:
@@ -261,6 +301,8 @@ def jobseeker_profile_update(request):
             jobseeker_obj.email = email
             jobseeker_obj.dob = dob
             jobseeker_obj.highest_qualification = qualification
+            jobseeker_obj.percentage=percentage
+            jobseeker_obj.passoutyear=passout
             jobseeker_obj.skills = skills
             jobseeker_obj.job_preference = job_preference
             jobseeker_obj.university = university
@@ -610,24 +652,36 @@ def match_jobs(jobseeker):
     Match jobs based on overlapping skills and jobseeker's highest qualification.
     Returns a QuerySet of matching company_joblist jobs.
     """
+    # Function to extract numeric percentage value from string
+    def extract_percentage(value):
+        try:
+            return float(value.strip('%')) if value else 0.0
+        except ValueError:
+            return 0.0
     # Parse jobseeker skills and qualification
     seeker_skills = parse_list(jobseeker.skills)
     seeker_qual = jobseeker.highest_qualification.strip().lower() if jobseeker.highest_qualification else ""
-    
+    seeker_percentage = extract_percentage(jobseeker.percentage) if jobseeker.percentage else 0.0
     # Fetch all jobs (this could be optimized with a filter, but for now we'll do it in Python)
     all_jobs = company_joblist.objects.all()
     matching_jobs = []
     for job in all_jobs:
         job_skills = parse_list(job.skills_required)
+        job_percentage_criteria = extract_percentage(job.percent_criteria)
+        
         # Check for any common skills
         if not seeker_skills.intersection(job_skills):
             continue
+        
         # Check eligibility: if job.highest_qualification exists, see if it matches the seeker qualification
         if job.highest_qualification:
             # Split eligibility criteria if multiple (assuming comma-separated)
             eligibility_set = parse_list(job.highest_qualification)
             if seeker_qual and seeker_qual not in eligibility_set:
                 continue
+            # Check if jobseeker's percentage meets or exceeds the job's percentage criteria
+        if seeker_percentage < job_percentage_criteria:
+            continue
         matching_jobs.append(job)
     return matching_jobs
 
@@ -1033,6 +1087,7 @@ def company_postjob(request):
         job_type = request.POST.get('Job_type')
         jobposted_date = request.POST.get('jobposted_date')
         qualification = request.POST.getlist('highest_qualification')
+        percent_criteria=request.POST.get('percentage')
         skills = request.POST.getlist('skills_required')
         qualification_str = ",".join(qualification)
         skills_str = ",".join(skills)
@@ -1049,6 +1104,7 @@ def company_postjob(request):
             companyjob_obj.job_type = job_type
             companyjob_obj.dateofpublish = jobposted_date
             companyjob_obj.highest_qualification = qualification_str
+            companyjob_obj.percent_criteria=percent_criteria
             companyjob_obj.skills_required = skills_str
             companyjob_obj.Lastdate = lastdate
             companyjob_obj.save()
@@ -1071,6 +1127,7 @@ def edit_job(request):
         job_type = request.POST.get('job_type')
         # jobposted_date = request.POST.get('jobposted_date')
         qualification = request.POST.getlist('highest_qualification')
+        percent_criteria=request.POST.get('percentage')
         skills = request.POST.getlist('skills_required')
         qualification_str = ",".join(qualification)
         skills_str = ",".join(skills)
@@ -1088,6 +1145,7 @@ def edit_job(request):
         companyjob_obj.job_type = job_type
         companyjob_obj.dateofpublish = date.today().strftime('%Y-%m-%d')
         companyjob_obj.highest_qualification = qualification_str
+        companyjob_obj.percent_criteria=percent_criteria
         companyjob_obj.skills_required = skills_str
         companyjob_obj.Lastdate = lastdate
         companyjob_obj.save()

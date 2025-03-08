@@ -196,7 +196,7 @@ tbody tr:hover {
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ applicant.jobseeker.name }}</td>
-                            <td>{{ applicant.jobseeker.dob }}</td>
+                            <td>{{ applicant.jobseeker.dob|date:"d-M-Y"  }}</td>
                             <td>{{ applicant.jobseeker.address }}</td>
                             <td>{{ applicant.jobseeker.email }}</td>
                             <td>{{ applicant.jobseeker.phone }}</td>

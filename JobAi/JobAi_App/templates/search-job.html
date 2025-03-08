@@ -139,16 +139,16 @@
     /* Eligibility */
     .job-table th:nth-child(8),
     .job-table td:nth-child(8) {
-      width: 15%;
-    }
-
-    /* Last Date */
-    .job-table th:nth-child(9),
-    .job-table td:nth-child(9) {
       width: 9%;
     }
 
-    /* Apply */
+    /* % Criteria */
+    .job-table th:nth-child(9),
+    .job-table td:nth-child(9) {
+      width:15%;
+    }
+
+    /* Last Date */
 
 
     /* No job postings message */
@@ -209,8 +209,9 @@
             <th>Type</th>
             <th>Location</th>
             <th>Eligibility</th>
+            <th>cutoff</th>
             <th>Last Date</th>
-            <th>Apply </th>
+            
           </tr>
         </thead>
         <tbody>
@@ -224,8 +225,8 @@
             <td>{{ job.job_type }}</td>
             <td>{{ job.location }}</td>
             <td>{{ job.highest_qualification }}</td>
+            <td>{{ job.percent_criteria }}</td>
             <td>{{ job.Lastdate }}</td>
-            <td><a href="#" class="btn btn-primary btn-sm">Apply</a></td>
           </tr>
           {% endfor %}
           {% else %}

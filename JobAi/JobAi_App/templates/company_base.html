@@ -19,7 +19,7 @@
 
     <style>
         :root {
-            --primary-color:rgb(160, 0, 247) ;
+            --primary-color: rgb(160, 0, 247);
             --secondary-color: #0056b3;
             --sidebar-bg: #0350a2;
             --text-color: white;
@@ -43,7 +43,7 @@
 
         /* Sidebar Styling */
         .sidebar {
-            width:  19.5%;
+            width: 19.5%;
             height: 100vh;
             background: var(--sidebar-bg);
             color: white;
@@ -51,10 +51,11 @@
             padding-top: 1px;
             position: fixed;
         }
-        h2
-        {
+
+        h2 {
             color: blue;
         }
+
         .sidebar .brand {
             display: flex;
             align-items: center;
@@ -69,7 +70,7 @@
             list-style: none;
             padding: 0;
             margin-top: 20px;
-            gap: 5px;
+            gap: 10px;
         }
 
         .sidebar-menu li {
@@ -79,7 +80,7 @@
         .sidebar-menu a {
             display: flex;
             align-items: center;
-            padding: 12px 20px;
+            padding: 15px 20px;
             text-decoration: none;
             color: var(--text-color);
             font-size: 16px;
@@ -97,7 +98,7 @@
         .main-content {
             margin-left: 260px;
             width: 100%;
-           
+
         }
 
         /* Navbar */
@@ -122,10 +123,11 @@
         .navbar .menu a:hover {
             color: #dfe9ff;
         }
-        body::-webkit-scrollbar,.scrollable-table::-webkit-scrollbar
-    {
-        width: 1px;
-    }
+
+        body::-webkit-scrollbar,
+        .scrollable-table::-webkit-scrollbar {
+            width: 1px;
+        }
 
         .navbar .profile {
             display: flex;
@@ -138,7 +140,7 @@
             height: 35px;
             border-radius: 50%;
             border: 2px solid white;
-            box-shadow:black;
+            box-shadow: black;
         }
 
         /* Responsive */
@@ -153,14 +155,17 @@
                 display: none;
             }
 
-        
+
         }
+
         .main-content {
-    width: calc(100% - 260px);  /* Adjust width to avoid overflow */
-    transition: all 0.3s ease-in-out;
-}
- /* Responsive */
- @media (max-width: 360px) {
+            width: calc(100% - 260px);
+            /* Adjust width to avoid overflow */
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 360px) {
             .sidebar {
                 width: fit-content;
                 padding: 10px;
@@ -171,32 +176,33 @@
                 display: none;
             }
 
-        
+
         }
+
         .main-content {
-    width: calc(100% - 260px);  /* Adjust width to avoid overflow */
-    transition: all 0.3s ease-in-out;
-}
+            width: calc(100% - 260px);
+            /* Adjust width to avoid overflow */
+            transition: all 0.3s ease-in-out;
+        }
 
 
-/* Responsive Fixes */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 70px;
-        padding: 10px;
-    }
+        /* Responsive Fixes */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 10px;
+            }
 
-    .main-content {
-        margin-left: 70px;
-        width: calc(100% - 70px);
-    }
+            .main-content {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+            }
 
-    .sidebar .brand span,
-    .sidebar-menu a span {
-        display: none;
-    }
-}
-
+            .sidebar .brand span,
+            .sidebar-menu a span {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -204,33 +210,34 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-       
+
         <ul class="sidebar-menu pb-3">
-            
-            <center><img src="{{ compdt.profile_img.url }}" alt="" height="85px" class="profile rounded-circle ms-3 mt-0"
-                    style="border-radius:25px;"></center>
+
+            <center><img src="{{ compdt.profile_img.url }}" alt="" height="85px"
+                    class="profile rounded-circle ms-3 mt-0" style="border-radius:25px;"></center>
             <h6 class="text-center mt-1 fw-bold fs-5">{{cname}}</h6>
             <li class="fw-bold mx-3 mt-4"><a href="{% url 'company_dashboard' %}"><i class="fas fa-home mx-2"></i> <span
                         class="mx-2">Dashboard</span></a></li>
             <li class="fw-bold mx-3"><a href="{% url 'job_listing' %}"><i class="fas fa-briefcase mx-2"></i> <span
                         class="mx-2">Jobs</span></a></li>
+            <li class="fw-bold mx-3"><a href="#"><i class="fas fa-user mx-2"></i><span class="ps-2"> Applicants</span></a></li>
+            <li class="fw-bold mx-3"><a href="#"><i class="fas fa-briefcase mx-2"></i><span class="ps-2">Candidates</span></a></li>
             <!-- <li class="fw-bold mx-3"><a href="{%url 'job_applications'%}"><i class="fas fa-user mx-2"></i> <span
                         class="mx-2">Applicants</span></a></li> -->
-            <!-- <li><a href="#"><i class="fas fa-calendar"></i> <span class="mx-2">Meetings</span></a></li> -->
             <li class="fw-bold mx-3"><a href="{% url 'company_settings' %}"><i class="fas fa-cog mx-2"></i> <span
                         class="mx-2">Settings</span></a></li>
-                    </ul>
-            <div class="sidebarFooter text-center mt-2">
-                <div class="sidebarFooterContent mb-2"><img src="{%static 'images/contact.png'%}" class="contact"
-                        width="200px">
-                    
-                    <p class="contactMain mb-1 fw-bold mt-2">Contact Us <i class="fas fa-address-book"></i></p>
-                    <div class="contactUs">
-                        <p class="align-items-left">tecknohow.132@gmail.com <br>
+        </ul>
+        <div class="sidebarFooter text-center mt-2">
+            <div class="sidebarFooterContent mb-2"><img src="{%static 'images/contact.png'%}" class="contact"
+                    width="200px">
+
+                <p class="contactMain mb-1 fw-bold mt-2">Contact Us <i class="fas fa-address-book"></i></p>
+                <div class="contactUs">
+                    <p class="align-items-left">tecknohow.132@gmail.com <br>
                         +91 9562766835</p>
-                    </div>
                 </div>
             </div>
+        </div>
     </div>
 
     <!-- Main Content -->
@@ -240,8 +247,8 @@
         <nav class="navbar d-flex justify-content-between">
             <div class="menu d-none d-md-flex">
                 <div class="brand d-flex align-items-center">
-                    <center><a href="{%url 'index'%}"><img src="{% static 'images/JobAi2.png' %}" alt="JobAi" height="50px" class="mx-2"
-                                style="border-radius: 25px;"></a></center>
+                    <center><a href="{%url 'index'%}"><img src="{% static 'images/JobAi2.png' %}" alt="JobAi"
+                                height="50px" class="mx-2" style="border-radius: 25px;"></a></center>
                 </div>
             </div>
 
@@ -249,14 +256,13 @@
                 <a href="{% url 'Post Job' %}"><button class="btn btn-light me-3">+ Post a Job</button></a>
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <img src="{{compdt.profile_img.url}}" alt="Profile" height="25px"
-                            class="rounded-circle"> {{cname}}
+                        <img src="{{compdt.profile_img.url}}" alt="Profile" height="25px" class="rounded-circle">
+                        {{cname}}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{%url 'company_ch_pwd'%}"><i class="fas fa-pencil"></i>  Change Password</a></li>
-                        <li><a class="dropdown-item" href="{%url 'company_settings'%}"><i class="fas fa-cog"></i>
-                                Account</a></li>
-                        <li><a class="dropdown-item" href="{%url 'company_logout'%}"><i class="fas fa-sign-out-alt"></i>
+                        <li><a class="dropdown-item fw-bold" href="{%url 'company_ch_pwd'%}"><i class="fas fa-pencil"></i>
+                                Change Password</a></li>
+                        <li><a class="dropdown-item fw-bold" href="{%url 'company_logout'%}"><i class="fas fa-sign-out-alt"></i>
                                 Logout</a></li>
                     </ul>
                 </div>

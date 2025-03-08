@@ -72,44 +72,17 @@ label
     100% { opacity: 0; display: none; }
 }
 .sidebar{
-    height: 142vh;
+    height: 160vh;
 }
 .input[type='file']
 {
     display: none;
 }
 </style>
-<div class="alert1 alert-danger"  id="msg-container2" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            
-            <!-- Modal Header with "X" Close Button -->
-            <div class="modal-header">
-                <h5 class="modal-title" id="messageModalLabel">Warning!</h5>
-                <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close" onclick="closeMessageModal()">X</button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="modal-body">
-                
-                    <div  role="alert1">
-                        Complete your profile to get access to all features of this portal.
-                        Use <a href="https://www.ilovepdf.com/pdf_to_word"><strong>iLovepdf.com</strong></a> for converting resumes to doc/docx format.
-                    </div>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                  </div>
-
-        </div>
-    </div>
-</div>
-
-
+<h2 id="profile">Jobseeker Profile Setup</h2><br>
+<h5 class="text-dark mt-5 ms-5">Complete your profile to get access to all features of this portal. <br> Use <a class="text-decoration-none" href="https://ilovepdf.com/pdf_to_word/">iLovepdf.com</a> for converting resumes of other formats with OCR to doc/docx format.
+</h5>
 <div class="main-content">
-    <h2 id="profile">Jobseeker Profile Setup</h2><br><br>
-    
     <div class="container w-50 mt-4" style="margin-right: 250px;margin-left: 25px;">
         <h5 class="text-center text-dark">Upload Your Resume<span class="text-danger ms-2">*</span></h5>
         <button type="button" class="btn btn-primary ms-5 w-75" data-bs-toggle="modal" data-bs-target="#uploadResumeModal">
@@ -182,6 +155,15 @@ label
                             class="input1 input-bg toggleInput" placeholder="Enter your Address" required rows="5" cols="5"
                             value="{{ resume_details.address }}" ></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label for="Passout Date" class="fw-bold">Passout Year<span class="text-danger ms-2">*</span></label>
+                        <select id="passout" name="passout" class="input1" required>
+                        <option value="" selected disabled>Select Passout Year</option>
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        </select>
+                    </div>
                 </div>
                 <!-- right column -->
                 <div class="col-md-6">
@@ -197,6 +179,12 @@ label
                             value="{{ resume_details.highest_qualification }}" required>
                     </div>
                     <div class="mb-3">
+                        <label for="Percentage" class="fw-bold">Percentage Obtained<span class="text-danger ms-2">*</span></label><br>
+                        <input type="text" name="Percentage" id="Percentage" class="input1 input-bg toggleInput"
+                            placeholder="(ex:80%)Percentage in  Highest Qualification"
+                            value="{{ resume_details.percentage }}" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="University" class="fw-bold">University/Institution <span class="text-danger ms-2">*</span></label><input type="text"
                             id="University" name="University" class="input1 input-bg toggleInput"
                             placeholder="Enter University/Institution of Highest Qualification" value="{{resume_details.university}}" required>
@@ -207,9 +195,16 @@ label
                             required>
                     </div>
                     <div class="mb-3">
-                        <label for="job preferences" class="fw-bold">Highest Job Preference<span class="text-danger ms-2">*</span></label><input type="text"
-                            name="job_preferences" class="input1 input-bg toggleInput" placeholder="Enter your highest Job Preference(Only one)"
+                        <label for="job preferences" class="fw-bold">Highest Job Preference<span class="text-danger ms-2">*</span></label><select 
+                            name="job_preferences" class="input1 toggleInput" placeholder="Enter your highest Job Preference"
                             value="{{ resume_details.job_preference }}" required>
+                            <option value="" selected disabled>--Select Job Preference---</option>
+                            {% if job %}
+                            {% for i in job %}
+                            <option value="{{i.id}}">{{i.job_title}}</option>
+                            {% endfor %}
+                            {%endif%}
+                        </select>
                     </div>
                    
                 </div>

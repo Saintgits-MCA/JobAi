@@ -40,50 +40,72 @@
       transform: translateY(-50%);
       cursor: pointer;
     }
+
+    body {
+      background: url('../static/images/bg1.png')no-repeat 100%;
+      padding-right: 5px;
+    }
+
     #message-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 300px;
-    z-index: 1000;
-}
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 300px;
+      z-index: 1000;
+    }
 
-.alert {
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    animation: fadeOut 5s ease-in-out forwards;
-}
+    body::-webkit-scrollbar {
+      width: .1px;
+      /* Set scrollbar width */
+    }
 
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
+    .alert {
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      animation: fadeOut 5s ease-in-out forwards;
+    }
 
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
 
-/* CSS Animation to Fade Out */
-@keyframes fadeOut {
-    0% { opacity: 1; }
-    80% { opacity: 1; }  /* Stay visible for a while */
-    100% { opacity: 0; display: none; }
-}
-.pass,.pass:hover,.pass::selection
-{
-  outline: none;
-  border: none;
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
 
-}
+    /* CSS Animation to Fade Out */
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
 
-</style>
+      80% {
+        opacity: 1;
+      }
+
+      /* Stay visible for a while */
+      100% {
+        opacity: 0;
+        display: none;
+      }
+    }
+
+    .pass,
+    .pass:hover,
+    .pass::selection {
+      outline: none;
+      border: none;
+
+    }
+  </style>
 </head>
 
-<body style="background-image: url('../static/images/bg1.png');">
+<body>
   <main>
     <div class="container-fluid">
       <div class="row">
@@ -100,23 +122,23 @@
               <div class=" form-group mb-3">
                 <label class="form-label">Company Logo</label><span class="text-danger mx-1">*</span>
                 <input type="file" name="company_logo" class="form-control" required>
-            </div>
+              </div>
               <div class="form-group mb-1">
                 <label for="Username">Company Name</label><span class="text-danger mx-1">*</span>
-                <input type="text" name="company_name" id="Username" class="form-control" placeholder="Enter Company Name"
-                  required>
+                <input type="text" name="company_name" id="Username" class="form-control"
+                  placeholder="Enter Company Name" required>
               </div>
               <div class="form-group mb-1">
                 <label for="email">Email</label><span class="text-danger mx-1">*</span>
                 <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email Address"
                   required>
               </div>
-              
+
               <div class="form-group mb-1">
                 <label for="Company Type">Company Type</label><span class="text-danger mx-1">*</span>
                 <select id="Company_Type" name="CompanyType" class="form-control" required>
                   <option selected disabled value="">--Select Company Type--</option>
-                {% for i in company %}
+                  {% for i in company %}
                   <option value="{{i.id}}">{{i.company_type}}</option>
                   {% endfor %}
                 </select>
@@ -130,13 +152,14 @@
                 <label for="password">Password</label><span class="text-danger mx-1">*</span>
                 <div class="input-group form-group ">
                   <div class="form-control w-100">
-                    <input type="password" name="password" id="password"  placeholder="Enter Password" class="pass" style="width: 89%;" required>
-                        <span>
-                            <i class="fas fa-eye-slash eye-icon" id="togglePassword" onclick="togglePassword()"></i>
-                        </span>
+                    <input type="password" name="password" id="password" placeholder="Enter Password" class="pass"
+                      style="width: 89%;" required>
+                    <span>
+                      <i class="fas fa-eye-slash eye-icon" id="togglePassword" onclick="togglePassword()"></i>
+                    </span>
                   </div>
                 </div>
-            </div>
+              </div>
               <button name="Signup" id="Signup" class="btn btn-block btn-primary w-100 mt-2 mb-1">Signup</button>
             </form>
             <a href="{% url 'company_login' %}" class="text-reset">Already have an account?Login</a>
@@ -150,40 +173,44 @@
     {% if messages %}
     <!-- Modal -->
     {% for message in messages %}
-    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"  id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                
-                <!-- Modal Header with "X" Close Button -->
-                <div class="modal-header">
-                    <h5 class="modal-title" id="messageModalLabel">Notification</h5>
-                    <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close" onclick="closeMessageModal()">X</button>
-                  </div>
+    <div
+      class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"
+      id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true"
+      style="display: block;">
+      <div class="modal-dialog">
+        <div class="modal-content">
 
-                <!-- Modal Body -->
-                <div class="modal-body">
-                    
-                        <div  role="alert">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
+          <!-- Modal Header with "X" Close Button -->
+          <div class="modal-header">
+            <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+            <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close"
+              onclick="closeMessageModal()">X</button>
+          </div>
 
-                <!-- Modal Footer -->
-                <div class="modal-footer">
-                  </div>
+          <!-- Modal Body -->
+          <div class="modal-body">
 
+            <div role="alert">
+              {{ message }}
             </div>
+            {% endfor %}
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+          </div>
+
         </div>
+      </div>
     </div>
 
     <!-- JavaScript to Auto-Close on Click -->
     <script>
-        function closeMessageModal() {
-            document.getElementById("message-container").style.display = "none";
-        }
+      function closeMessageModal() {
+        document.getElementById("message-container").style.display = "none";
+      }
     </script>
-{% endif %}
+    {% endif %}
 
   </main>
 </body>
@@ -203,14 +230,14 @@
       eye.classList.add("fa-eye");
     }
   }
-  setTimeout(function() {
-        let messageContainer = document.getElementById("message-container");
-        if (messageContainer) {
-            messageContainer.style.transition = "opacity 0.5s";
-            messageContainer.style.opacity = "1"; // Fade out effect
-            setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
-        }
-    }, 5000);
+  setTimeout(function () {
+    let messageContainer = document.getElementById("message-container");
+    if (messageContainer) {
+      messageContainer.style.transition = "opacity 0.5s";
+      messageContainer.style.opacity = "1"; // Fade out effect
+      setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
+    }
+  }, 5000);
 </script>
 
 </html>

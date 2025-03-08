@@ -8,7 +8,7 @@
         position: fixed;
         top: 100px;
         right: 20px;
-        width: 700px;
+        width: 300px;
         z-index: 1000;
     }
 
@@ -69,9 +69,9 @@
                 <div id="jobs" class="tab-pane fade show active">
                     <div class="card p-3 mb-3">
                         <h5>Active Job Postings</h5>
-                        <p>You have <b>{{ jcount }}</b> jobs posted.</p>
+                        <p>You can check <b>{{ jcount }}</b> job opportunities. <br>You can also manually search all jobs here.</p>
                         <a href="{% url 'search-job' %}">
-                            <button class="btn btn-primary">Apply For Job</button>
+                            <button class="btn btn-primary"><i class="fas fa-search"></i> Search For Job</button>
                         </a>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                         {% if ajcount and ajcount|add:0 > 0 %}
                         <p>You have applied for <b>{{ ajcount }}</b> job(s).</p>
                         <a href="{% url 'applied-jobs' %}">
-                            <button class="btn btn-primary">View Applied Jobs</button><!-- Down arrow icon -->
+                            <button class="btn btn-primary"><i class="bi bi-eye-fill"></i> View Applied Jobs</button><!-- Down arrow icon -->
                         </a>
                         {%else%}
                         <p>You didn't applied for any jobs yet</p>
