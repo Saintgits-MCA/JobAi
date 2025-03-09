@@ -136,7 +136,7 @@
         <div class="d-flex justify-content-between job-actions">
           <a href="javascript:void(0);" class="view-details-btn text-decoration-none" 
              onclick="openJobModal(
-               '{{ job.job_title.job_title }}', 
+               '{{forloop.counter}}. {{ job.job_title.job_title }}', 
                '{{ job.job_title.id }}', 
                '{{ job.job_number }}', 
                '{{ job.company.name }}', 
@@ -173,8 +173,8 @@
       <div class="modal-body text-dark">
         <p><b>Job ID:</b> <span id="modalJobId"></span></p>
         <p><b>Unique Job No.:</b> <span id="modalJobNumber"></span></p>
-        <p><b>Company:</b> <span id="modalCompany"></span></p>
-        <p><b>Location:</b> <span id="modalLocation"></span></p>
+        <p><b><i class="fas fa-building"></i></b> <span id="modalCompany"></span></p>
+        <p><b><i class="fas fa-map-marker-alt"></i></b> <span id="modalLocation"></span></p>
         <p><b>Job Type:</b> <span id="modalJobType"></span></p>
         <p><b>Eligibility:</b> <span id="modalQualification"></span></p>
         <p><b>Cutoff %:</b> <span id="modalCutoff"></span></p>

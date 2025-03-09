@@ -16,119 +16,219 @@
 </head>
 <style>
     body::-webkit-scrollbar {
-    width: 3px; /* Set scrollbar width */
-}
-body ,.main-content
-{
-    background-color: rgb(238, 247, 250);
-    color: blue;
-}
-.container,.container1
-{
-    width: 85%;
-    box-shadow: none;
-}
+        width: 3px;
+        /* Set scrollbar width */
+    }
+
+    body,
+    .main-content {
+        background-color: rgb(238, 247, 250);
+        color: blue;
+    }
+
+    .container,
+    .container1 {
+        width: 85%;
+        box-shadow: none;
+    }
+
+    .dropdown1 .dropdown-toggle::after {
+        display: none;
+    }
+
+    .dropdown1 button {
+        border-radius: 5px;
+    }
 </style>
+
 <body>
     <div class="sidebar">
         {%if jsdt.profile_img%}
         <div class="fw-bold fs-5 mx-4 mt-4"><img src="{{jsdt.profile_img.url}}" alt="profile-pic"
-            class="profile-pic1 w-75 h-50 mx-3" style="margin-left: 12px;margin-right: 18px;">
-         {%else%}
-        <div class="fw-bold fs-5 mx-4 mt-4"><img src="{%static 'images/profile.jpeg'%}" alt="profile-pic"
-                class="profile-pic1 w-75 h-75 mx-3" style="margin-left: 12px;margin-right: 18px;">
+                class="profile-pic1 w-75 h-50 mx-3" style="margin-left: 12px;margin-right: 18px;">
+            {%else%}
+            <div class="fw-bold fs-5 mx-4 mt-4"><img src="{%static 'images/profile.jpeg'%}" alt="profile-pic"
+                    class="profile-pic1 w-75 h-75 mx-3" style="margin-left: 12px;margin-right: 18px;">
                 {%endif%}
-            <center> {{ fname }}</center>
-        </div>
-        <ul class="mt-5">
-            <div class="box" onclick="select(this)">
-                <a href="{%url 'jobseeker_dashboard'%}" class="nav-link fw-bold">
-                    <li><i class="fa-solid fa-home"></i> &emsp;Dashboard</li>
-                </a>
+                <center> {{ fname }}</center>
             </div>
-            <div class="box" onclick="select(this)">
-                <a href="{%url 'search-job' %}" class="nav-link fw-bold">
-                    <li><i class="fa-solid fa-search"></i> &emsp;Search Jobs</li>
-                </a>
-            </div>
-            <!-- <div class="box" onclick="select(this)">
-                <a href="{%url 'applied-jobs'%}" class="nav-link fw-bold">
-                    <li><i class="fas fa-check-circle text-white" title="Applied"></i> &emsp;Applied Jobs</li>
-                </a>
-            </div> -->
-            <div class="box" onclick="select(this)">
-                <a href="{%url 'ai_cover_letter'%}" class="nav-link fw-bold">
-                    <li><i class="fa-solid fa-envelope"></i> &emsp;AI Cover Letter</li>
-                </a>
-            </div>
-            
-            <div class="box" onclick="select(this)">
-                <a href="{%url 'mock-interview'%}" class="nav-link fw-bold">
-                    <li><i class="fa-solid fa-clipboard-list"></i> &emsp;AI Mock Interview</li>
-                </a>
-            </div>
-            <div class="box" onclick="select(this)">
-                <a href="{%url 'auto-apply'%}" class="nav-link fw-bold">
-                    <li><i class="fa-solid fa-bolt"></i> &emsp;Auto Apply</li>
-                </a>
-            </div>
-            <div class="box" onclick="select(this)">
-                <a href="{%url 'settings_view' %}" class="nav-link fw-bold">
-                    <li><i class="fa-solid fa-gear"></i> &emsp;Settings</li>
-                </a>
-            </div>
-        </ul>
-        <div class="sidebarFooter mt-5 text-center">
-            <div class="sidebarFooterContent mb-1"><img src="{%static 'images/contact.png'%}" class="contact" width="200px">
-                <p class="contactMain mb-1 fw-bold">Contact Us <i class="fas fa-address-book"></i></p>
-                <div class="contactUs">
-                    <p class="text-center">tecknohow.132@gmail.com <br>
-                    +91 9562766835</p>
+            <ul class="mt-5">
+                <div class="box" onclick="select(this)">
+                    <a href="{%url 'jobseeker_dashboard'%}" class="nav-link fw-bold">
+                        <li><i class="fa-solid fa-home"></i> &emsp;Dashboard</li>
+                    </a>
+                </div>
+                <div class="box" onclick="select(this)">
+                    <a href="{%url 'search-job' %}" class="nav-link fw-bold">
+                        <li><i class="fa-solid fa-search"></i> &emsp;Search Jobs</li>
+                    </a>
+                </div>
+                <div class="box" onclick="select(this)">
+                    <a href="{%url 'applied-jobs'%}" class="nav-link fw-bold">
+                        <li><i class="fas fa-check-circle text-white" title="Applied"></i> &emsp;Applied Jobs</li>
+                    </a>
+                </div>
+                <div class="box" onclick="select(this)">
+                    <a href="{%url 'ai_cover_letter'%}" class="nav-link fw-bold">
+                        <li><i class="fa-solid fa-envelope"></i> &emsp;AI Cover Letter</li>
+                    </a>
+                </div>
+
+                <div class="box" onclick="select(this)">
+                    <a href="{%url 'mock-interview'%}" class="nav-link fw-bold">
+                        <li><i class="fa-solid fa-clipboard-list"></i> &emsp;AI Mock Interview</li>
+                    </a>
+                </div>
+                <div class="box" onclick="select(this)">
+                    <a href="{%url 'auto-apply'%}" class="nav-link fw-bold">
+                        <li><i class="fa-solid fa-bolt"></i> &emsp;Auto Apply</li>
+                    </a>
+                </div>
+                <div class="box" onclick="select(this)">
+                    <a href="{%url 'settings_view' %}" class="nav-link fw-bold">
+                        <li><i class="fa-solid fa-gear"></i> &emsp;Settings</li>
+                    </a>
+                </div>
+            </ul>
+            <div class="sidebarFooter mt-5 text-center">
+                <div class="sidebarFooterContent mb-1"><img src="{%static 'images/contact.png'%}" class="contact"
+                        width="200px">
+                    <p class="contactMain mb-1 fw-bold">Contact Us <i class="fas fa-address-book"></i></p>
+                    <div class="contactUs">
+                        <p class="text-center">tecknohow.132@gmail.com <br>
+                            +91 9562766835</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <br><br>
-    </div>
-    
-<div class="main-content">
-    <nav class="navbar d-flex justify-content-between container-fluid" position="sticky">
-        <div class="menu d-none d-md-flex">
-            <div class="brand d-flex align-items-center">
-                <center><a href="{%url 'index'%}"><img src="{% static 'images/JobAi2.png' %}" alt="JobAi" height="50px" class="mx-3"
-                            style="border-radius: 25px;"></a></center>
-            </div>
+            <br><br>
         </div>
 
-        <div class="d-flex align-items-center">
-            <i class="fa-solid fa-bell"></i>
-              <div class="dropdown">
-                
-                <button class="dropdown-toggle mx-3" type="button" data-bs-toggle="dropdown" style="border-radius: 5px;background-color: white;color:black;">
-                    {%if jsdt.profile_img%}
-                    <img src="{{jsdt.profile_img.url}}" alt="Profile" height="25px" class="rounded-circle">
-                    {%else%}
-                    <img src="{% static 'images/profile.jpeg' %}" alt="Profile" height="25px" class="rounded-circle">
-                    {%endif%} {{ fname }}
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item fw-bold" href="{%url 'j_change_pwd' %}"><i class="fas fa-pencil"></i> Change Password</a></li>
-                    <li><a class="dropdown-item fw-bold" href="{%url 'support'%}"><i class="fas fa-headset icon-support"></i> Support</a></li>
-                    <li><a class="dropdown-item fw-bold" href="{%url 'jobseeker_logout'%}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+        <div class="main-content">
+            <nav class="navbar d-flex justify-content-between container-fluid" position="sticky">
+                <div class="menu d-none d-md-flex">
+                    <div class="brand d-flex align-items-center">
+                        <center><a href="{%url 'index'%}"><img src="{% static 'images/JobAi2.png' %}" alt="JobAi"
+                                    height="50px" class="mx-3" style="border-radius: 25px;"></a></center>
+                    </div>
+                </div>
 
-    {% block content %}
-    {% endblock %}
-</div>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown dropdown1">
+                        <button class="dropdown-toggle bg-white text-dark" id="notification-btn"><i
+                                class="fa-solid fa-bell"></i>{% if count %}
+                            <span id="notif-count"
+                                class="badge bg-danger text-white position-absolute top-0 start-100 translate-middle">
+                                {{ count }}
+                                {%else%}
+
+                                {%endif%}
+                            </span>
+                        </button>
+                        <!-- Notification Dropdown -->
+                        <div class="dropdown-menu dropdown-menu-end p-2" id="notification-dropdown"
+                            style="display: none; width: 200px;margin-top: 8px;">
+                            <div id="notifications-list">
+                                {%if notification%}
+                                {%else%}
+                                <p class="text-center">No new notifications</p>
+                                {%endif%}
+                            </div>
+                            <hr>
+                            <button class="btn-square btn-primary w-100" id="mark-read-btn">Mark all as read</button>
+                        </div>
+                    </div>
+                    <div class="dropdown dropdown2">
+
+                        <button class="dropdown-toggle mx-3" type="button" data-bs-toggle="dropdown"
+                            style="border-radius: 5px;background-color: white;color:black;">
+                            {%if jsdt.profile_img%}
+                            <img src="{{jsdt.profile_img.url}}" alt="Profile" height="25px" class="rounded-circle">
+                            {%else%}
+                            <img src="{% static 'images/profile.jpeg' %}" alt="Profile" height="25px"
+                                class="rounded-circle">
+                            {%endif%} {{ fname }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item fw-bold" href="{%url 'j_change_pwd' %}"><i
+                                        class="fas fa-pencil"></i> Change Password</a></li>
+                            <li><a class="dropdown-item fw-bold" href="{%url 'support'%}"><i
+                                        class="fas fa-headset icon-support"></i> Support</a></li>
+                            <li><a class="dropdown-item fw-bold" href="{%url 'jobseeker_logout'%}"><i
+                                        class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            {% block content %}
+            {% endblock %}
+        </div>
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        if (localStorage.getItem("dark-mode") === "true") {
-            document.body.classList.add("dark-mode");
+    const notificationBtn = document.getElementById("notification-btn");
+    const notifDropdown = document.getElementById("notification-dropdown");
+    const notificationsList = document.getElementById("notifications-list");
+    const notifCount = document.getElementById("notif-count");
+    const markReadBtn = document.getElementById("mark-read-btn");
+
+    // Toggle dropdown on bell icon click
+    notificationBtn.addEventListener("click", function (event) {
+        event.stopPropagation(); // Prevents the click from bubbling up
+        notifDropdown.style.display = notifDropdown.style.display === "none" ? "block" : "none";
+        fetchNotifications();
+    });
+
+    // Fetch notifications from backend
+    function fetchNotifications() {
+        fetch("{% url 'jobseeker_notifications' %}")
+            .then(response => response.json())
+            .then(data => {
+                let notifData = data.notifications;
+                let notifHTML = "";
+
+                if (notifData.length > 0) {
+                    notifData.forEach(n => {
+                        notifHTML += `<div class="notification-item border-bottom p-2">
+                            <p class="mb-1 fw-bold">${n.job_title} at ${n.company_name}</p>
+                            <small class="text-muted">${n.created_at}</small>
+                        </div>`;
+                    });
+                } else {
+                    notifHTML = "<p class='text-center'>No new notifications</p>";
+                }
+
+                notificationsList.innerHTML = notifHTML;
+                notifCount.innerText = notifData.length;
+                notifCount.style.display = notifData.length > 0 ? "inline-block" : "none";
+            })
+            .catch(error => console.error("Error fetching notifications:", error));
+    }
+
+    // Mark all notifications as read
+    markReadBtn.addEventListener("click", function () {
+        fetch("{% url 'mark_notifications_as_read' %}", {
+            method: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+        })
+        .then(response => response.json())
+        .then(() => {
+            notificationsList.innerHTML = "<p class='text-center'>No new notifications</p>";
+            notifCount.innerText = "0";
+            notifCount.style.display = "none";
+        });
+    });
+
+    // Hide notification dropdown when clicking outside
+    document.addEventListener("click", function (event) {
+        if (!notifDropdown.contains(event.target) && event.target !== notificationBtn) {
+            notifDropdown.style.display = "none";
         }
     });
+
+    // Fetch notifications every 15 seconds
+    setInterval(fetchNotifications, 15000);
+});
 </script>
 
 </html>

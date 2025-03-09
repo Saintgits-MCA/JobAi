@@ -38,9 +38,8 @@ urlpatterns = [
     path('company_type/',views.company_type,name="company_type"),
     path('Forgot_Password/',views.Forgot_pwd,name='Forgot Password'),
     path('user_support/',views.support,name='support'),
-    # path('edit-profile/',views.edit_profile,name='edit_profile'),
-    # path('edit-profile-update/',views.edit_profile_update,name='edit_profile_update'),
-    path('company_password_reset/',views.company_forgot_password,name='company_forgot_password'),
+    path("notifications/", jobseeker_notifications, name="jobseeker_notifications"),
+    path("notifications/read/", mark_notifications_as_read, name="mark_notifications_as_read"), path('company_password_reset/',views.company_forgot_password,name='company_forgot_password'),
     path('auto-apply/',views.autoapply,name='auto-apply'),
     path('mock-interview/',views.mockinterview,name='mock-interview'),
     path('applied_jobs/',views.applied_jobs,name="applied-jobs")

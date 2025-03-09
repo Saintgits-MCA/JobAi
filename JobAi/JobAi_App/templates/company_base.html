@@ -220,10 +220,10 @@
                         class="mx-2">Dashboard</span></a></li>
             <li class="fw-bold mx-3"><a href="{% url 'job_listing' %}"><i class="fas fa-briefcase mx-2"></i> <span
                         class="mx-2">Jobs</span></a></li>
-            <li class="fw-bold mx-3"><a href="#"><i class="fas fa-user mx-2"></i><span class="ps-2"> Applicants</span></a></li>
-            <li class="fw-bold mx-3"><a href="#"><i class="fas fa-briefcase mx-2"></i><span class="ps-2">Candidates</span></a></li>
-            <!-- <li class="fw-bold mx-3"><a href="{%url 'job_applications'%}"><i class="fas fa-user mx-2"></i> <span
-                        class="mx-2">Applicants</span></a></li> -->
+            <li class="fw-bold mx-3"><a href="{%url 'job_applications'%}"><i class="fas fa-user mx-2"></i> <span
+                        class="mx-2">Applications</span></a></li>
+            <li class="fw-bold mx-3"><a href="#"><i class="fas fa-briefcase mx-2"></i><span
+                        class="ps-2">Candidates</span></a></li>
             <li class="fw-bold mx-3"><a href="{% url 'company_settings' %}"><i class="fas fa-cog mx-2"></i> <span
                         class="mx-2">Settings</span></a></li>
         </ul>
@@ -260,9 +260,11 @@
                         {{cname}}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item fw-bold" href="{%url 'company_ch_pwd'%}"><i class="fas fa-pencil"></i>
+                        <li><a class="dropdown-item fw-bold" href="{%url 'company_ch_pwd'%}"><i
+                                    class="fas fa-pencil"></i>
                                 Change Password</a></li>
-                        <li><a class="dropdown-item fw-bold" href="{%url 'company_logout'%}"><i class="fas fa-sign-out-alt"></i>
+                        <li><a class="dropdown-item fw-bold" href="{%url 'company_logout'%}"><i
+                                    class="fas fa-sign-out-alt"></i>
                                 Logout</a></li>
                     </ul>
                 </div>

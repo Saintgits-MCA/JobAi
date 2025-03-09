@@ -329,7 +329,12 @@ def base(request):
         return render(request, 'base.html', jsdt)
     else:
         jsdt = None
-    return render(request, 'base.html', jsdt)
+    jobseeker = jobseeker_profile.objects.get(user=jbid)
+    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    context={
+        "jsdt":jsdt,"count":unread_notifications
+    }
+    return render(request, 'base.html', context)
 
 
 def Register(request):
@@ -888,24 +893,28 @@ def delete_job(request):
     cname = request.session.get('company_name')
     job_id = request.GET.get("ids")
     messages.success(request, f"jobid:{str(job_id)}")
+    comp = Company.objects.get(name=cname)
     if not job_id:
             messages.error(request, "Job ID is missing in request.")
             return render(request, 'company_jobs.html', {'cname': cname})
         
     try:
-            if(JobApplication.objects.filter(company_joblist__company__name=cname,company_joblist__id=job_id).exists()):
-                applications=get_object_or_404(JobApplication,company_joblist__company__name=cname,company_joblist__id=job_id)
-                applications.delete()
-            job = get_object_or_404(company_joblist, id=job_id)
-            job.delete()
-            messages.success(request, "Job deleted successfully")
-            return redirect('job_listing')
+        # Delete all job applications related to this job
+        job_applications = JobApplication.objects.filter(company_joblist__company__name=cname, company_joblist__id=job_id)
+        if job_applications.exists():
+            job_applications.delete()
+
+        # Delete the job listing itself
+        job = get_object_or_404(company_joblist, id=job_id)
+        job.delete()
+        messages.success(request, "Job deleted successfully")
+        return redirect('job_listing')
     except Exception as e:
             messages.error(request, f"Error deleting job: {str(e)}")
     else: 
         messages.error(request, "Attempt for deleting job item failed")
         
-    return render(request, 'company_jobs.html', {'cname': cname})
+    return render(request, 'company_jobs.html', {'cname': cname,"compdt":comp})
 
 def company_type(request):
     if request.method == "POST":
@@ -1073,7 +1082,36 @@ def company_jobs(request):
     except Exception as e:
         # Handle unexpected errors
         return render(request, 'company_jobs.html', {"cname": cname, 'compdt':company, "error": str(e)})
+def jobseeker_notifications(request):
+    jobseeker_id = request.session.get('jobseeker_id')
 
+    if not jobseeker_id:
+        return JsonResponse({"error": "User not logged in"}, status=400)
+
+    notifications = JobNotification.objects.filter(jobseeker_id=jobseeker_id, is_read=False).order_by('-created_at')
+
+    notifications_data = [
+        {
+            "id": n.id,
+            "message": n.message,
+            "job_title": n.company_job.job_title.job_title,
+            "company_name": n.company_job.company.name,
+            "created_at": n.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+        for n in notifications
+    ]
+    
+    return JsonResponse({"notifications": notifications_data})
+
+def mark_notifications_as_read(request):
+    jobseeker_id = request.session.get('jobseeker_id')
+
+    if not jobseeker_id:
+        return JsonResponse({"error": "User not logged in"}, status=400)
+
+    JobNotification.objects.filter(jobseeker_id=jobseeker_id, is_read=False).update(is_read=True)
+
+    return JsonResponse({"message": "Notifications marked as read."})
 
 def company_postjob(request):
     job = job_title.objects.all()
@@ -1108,6 +1146,14 @@ def company_postjob(request):
             companyjob_obj.skills_required = skills_str
             companyjob_obj.Lastdate = lastdate
             companyjob_obj.save()
+            # **Notify jobseekers**
+            jobseekers = jobseeker_profile.objects.all()
+            for jobseeker in jobseekers:
+                JobNotification.objects.create(
+                    jobseeker=jobseeker,
+                    company_job=companyjob_obj,
+                    message=f"New job posted: {companyjob_obj.job_title.job_title} at {company.name}."
+                )
             messages.success(request, "Job Posted Successfully!!")        
     cname = request.session.get('company_name')
     return render(request, 'company_postjob.html', {"cname":cname, "compdt":company, 'cdate':date.today().strftime("%Y-%m-%d"), "job":job})
@@ -1179,6 +1225,7 @@ def applications(request):
         "grouped_applicants":grouped_applicants
     }
     return render(request,'applications.html',context)
+
 def jobseeker_dashboard(request):
     fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():
@@ -1192,5 +1239,6 @@ def jobseeker_dashboard(request):
     jcount = ccount.count()
     compcount = company.count()
     jobseeker = jobseeker_profile.objects.get(name=fname)
-    return render(request, 'jobseeker_dashboard.html', {"fname":fname, "jcount":jcount, "compcount":compcount, "company":company, "jsdt":jobseeker,"ajcount":ajcount})
+    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    return render(request, 'jobseeker_dashboard.html', {"fname":fname, "jcount":jcount, "compcount":compcount, "company":company, "jsdt":jobseeker,"ajcount":ajcount,"count":unread_notifications})
 

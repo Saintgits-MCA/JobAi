@@ -89,14 +89,16 @@ class ResumeDetails(models.Model):
         return self.name if self.name else "Unknown Resume"
 
 
-# class UserSettings(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="settings")
-#     dark_mode = models.BooleanField(default=False)  # Dark Mode Setting
-#     email_notifications = models.BooleanField(default=True)
-#     two_factor_auth = models.BooleanField(default=False)
+class JobNotification(models.Model):
+    jobseeker = models.ForeignKey(jobseeker_profile, on_delete=models.CASCADE, related_name='notifications')
+    company_job = models.ForeignKey(company_joblist, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-#     def __str__(self):
-#         return f"Settings for {self.user.username}"
+    def __str__(self):
+        return f"Notification for {self.jobseeker.name} - {self.company_job.job_title}"
+
 
 class UploadedFile(models.Model):
     file = models.FileField(upload_to='uploads/')
