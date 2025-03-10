@@ -1,8 +1,5 @@
-from tkinter import CASCADE
-from django.contrib.auth.models import User
 from django.db import models
 # from fields import ComparableMixin
-from pip._internal import locations
 
 class Jobseeker_Registration(models.Model):
     name=models.CharField(max_length=255,default="Unknown")

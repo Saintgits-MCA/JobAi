@@ -395,7 +395,7 @@ def Forgot_pwd(request):
             # Send the email
             send_mail(
                 subject="Password Reset Request",
-                message=f"Click the link below to reset your password:\n{reset_url}",
+                message=f"""Dear { user.name },\nClick the link below to reset your password:\n{reset_url}""",
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
                 fail_silently=False,
@@ -449,11 +449,12 @@ def search_job(request):
     # Filter by location query
     if location_query:
         jobs = jobs.filter(location__icontains=location_query)
-    
+    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
     context = {
         "fname": fname,
         "jobs": jobs,
         "jsdt": jobseeker,
+        'count':unread_notifications
     }
     return render(request, 'search-job.html', context)
 
@@ -511,6 +512,7 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
         request.session['highest_qualification']=eligibility
         cover_letter = response["choices"][0]["message"]["content"].strip()
         jsdt = jobseeker_profile.objects.get(email=email)
+        unread_notifications = JobNotification.objects.filter(jobseeker=jsdt, is_read=False).count()
         return render(request, "cover-letter.html", {
             "fname": fname,
             "email": email,
@@ -518,17 +520,20 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
             "company": company,
             "phone":phoneno,
             "jsdt":jsdt,
+            "count":unread_notifications,
             "job":job,
             "job_id":job_id
         })
     jsdt = jobseeker_profile.objects.get(email=email)
+    unread_notifications = JobNotification.objects.filter(jobseeker=jsdt, is_read=False).count()
     return render(request, "cover-letter.html", {
         "fname": fname,
         "company": company,
         "email": email,
         "phone":phoneno,
         "job":job,
-        "jsdt":jsdt
+        "jsdt":jsdt,
+        "count":unread_notifications
     })
 
 def send_cover_letter_email(request):
@@ -568,12 +573,14 @@ def settings_view(request):
         fname = request.session.get('jobseeker_name')
         jobseek_email = request.session.get('jobseeker_email') 
         phone = request.session.get('jobseeker_phone')
+        unread_notifications = JobNotification.objects.filter(jobseeker=jsdt, is_read=False).count()
         # address=request.session.get("address")
         context = {
             'jsdt':jsdt,
                 "fname":fname,
                 "email":jobseek_email,
                 "phone":phone,
+                "count":unread_notifications
             }
         return render(request, 'settings_view.html', context)
     except:
@@ -595,7 +602,8 @@ def support(request):
     if not jobseeker_profile.objects.filter(name=fname).exists():
             return redirect('home')
     jobseeker = jobseeker_profile.objects.get(name=fname)
-    return render(request, 'support.html', {"fname":fname, "jsdt":jobseeker})
+    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    return render(request, 'support.html', {"fname":fname, "jsdt":jobseeker,"count":unread_notifications})
 
 
 def mockinterview(request):
@@ -642,7 +650,8 @@ def mockinterview(request):
             feedback = response["choices"][0]["message"]["content"].strip()
             return JsonResponse({"feedback": feedback})
     jobseeker = jobseeker_profile.objects.get(name=fname)
-    return render(request, 'mock-interview.html', {'job': jobs, "fname":fname, "jsdt":jobseeker})
+    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    return render(request, 'mock-interview.html', {'job': jobs, "fname":fname, "jsdt":jobseeker,"count":unread_notifications})
 
 def parse_list(text):
     """
@@ -739,12 +748,15 @@ def autoapply(request):
         else:
             messages.info(request, "No new matching jobs available for auto-apply.")
         redirect('auto-apply')
+    
+    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
 
     context = {
         "jobseeker_email": jobseeker_email,
         "jsdt": jobseeker,
         "fname":fname,
         "recommended_jobs": recommended_jobs,
+        "count":unread_notifications
     }
     return render(request, "auto-apply.html", context)
 
@@ -757,11 +769,12 @@ def applied_jobs(request):
     jobseeker = jobseeker_profile.objects.get(name=fname)
     jobs=JobApplication.objects.filter(jobseeker_id=profile_id)
     jobs=sorted(jobs, key=lambda x: x.id)
+    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
     context = {
         "fname": fname,
         "jsdt": jobseeker,
-        "jobs":jobs
-        # "recommended_jobs": recommended_jobs,
+        "jobs":jobs,
+        "count": unread_notifications,
     }
     return render(request,'applied-jobs.html',context)
 
@@ -823,6 +836,7 @@ def change_password(request):
         return redirect('home')
     
     jobseeker = jobseeker_profile.objects.get(name=fname)
+    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
     user=Jobseeker_Registration.objects.get(name=fname)
     exist_pwd=user.password
     if request.method == "POST":
@@ -842,7 +856,7 @@ def change_password(request):
             userobj.save()
             messages.success(request, "Your password has been updated successfully!")
 
-    context = {"fname": fname, "jsdt": jobseeker}
+    context = {"fname": fname, "jsdt": jobseeker,"count":unread_notifications}
     return render(request, 'change_pwd.html', context)
 
 
