@@ -128,7 +128,8 @@
                         <div class="dropdown-menu dropdown-menu-end p-2" id="notification-dropdown"
                             style="display: none; width: 200px;margin-top: 8px;">
                             <div id="notifications-list">
-                                {%if notification%}
+                                {%if notifications %}
+                                {{ notifications }} {{ created_at }}
                                 {%else%}
                                 <p class="text-center">No new notifications</p>
                                 {%endif%}

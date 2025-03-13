@@ -179,7 +179,7 @@ tbody tr:hover {
                     <th>#</th>
                     <th>Applicant Name</th>
                     <th>DOB</th>
-                    <th>Address</th>
+                    <th>Qualification</th>
                     <th>Email</th>
                     <th>Ph No.</th>
                     <th>Resume</th>
@@ -197,7 +197,7 @@ tbody tr:hover {
                             <td>{{ forloop.counter }}</td>
                             <td>{{ applicant.jobseeker.name }}</td>
                             <td>{{ applicant.jobseeker.dob|date:"d-M-Y"  }}</td>
-                            <td>{{ applicant.jobseeker.address }}</td>
+                            <td>{{ applicant.jobseeker.highest_qualification }}</td>
                             <td>{{ applicant.jobseeker.email }}</td>
                             <td>{{ applicant.jobseeker.phone }}</td>
                             <td><a href="{{applicant.jobseeker.resume.url}}"><button class="btn btn-primary btn-sm fw-bold hover-bg-success"><i class="fas fa-eye"></i> View</button></a></td>

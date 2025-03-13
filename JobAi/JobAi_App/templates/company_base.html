@@ -70,7 +70,10 @@
         width: calc(100% - 260px);
     }
 }
-
+h1,h2,h3,h4,h5,h6
+{
+    color: blue;
+}
         .sidebar .brand {
             display: flex;
             align-items: center;
@@ -230,15 +233,15 @@
 
             <center><img src="{{ compdt.profile_img.url }}" alt="" height="85px"
                     class="profile rounded-circle ms-3 mt-0" style="border-radius:25px;"></center>
-            <h6 class="text-center mt-1 fw-bold fs-5">{{cname}}</h6>
+            <h6 class="text-center text-white mt-1 fw-bold fs-5">{{cname}}</h6>
             <li class="fw-bold mx-3 mt-4"><a href="{% url 'company_dashboard' %}"><i class="fas fa-home mx-2"></i> <span
                         class="mx-2">Dashboard</span></a></li>
             <li class="fw-bold mx-3"><a href="{% url 'job_listing' %}"><i class="fas fa-briefcase mx-2"></i> <span
                         class="mx-2">Jobs</span></a></li>
             <li class="fw-bold mx-3"><a href="{%url 'job_applications'%}"><i class="fas fa-user mx-2"></i> <span
                         class="mx-2">Applications</span></a></li>
-            <li class="fw-bold mx-3"><a href="#"><i class="fas fa-briefcase mx-2"></i><span
-                        class="ps-2">Candidates</span></a></li>
+            <!-- <li class="fw-bold mx-3"><a href="#"><i class="fas fa-briefcase mx-2"></i><span
+                        class="ps-2">Candidates</span></a></li> -->
             <li class="fw-bold mx-3"><a href="{% url 'company_settings' %}"><i class="fas fa-cog mx-2"></i> <span
                         class="mx-2">Settings</span></a></li>
         </ul>

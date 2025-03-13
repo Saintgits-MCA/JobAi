@@ -1,13 +1,12 @@
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import UserSettings
 from django.contrib.auth.models import User
 from .models import Company
 
 
 class UserSettingsForm(forms.ModelForm):
     class Meta:
-        model = UserSettings
+        # model = UserSettings
         fields = ["dark_mode", "email_notifications", "two_factor_auth"]
         widgets = {
             "dark_mode": forms.CheckboxInput(attrs={"class": "form-check-input"}),

@@ -252,6 +252,9 @@ def jobseeker_home(request):
                 return redirect("home")
     resume = jobseeker_resume.objects.filter(user_id=uid)
     job=job_title.objects.all()
+    jobseeker=""
+    if(jobseeker_profile.objects.filter(user_id=uid).exists()):
+        jobseeker=jobseeker_profile.objects.get(user_id=uid).profile_img
     context = {
         "resume_details": extracted_details,
         "alert_message": alert_message,
@@ -260,7 +263,8 @@ def jobseeker_home(request):
         "phone": phone,
         "show_modal": show_modal,
         "resume": resume,
-        "job":job
+        "job":job,
+        "jsdt":jobseeker
     }
 
     if not jobseeker_profile.objects.filter(name=fname).exists() and not jobseeker_resume.objects.filter(user=uid).exists():
@@ -321,6 +325,28 @@ def jobseeker_profile_update(request):
 def main(request):
     return render(request, 'index.html')
 
+def contact_view(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        message = request.POST.get("message")
+
+        if name and email and message:
+            # Send email
+            send_mail(
+                subject=f"New Contact Form Submission from {name}",
+                message=f"From \nName: {name}\nEmail: {email}\n\n\n{message}",
+                from_email=email,
+                recipient_list=["tecknohow.132@gmail.com"],  # Replace with your email
+                fail_silently=False,
+            )
+
+            messages.success(request, "Your message has been sent successfully!")
+            return redirect("index")  # Redirect to the contact page after submission
+        else:
+            messages.error(request, "All fields are required.")
+
+    return render(request, "index.html")  # Replace with your actual template file
 
 def base(request):
     jbid = request.session.get('jobseeker_id')
@@ -330,7 +356,7 @@ def base(request):
     else:
         jsdt = None
     jobseeker = jobseeker_profile.objects.get(user=jbid)
-    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    unread_notifications = JobNotification.objects.filter(jobseeker_profile=jobseeker, is_read=False).count()
     context={
         "jsdt":jsdt,"count":unread_notifications
     }
@@ -449,7 +475,7 @@ def search_job(request):
     # Filter by location query
     if location_query:
         jobs = jobs.filter(location__icontains=location_query)
-    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    unread_notifications = JobNotification.objects.filter(jobseeker_profile=jobseeker, is_read=False).count()
     context = {
         "fname": fname,
         "jobs": jobs,
@@ -512,7 +538,7 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
         request.session['highest_qualification']=eligibility
         cover_letter = response["choices"][0]["message"]["content"].strip()
         jsdt = jobseeker_profile.objects.get(email=email)
-        unread_notifications = JobNotification.objects.filter(jobseeker=jsdt, is_read=False).count()
+        unread_notifications = JobNotification.objects.filter(jobseeker_profile=jsdt, is_read=False).count()
         return render(request, "cover-letter.html", {
             "fname": fname,
             "email": email,
@@ -525,7 +551,7 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
             "job_id":job_id
         })
     jsdt = jobseeker_profile.objects.get(email=email)
-    unread_notifications = JobNotification.objects.filter(jobseeker=jsdt, is_read=False).count()
+    unread_notifications = JobNotification.objects.filter(jobseeker_profile=jsdt, is_read=False).count()
     return render(request, "cover-letter.html", {
         "fname": fname,
         "company": company,
@@ -573,7 +599,7 @@ def settings_view(request):
         fname = request.session.get('jobseeker_name')
         jobseek_email = request.session.get('jobseeker_email') 
         phone = request.session.get('jobseeker_phone')
-        unread_notifications = JobNotification.objects.filter(jobseeker=jsdt, is_read=False).count()
+        unread_notifications = JobNotification.objects.filter(jobseeker_profile=jsdt, is_read=False).count()
         # address=request.session.get("address")
         context = {
             'jsdt':jsdt,
@@ -602,7 +628,7 @@ def support(request):
     if not jobseeker_profile.objects.filter(name=fname).exists():
             return redirect('home')
     jobseeker = jobseeker_profile.objects.get(name=fname)
-    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    unread_notifications = JobNotification.objects.filter(jobseeker_profile=jobseeker, is_read=False).count()
     return render(request, 'support.html', {"fname":fname, "jsdt":jobseeker,"count":unread_notifications})
 
 
@@ -650,7 +676,7 @@ def mockinterview(request):
             feedback = response["choices"][0]["message"]["content"].strip()
             return JsonResponse({"feedback": feedback})
     jobseeker = jobseeker_profile.objects.get(name=fname)
-    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    unread_notifications = JobNotification.objects.filter(jobseeker_profile=jobseeker, is_read=False).count()
     return render(request, 'mock-interview.html', {'job': jobs, "fname":fname, "jsdt":jobseeker,"count":unread_notifications})
 
 def parse_list(text):
@@ -749,7 +775,7 @@ def autoapply(request):
             messages.info(request, "No new matching jobs available for auto-apply.")
         redirect('auto-apply')
     
-    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    unread_notifications = JobNotification.objects.filter(jobseeker_profile=jobseeker, is_read=False).count()
 
     context = {
         "jobseeker_email": jobseeker_email,
@@ -769,7 +795,7 @@ def applied_jobs(request):
     jobseeker = jobseeker_profile.objects.get(name=fname)
     jobs=JobApplication.objects.filter(jobseeker_id=profile_id)
     jobs=sorted(jobs, key=lambda x: x.id)
-    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    unread_notifications = JobNotification.objects.filter(jobseeker_profile=jobseeker, is_read=False).count()
     context = {
         "fname": fname,
         "jsdt": jobseeker,
@@ -836,7 +862,7 @@ def change_password(request):
         return redirect('home')
     
     jobseeker = jobseeker_profile.objects.get(name=fname)
-    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    unread_notifications = JobNotification.objects.filter(jobseeker_profile=jobseeker, is_read=False).count()
     user=Jobseeker_Registration.objects.get(name=fname)
     exist_pwd=user.password
     if request.method == "POST":
@@ -897,7 +923,22 @@ def delete_user_profile(request):
     if(JobApplication.objects.filter(jobseeker__name=fname).exists()):
         JobApplication.objects.filter(jobseeker__name=fname).delete()
         
+    # Get the jobseeker profile
     jobseeker = jobseeker_profile.objects.get(name=fname)
+
+    # Delete profile image if exists
+    if jobseeker.profile_img:
+        profile_img_path = os.path.join(settings.MEDIA_ROOT, str(jobseeker.profile_img))
+        if os.path.exists(profile_img_path):
+            os.remove(profile_img_path)
+
+    # Delete resume file if exists
+    if jobseeker.resume:
+        resume_path = os.path.join(settings.MEDIA_ROOT, str(jobseeker.resume))
+        if os.path.exists(resume_path):
+            os.remove(resume_path)
+
+    # Delete the jobseeker profile
     jobseeker.delete()
     jobseeker_resume.objects.get(user__name=fname).delete()
     return redirect('settings_view')
@@ -1102,7 +1143,7 @@ def jobseeker_notifications(request):
     if not jobseeker_id:
         return JsonResponse({"error": "User not logged in"}, status=400)
 
-    notifications = JobNotification.objects.filter(jobseeker_id=jobseeker_id, is_read=False).order_by('-created_at')
+    notifications = JobNotification.objects.filter(jobseeker_profile__user=jobseeker_id, is_read=False).order_by('-created_at')
 
     notifications_data = [
         {
@@ -1110,7 +1151,7 @@ def jobseeker_notifications(request):
             "message": n.message,
             "job_title": n.company_job.job_title.job_title,
             "company_name": n.company_job.company.name,
-            "created_at": n.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            "created_at": n.created_at.strftime("%d-%m-%Y"),
         }
         for n in notifications
     ]
@@ -1164,7 +1205,7 @@ def company_postjob(request):
             jobseekers = jobseeker_profile.objects.all()
             for jobseeker in jobseekers:
                 JobNotification.objects.create(
-                    jobseeker=jobseeker,
+                    jobseeker_profile=jobseeker,
                     company_job=companyjob_obj,
                     message=f"New job posted: {companyjob_obj.job_title.job_title} at {company.name}."
                 )
@@ -1185,17 +1226,12 @@ def edit_job(request):
         job_description = request.POST.get('job_description')
         job_location = request.POST.get('location')
         job_type = request.POST.get('job_type')
-        # jobposted_date = request.POST.get('jobposted_date')
         qualification = request.POST.getlist('highest_qualification')
         percent_criteria=request.POST.get('percentage')
         skills = request.POST.getlist('skills_required')
         qualification_str = ",".join(qualification)
         skills_str = ",".join(skills)
         lastdate = request.POST.get('deadline')
-        # if company_joblist.objects.get(job_number=job_number).exists():
-        #     messages.error(request, "A job with this job number already posted in this portal use other id to post other jobs")
-        # else:
-        
         companyjob_obj = company_joblist.objects.get(id=job_id)
         companyjob_obj.company_id = cid
         companyjob_obj.job_number = job_number
@@ -1253,6 +1289,6 @@ def jobseeker_dashboard(request):
     jcount = ccount.count()
     compcount = company.count()
     jobseeker = jobseeker_profile.objects.get(name=fname)
-    unread_notifications = JobNotification.objects.filter(jobseeker=jobseeker, is_read=False).count()
+    unread_notifications = JobNotification.objects.filter(jobseeker_profile=jobseeker, is_read=False).count()
     return render(request, 'jobseeker_dashboard.html', {"fname":fname, "jcount":jcount, "compcount":compcount, "company":company, "jsdt":jobseeker,"ajcount":ajcount,"count":unread_notifications})
 

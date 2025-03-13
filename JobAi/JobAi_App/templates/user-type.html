@@ -8,19 +8,50 @@
   <link rel="icon" href="{% static 'images/jobAi-logo1.png' %}">
   <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">
     <script defer src="{% static 'assets/js/alpine.min.js' %}" type="b014f77004e53e5bad1cb140-text/javascript"></script>
-
+  <link rel="stylesheet" href="{%static 'assets/css/index.css'%}">
   <link href="{%static 'assets/css/bootstrap.min.css'%}" rel="stylesheet">
 <link rel="stylesheet" href="{%static 'assets/css/user-type.css'%}">
+<style>
+  body::-webkit-scrollbar{
+    width: .1px;
+    overflow-x: hidden;
+  }
+  .nav-toggle:hover
+  {
+    background-color: #000;
+    color: white;
+  }
+  .bg-image {
+    background: url("{% static 'images/bg.png' %}") no-repeat center center fixed;
+    opacity:0.9;
+    background-size: cover;
+  }
+  .nav-item .nav-link {
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 10px 15px; /* Adjust padding for better hover effect */
+    border-radius: 5px; /* Slight rounding for a smooth look */
+    /* width: 500px; */
+}
+.home:hover
+{
+  display: inline-block; /* Prevents layout shifting */
+  transform: scale(1.09);
+
+}
+</style>
 </head>
-<body
-	class="grid grid-cols-[1fr_1rem_repeat(2,min(37.5rem,calc(50%-1rem)))_1rem_1fr] bg-top bg-no-repeat [background-size:200vw] lg:[background-size:100%_62rem] [:where(&>*)]:[grid-column:3/5]"
-	style="background-image: url('../static/images/bg1.png');opacity: 0.9;">
-    <a href="{% url 'index'%}"> <img src="{% static 'images/JobAi2.png'%}" alt="logo" class="logo mt-4"
-        style="margin-left: 85px;height: 90px;border-radius: 25px;"></a>
+<body class="bg-image">
+  <a href="{% url 'index'%}"> <img src="{% static 'images/JobAi2.png'%}" alt="logo" class="logo mt-3"
+        style="margin-left: 90px;height: 90px;border-radius: 25px;box-shadow: 0 0 20px rgb(48, 35, 229);"></a>
         <div class="float-end mt-4">
-			<ul class="menu menu-horizontal gap-0 max-sm:p-0 text-xs lg:text-sm nav-item">
-				<li class="nav-link"> <a href="{%url 'index'%}" class="fw-bold fs-5 text-white flex items-center text-lg text-decoration-none" style="margin-right: 215px;">Home</a></li>
-			</ul>
+          <ul class="menu menu-horizontal gap-0 max-sm:p-0 text-xs lg:text-sm nav-item pe-5">
+            <li class="nav-link"> 
+                <a href="{% url 'index' %}" class="fw-bold fs-5 text-white flex home text-lg text-decoration-none me-5 pe-5">
+                    Home
+                </a>
+            </li>
+        </ul>
+        
 		</div>
 
 <div class="container row mt-5" style="margin-left: 85px;">
@@ -29,7 +60,7 @@
       <h2 class="text-left mb-4">Login as:</h2>
       <!-- <button class="btn btn-primary btn-custom mb-3" onclick="redirectTo('admin')">Admin</button> -->
      <a href="{% url 'company_login' %}"> <button class="btn btn-success btn-custom text-white mb-3">Company</button></a>
-     <a href="{% url 'jobseeker_login'%}"> <button class="btn btn-primary btn-custom text-white mb-3">Job Seeker</button></a>
+     <a href="{% url 'jobseeker_login'%}"> <button class="btn btn-primary btn-custom text-white mb-3">JobSeeker</button></a>
   </div>
 
   <!-- Right Side: Image -->

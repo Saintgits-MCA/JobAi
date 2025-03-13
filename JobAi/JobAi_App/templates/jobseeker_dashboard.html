@@ -158,26 +158,26 @@
                             messageContainer.style.opacity = "1"; // Fade out effect
                             setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
                         }
-                    }, 5000);
-                    document.addEventListener("DOMContentLoaded", function () {
-                        var collapseToggle = document.querySelector('.collapse-toggle');
-                        var downIcon = document.querySelector('.down-icon');
-                        var companiesCollapse = document.getElementById('companiesCollapse');
+                    }, 1000);
+                    // document.addEventListener("DOMContentLoaded", function () {
+                    //     var collapseToggle = document.querySelector('.collapse-toggle');
+                    //     var downIcon = document.querySelector('.down-icon');
+                    //     var companiesCollapse = document.getElementById('companiesCollapse');
 
-                        companiesCollapse.addEventListener('shown.bs.collapse', function () {
-                            // When shown, change icon to an upward chevron
-                            downIcon.classList.remove('bi-chevron-double-down');
-                            downIcon.classList.add('bi-chevron-double-up');
-                            // Optionally add rotation animation
-                            downIcon.classList.add('rotate');
-                        });
+                    //     companiesCollapse.addEventListener('shown.bs.collapse', function () {
+                    //         // When shown, change icon to an upward chevron
+                    //         downIcon.classList.remove('bi-chevron-double-down');
+                    //         downIcon.classList.add('bi-chevron-double-up');
+                    //         // Optionally add rotation animation
+                    //         downIcon.classList.add('rotate');
+                    //     });
 
-                        companiesCollapse.addEventListener('hidden.bs.collapse', function () {
-                            // When hidden, revert to the downward chevron
-                            downIcon.classList.remove('bi-chevron-double-up', 'rotate');
-                            downIcon.classList.add('bi-chevron-double-down');
-                        });
-                    });
+                    //     companiesCollapse.addEventListener('hidden.bs.collapse', function () {
+                    //         // When hidden, revert to the downward chevron
+                    //         downIcon.classList.remove('bi-chevron-double-up', 'rotate');
+                    //         downIcon.classList.add('bi-chevron-double-down');
+                    //     });
+                    // });
                 </script>
 
                 {% endblock %}

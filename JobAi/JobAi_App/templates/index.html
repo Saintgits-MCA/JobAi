@@ -16,6 +16,44 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 <style>
+	body {
+		overflow-x: hidden;
+	}
+
+	body::-webkit-scrollbar {
+		width: 1px;
+	}
+
+	.scroll-top {
+		position: fixed;
+		visibility: hidden;
+		opacity: 0;
+		right: 15px;
+		bottom: -15px;
+		z-index: 99999;
+		background-color: var(--accent-color);
+		height: 44px;
+		border-radius: 50px;
+		transition: all 0.4s;
+	}
+
+	.scroll-top i {
+		font-size: 35px;
+		color: var(--contrast-color);
+		line-height: 0;
+	}
+
+	.scroll-top:hover {
+		background-color: color-mix(in srgb, var(--accent-color), transparent 20%);
+		color: var(--contrast-color);
+	}
+
+	.scroll-top.active {
+		visibility: visible;
+		opacity: 1;
+		bottom: 15px;
+	}
+
 	.job-process {
 		max-width: 900px;
 		margin: 10px auto;
@@ -115,16 +153,42 @@
 		font-size: 14px;
 		color: #666;
 	}
+
+	/* Default Navbar (Transparent) */
+	#navbar {
+		position: sticky;
+		top: 0;
+		z-index: 1000;
+		background: transparent;
+		transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+		width: 1250px;
+		padding: 10px;
+		margin-left: 5px;
+	}
+.menu #home:hover,#home,#home::after{
+	color: white;
+}
+	/* Navbar After Scrolling */
+	#navbar.scroll {
+		background: rgba(0, 133, 194, 0.7);
+		/* Dark background */
+		border-radius: 10px;
+	}
+
+
+	#navbar a {
+		transition: color 0.3s ease-in-out;
+	}
 </style>
 
 <body
 	class="grid grid-cols-[1fr_1rem_repeat(2,min(37.5rem,calc(50%-1rem)))_1rem_1fr] bg-top bg-no-repeat [background-size:200vw] lg:[background-size:100%_62rem] [:where(&>*)]:[grid-column:3/5]"
-	style="background-image: url('static/images/bg1.png');opacity: 0.8;">
+	style="background-image: url('static/images/bg.png');opacity: 0.9;">
 
 	<!-- navbar -->
-	<nav class="navbar px-0 flex justify-between items-start">
-		<div class="flex flex-col sm:flex-row gap-4 justify-start mt-2">
-			<a href="">
+	<nav class="navbar px-0 flex justify-between items-start" id="navbar">
+		<div class="flex flex-col sm:flex-row gap-4 justify-start">
+			<a>
 				<img src="{% static 'images/JobAi2.png'%}" alt="JobAi" class="h-10"
 					style="height: 90px;border-radius: 25px;box-shadow: 0 0 20px rgb(48, 35, 229);">
 			</a>
@@ -132,10 +196,19 @@
 		</div>
 
 		<div class="flex">
-			<ul class="menu menu-horizontal gap-0 max-sm:p-0 text-xs lg:text-sm">
-				<li> <a href="#" class="font-bold text-white hover:bg-black flex items-center text-lg">Home</a></li>
-				<li><a href="#FAQ" class="font-bold text-lg text-white hover:bg-black  flex items-center">
+			<ul class="menu menu-horizontal gap-0 max-sm:p-0 text-xs lg:text-sm mt-3">
+				<li> <a href="#" class="font-bold text-white hover:bg-black flex items-center text-lg" id="home">Home</a></li>
+				<li><a href="#about" class="font-bold text-lg text-white hover:bg-black  flex items-center">
+						About
+					</a></li>
+				<li><a href="#services" class="font-bold text-lg text-white hover:bg-black  flex items-center">
+						Services
+					</a></li>
+					<li><a href="#FAQ" class="font-bold text-lg text-white hover:bg-black  flex items-center">
 						FAQ
+					</a></li>
+				<li><a href="#contact" class="font-bold text-lg text-white hover:bg-black  flex items-center">
+						Contact
 					</a></li>
 				<li><a href="{% url 'user-type' %}"
 						class="font-bold text-lg text-white hover:bg-black  flex items-center">
@@ -158,7 +231,8 @@
 					with AI </span>
 			</h1>
 			<p class="text-lg [text-wrap:balance] font-bold opacity-90" style="color:black ;">
-				We value your time—don't let opportunities slip away. This site lets you Apply for jobs without spending much time!</p>
+				We value your time—don't let opportunities slip away. This site lets you Apply for jobs without spending
+				much time!</p>
 			<div class="flex flex-col gap-4 sm:flex-row">
 				<a href="{%url 'user-type' %}" class="btn btn-primary btn-lg px-10 group font-bolder" id="mainCTA">
 					<span>
@@ -266,7 +340,7 @@
 	</h2>
 
 	<!-- top features -->
-	<div class="grid gap-1 py-1 lg:grid-cols-3">
+	<div id="features" class="grid gap-1 py-1 lg:grid-cols-3">
 		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
 			<!-- <div class="aspect-square p-2 bg-accent font-title font-bold text-xl rounded-full grid place-content-center">
         <svg class="text-accent-content" width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 24L20 34L40 14" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -287,12 +361,13 @@
 						<p class="p-6 text-black/70">
 							Dear HR Manager <br />
 							<br />
-							I'm reaching out about the engineering gig at JobAi. You're looking for an innovator and
+							I'm reaching out about the engineering gig at Infosys. You're looking for an innovator and
 							boundary-pusher in tech. Well, guess what? That's exactly my jam. <br />
 							<br />
-							You might've heard of a little company called SpaceX. As the CEO and lead designer, I turned
+							You might've heard of a little company called Xpesso. As the Web Developer and lead
+							designer, I turned
 							the aerospace industry on its head. Reusable rockets? Commercial trips to Mars? That was all
-							me. Over at Tesla, I shook up the car world with top-tier electric vehicles and self-driving
+							me. Over at Elsa, I shook up the car world with top-tier electric vehicles and self-driving
 							tech. <br />
 							<br />
 
@@ -305,7 +380,7 @@
 							I'm not just here to take up a desk. I'm here to make waves. Let's chat and see how I can
 							help JobAi rocket to the next level. <br />
 							<br />
-							Best, Elon
+							Best, Alen
 						</p>
 					</div>
 				</div>
@@ -321,7 +396,7 @@
 				class="grid w-64 transition-transform duration-500 hover:scale-105 [&>*]:[grid-column:1/1] [&>*]:[grid-row:1/1]">
 				<div class="-rotate-3 rounded bg-base-300 shadow-lg brightness-95"></div>
 				<img class="z-[1] rounded shadow-lg" src="{% static 'images/ai-job-interview1.avif' %}"
-					style="height: 300px;width: 490px;" />
+					style="height: 200px;width: 490px;" />
 			</figure>
 		</div>
 		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
@@ -329,7 +404,7 @@
         <svg class="text-accent-content" width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 24L20 34L40 14" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div> -->
 			<h3 class="text-center font-title text-xl font-bold">
-				Job-specific followup email </h3>
+				High Accurate Resume Extraction</h3>
 			<figure
 				class="grid w-64 transition-transform duration-500 hover:scale-105 lg:hover:-rotate-2 [&>*]:[grid-column:1/1] [&>*]:[grid-row:1/1]">
 				<div
@@ -339,37 +414,136 @@
 						<div class="size-1.5 rounded-full bg-base-content/20"></div>
 						<div class="size-1.5 rounded-full bg-base-content/20"></div>
 					</div>
-					<div class="px-4 py-1.5 font-bold">New email</div>
+					<img class="z-[1] rounded shadow-lg" src="{% static 'images/extract_resume.jpg' %}"
+					style="height: 185px;width: 287px;" />
+					<!-- <div class="px-4 py-1.5 font-bold">New email</div>
 					<div class="border-b border-base-content/10 px-4 py-1.5">
-						To: <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+						To: <a class="__cf_email__"
 							data-cfemail="147c6654757d756464786d3a777b">[email&#160;protected]</a> </div>
 					<div class="border-b border-base-content/10 px-4 py-1.5">
-						Subject: Elon Musk Checking In on CEO Application </div>
+						Subject: Alen Checking In on Web Developer Application </div>
 					<div class="h-full">
 						<p class="p-4 text-black/70">
 							Hi John, <br />
 							<br />
-							Hope this email finds you well! Just a friendly ping on my application for the CEO position
-							at JobAi. <br />
+							Hope this email finds you well! Just a friendly ping on my application for the Web Developer
+							position
+							at Infosys. <br />
 							<br />
-							Given my background with SpaceX and passion for space exploration, I believe I could bring
+							Given my background with Xpesso and passion for space exploration, I believe I could bring
 							some unique perspectives to the table. It's not every day you get an application from
 							someone who's sent a car to orbit Mars, right? 😉 <br />
 							<br />
 							Would love to chat more about how we can propel JobAi to new heights. Let me know if there's
 							a good time to talk. <br />
 							<br />
-							Cheers, Elon
+							Cheers, Alen
 						</p>
-					</div>
+					</div> -->
 				</div>
 			</figure>
 		</div>
 	</div>
+	<section id="about" class="about-section text-center py-10">
+		<div class="container mx-auto px-6">
+			<h2 class="text-4xl font-bold text-blue-700 text-primary mb-6"><i
+					class="fas fa-briefcase text-blue-700"></i> About JobAi</h2>
+			<p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+				Your AI-powered job search assistant that simplifies and accelerates your job hunt.
+				Say goodbye to endless scrolling and manual applications—let AI do the heavy lifting for you!
+			</p>
 
+			<div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+				<!-- AI-Powered Job Matching -->
+				<div class="p-6 bg-white rounded-lg shadow-md">
+					<i class="fas fa-search text-blue-600 text-4xl mb-4"></i>
+					<h3 class="text-xl font-bold text-gray-800">AI-Powered Job Matching</h3>
+					<p class="text-gray-600">
+						Get matched with the best job openings based on your skills, experience, and preferences.
+					</p>
+				</div>
+
+				<!-- Automated Job Applications -->
+				<div class="p-6 bg-white rounded-lg shadow-md">
+					<i class="fas fa-robot text-green-600 text-4xl mb-4"></i>
+					<h3 class="text-xl font-bold text-gray-800">Automated Job Applications</h3>
+					<p class="text-gray-600">
+						Let AI apply for jobs on your behalf while you focus on preparing for interviews.
+					</p>
+				</div>
+
+				<!-- AI Cover Letters -->
+				<div class="p-6 bg-white rounded-lg shadow-md">
+					<i class="fas fa-file-alt text-orange-600 text-4xl mb-4"></i>
+					<h3 class="text-xl font-bold text-gray-800">AI-Generated Cover Letters</h3>
+					<p class="text-gray-600">
+						Get personalized cover letters tailored for each job application automatically.
+					</p>
+				</div>
+
+				<!-- AI Mock Interviews -->
+				<div class="p-6 bg-white rounded-lg shadow-md">
+					<i class="fas fa-microphone text-purple-600 text-4xl mb-4"></i>
+					<h3 class="text-xl font-bold text-gray-800">AI Mock Interviews</h3>
+					<p class="text-gray-600">
+						Practice with AI-powered mock interviews and receive instant feedback.
+					</p>
+				</div>
+
+				<!-- Follow-Up Emails -->
+				<div class="p-6 bg-white rounded-lg shadow-md">
+					<i class="fas fa-envelope text-red-600 text-4xl mb-4"></i>
+					<h3 class="text-xl font-bold text-gray-800">Personalized Follow-Ups</h3>
+					<p class="text-gray-600">
+						Stand out with automated follow-up emails to keep your application on top.
+					</p>
+				</div>
+
+				<!-- Save Time -->
+				<div class="p-6 bg-white rounded-lg shadow-md">
+					<i class="fas fa-clock text-indigo-600 text-4xl mb-4"></i>
+					<h3 class="text-xl font-bold text-gray-800">Save Time & Effort</h3>
+					<p class="text-gray-600">
+						Automate the job search process and apply to jobs in seconds.
+					</p>
+				</div>
+			</div>
+
+			<!-- Who Can Benefit -->
+			<div class="mt-16">
+				<h2 class="text-3xl font-bold text-gray-800">Who Can Benefit from JobAi?</h2>
+				<div class="grid gap-6 mt-6 md:grid-cols-2 lg:grid-cols-2">
+					<div class="p-6 bg-white rounded-lg shadow-md">
+						<i class="fas fa-user-graduate text-blue-500 text-3xl mb-2"></i>
+						<h3 class="text-lg font-semibold text-gray-700">Recent Graduates</h3>
+						<p class="text-gray-600 text-sm">Kickstart your career with automated job applications.</p>
+					</div>
+		
+					<div class="p-6 bg-white rounded-lg shadow-md">
+						<i class="fas fa-globe text-purple-500 text-3xl mb-2"></i>
+						<h3 class="text-lg font-semibold text-gray-700">Remote Job Seekers</h3>
+						<p class="text-gray-600 text-sm">Discover and apply to global opportunities effortlessly.</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Call to Action -->
+			<div class="mt-10">
+				<h2 class="text-2xl font-bold text-gray-800 " style="color: brown;"><i class="bi bi-rocket-fill"></i> Ready to Get Hired Faster?</h2>
+				<p class="text-gray-600 text-lg mt-2">
+					Join thousands of job seekers who are <strong>10x more likely</strong> to get hired with JobAi.
+				</p>
+				<div class="text-center mt-5">
+					<a class="btn-cta btn btn-primary btn-lg btn-wide" href="{% url 'user-type' %}"> Let's Start Now
+						<span class="bi bi-arrow-up-right"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
 	<!-- logos -->
-	<div class="mt-10 bg-base-200 py-24 [grid-column:1/7]">
-		<div class="mx-auto flex max-w-7xl flex-col gap-12">
+	<div class="mt-10  [grid-column:1/7]">
+		<div class="mx-auto flex max-w-7xl flex-col gap-2">
 			<h2 class="text-center text-lg font-bold uppercase tracking-widest text-base-content/50">
 				Get hired by top companies worldwide </h2>
 			<div class="mx-auto max-w-7xl text-center [text-wrap:balance]">
@@ -386,8 +560,7 @@
 			</div>
 		</div>
 	</div>
-
-	<section class="new-section mt-5 ms-1 bg-base-200">
+	<section class="new-section  ms-1">
 		<div class="container">
 			<h2 class="font-bold">We don't stop until you're hired</h2>
 			<div class="content-box">
@@ -414,37 +587,50 @@
 			</div>
 		</div>
 	</section>
-
-
 	<!-- services -->
 	<h2 class="py-32 text-center font-title text-4xl [text-wrap:balance] sm:text-5xl">
 		You are <span class='font-bold'>80% more likely</span> to get hired if you use JobAi </h2>
-	<h2 class="ms-5 font-bold text-center" style="font-size: 30px;">Our Services</h2>
-	<div class="grid items-end gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-24">
-		<div class="flex flex-col gap-6">
-			<h3 class="text-xl font-bold">AI Cover Letter</h3>
-			<p class="text-sm">
-				AI generates cover letters for each job application, increasing your chances of getting hired. </p>
-			<img loading="lazy" src=" {% static 'images/ai-cover-letter-fresh1.jpg' %}" alt="cover letter generator"
-				class="rounded-box" />
-		</div>
-		<div class="flex flex-col gap-6">
-			<h3 class="text-xl font-bold">Auto apply</h3>
-			<p class="text-sm">
-				Let AI apply to thousands of jobs for you automatically. Save time and get hired faster. </p>
-			<img loading="lazy" src="{% static 'images/auto-apply-fresh1.jpg' %}" alt="ai apply to jobs"
-				class="rounded-box" style="height: 190px;" />
-		</div>
-		<div class="flex flex-col gap-6">
-			<h3 class="text-xl font-bold">AI Interview Practice</h3>
-			<p class="text-sm">
-				Practice with AI-generated interviews to gain valuable insights and confidence. </p>
-			<img loading="lazy" src="{% static 'images/ai-job-interview-fresh.jpg' %}" alt="ai cover letter"
-				class="rounded-box" />
+	<h2 id="services" class="text-center font-bold text-primary text-3xl mb-10"><i class="bi bi-tools"></i> Our Services
+	</h2>
+	<br><br>
+	<div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 mt-3">
+		<!-- AI Cover Letter -->
+		<div class="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
+			<div class="flex flex-col items-center gap-4">
+				<h3 class="text-xl font-bold">AI Cover Letter</h3>
+				<p class="text-sm text-center">
+					AI generates cover letters for each job application, increasing your chances of getting hired.
+				</p>
+				<img loading="lazy" src="{% static 'images/ai-cover-letter-fresh1.jpg' %}" alt="cover letter generator"
+					class="rounded-lg w-full" />
+			</div>
 		</div>
 
+		<!-- Auto Apply -->
+		<div class="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
+			<div class="flex flex-col items-center gap-4">
+				<h3 class="text-xl font-bold">Auto Apply</h3>
+				<p class="text-sm text-center">
+					Let AI apply to thousands of jobs for you automatically. Save time and get hired faster.
+				</p>
+				<img loading="lazy" src="{% static 'images/auto-apply-fresh1.jpg' %}" alt="ai apply to jobs"
+					class="rounded-lg w-full h-48 object-cover" />
+			</div>
+		</div>
 
+		<!-- AI Interview Practice -->
+		<div class="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
+			<div class="flex flex-col items-center gap-4">
+				<h3 class="text-xl font-bold">AI Interview Practice</h3>
+				<p class="text-sm text-center">
+					Practice with AI-generated interviews to gain valuable insights and confidence.
+				</p>
+				<img loading="lazy" src="{% static 'images/ai-job-interview-fresh.jpg' %}" alt="ai interview practice"
+					class="rounded-lg w-full" />
+			</div>
+		</div>
 	</div>
+
 	<svg class="my-10 w-full stroke-base-content/10 stroke-2" width="1000" height="152" viewBox="0 0 1000 152"
 		fill="none">
 		<path d="M0 0C107 105 393 73 415 152" />
@@ -484,17 +670,10 @@
 		</div>
 	</section>
 
-	<div class="text-center">
-		<a class="btn-cta btn btn-primary btn-lg btn-wide" href="{% url 'user-type' %}"> Let's Start Now <span
-				class="bi bi-arrow-up-right"></span>
-		</a>
-	</div>
-
-
 	<!-- Frequently Asked Questions -->
-	<div class="h-32"></div>
-	<h2 class="py-10 text-center font-title text-4xl sm:text-5xl">
-		<span class="font-bold" id="FAQ">Frequently Asked Questions</span>
+	<h2 class="py-10 text-center font-title text-4xl">
+		<span class="font-bold text-primary" id="FAQ"><i class="bi bi-question-circle-fill"></i> Frequently Asked
+			Questions</span>
 	</h2>
 
 	<div class="flex flex-col gap-2">
@@ -546,12 +725,87 @@
 		</div>
 	</div>
 	<!-- footer -->
-	<div class="h-32"></div>
+	<!-- Contact Section -->
+	<section id="contact" class="contact-section py-16 bg-white">
+		<div class="container mx-auto px-6 text-center">
+			<h2 class="text-4xl font-bold text-primary mb-6">
+				<i class="fas bi-chat-dots-fill text-primary"></i> Contact Us
+			</h2>
+			<p class="text-lg text-gray-700 max-w-2xl mx-auto">
+				Have a question or need assistance? Contact us anytime! Our team is here to help you with job searches,
+				AI tools, and more.
+			</p>
+
+			<!-- Contact Form -->
+			<div class="mt-10 max-w-3xl mx-auto bg-gray-100 p-8 rounded-lg shadow-md">
+				<h3 class="text-2xl font-bold text-gray-800 mb-4">Send Us a Message</h3>
+				<!-- Display Django Messages -->
+				{% if messages %}
+				<div class="mb-4" id="message-container">
+					{% for message in messages %}
+					<p
+						class="p-3 rounded {% if message.tags == 'success' %}bg-green-200 text-green-800{% else %}bg-red-200 text-red-800{% endif %}">
+						{{ message }}
+					</p>
+					{% endfor %}
+				</div>
+				{% endif %}
+
+				<form action="{% url 'contact' %}" method="POST" class="space-y-4">
+					{% csrf_token %}
+					<div>
+						<label class="block text-left font-semibold text-gray-700">Your Name</label>
+						<input type="text" name="name" class="w-full px-4 py-2 border rounded-lg"
+							placeholder="Enter your name" required>
+					</div>
+					<div>
+						<label class="block text-left font-semibold text-gray-700">Email Address</label>
+						<input type="email" name="email" class="w-full px-4 py-2 border rounded-lg"
+							placeholder="Enter your email" required>
+					</div>
+					<div>
+						<label class="block text-left font-semibold text-gray-700">Your Message</label>
+						<textarea name="message" class="w-full px-4 py-2 border rounded-lg" rows="4"
+							placeholder="Enter your message" required></textarea>
+					</div>
+					<button type="submit"
+						class="btn btn-primary text-white px-6 py-2 rounded-lg text-lg font-bold shadow-lg hover:bg-blue-700 transition">
+						Send Message
+					</button>
+				</form>
+			</div>
+
+			<!-- Contact Info & Social Media -->
+			<div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+				<!-- Phone -->
+				<a href="tel:+919562766835">
+					<div class="p-6 bg-gray-100 rounded-lg shadow-md">
+						<i class="fas fa-phone text-blue-600 text-4xl mb-2"></i>
+						<h3 class="text-xl font-bold text-gray-800">Call Us</h3>
+						<p class="text-gray-600">(+91) 95627-66835</p>
+					</div>
+				</a>
+
+				<!-- Email -->
+				<div class="p-6 bg-gray-100 rounded-lg shadow-md">
+					<i class="fas fa-envelope text-green-600 text-4xl mb-2"></i>
+					<h3 class="text-xl font-bold text-gray-800">Email Us</h3>
+					<p class="text-gray-600"><a href="mailto:tecknohow.132@gmail.com"
+							class="text-blue-500">tecknohow.132@gmail.com</a></p>
+				</div>
+
+				<!-- Office Location -->
+				<div class="p-6 bg-gray-100 rounded-lg shadow-md">
+					<i class="fas fa-map-marker-alt text-red-600 text-4xl mb-2"></i>
+					<h3 class="text-xl font-bold text-gray-800">Visit Us</h3>
+					<p class="text-gray-600">123 Job Street, Bangalore, India</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
 
 	<footer class="footer gap-10 p-4 md:p-10 [&_a:hover]:underline">
-
-		</a>
-
 		<nav class="my-4 flex flex-col">
 			<img src="{% static 'images/JobAi2.png'%}" alt="JobAi" class="h-10"
 				style="height: 50px;border-radius: 25px;box-shadow: 0 0 15px rgb(48, 35, 229);">
@@ -568,13 +822,7 @@
 			<a href="{%url 'user-type' %}">AI Cover Letter</a>
 			<a href="{%url 'user-type' %}">AI Job Interview</a>
 		</nav>
-		<nav>
-			<h3 class="footer-title mt-5 pt-5">Customer Support</h3>
-			<a href="tel:+919562766835"><i class="fas fa-regular fa-mobile-screen-button"> (+91) 95627-66835</i></a>
-			<a href="mailto:tecknohow.132@gmail.com" class="nav-link" onmouseover="this.style.textDecoration='none'"><i
-					class="fa-regular fa-envelope"></i> <i
-					style="font-weight: bold;color: #666;">tecknohow.132@gmail.com</i></a>
-		</nav>
+
 	</footer>
 	<footer class="footer border-t border-base-content/5 p-8 py-4">
 		<aside class="grid-flow-col items-center">
@@ -610,9 +858,12 @@
 							d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z">
 						</path>
 					</svg>
-				</a>
 			</div>
 		</nav>
+		<a href="#" id="scroll-top"
+			class="scroll-top bg-primary  text-white d-flex align-items-center justify-content-center"><i
+				class="bi bi-arrow-up-short bg-primary fs-3 text-white rounded-2xl"></i></a>
+		</a>
 	</footer>
 	<!-- Add floating CTA -->
 	<div id="floatingCTA" class="fixed bottom-4 end-4 z-50 hidden lg:hidden">
@@ -626,5 +877,45 @@
 		</a>
 	</div>
 </body>
+<script>
+	setTimeout(function() {
+        let messageContainer = document.getElementById("message-container");
+        if (messageContainer) {
+            messageContainer.style.transition = "opacity 0.5s";
+            messageContainer.style.opacity = "1"; // Fade out effect
+            setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
+        }
+    }, 5000);
+	document.addEventListener("DOMContentLoaded", function () {
+		const navbar = document.getElementById("navbar");
+
+		function handleScroll() {
+			if (window.scrollY > 200) {
+				navbar.classList.add("scroll");
+			} else {
+				navbar.classList.remove("scroll");
+			}
+		}
+
+		window.addEventListener("scroll", handleScroll);
+	});
+	let scrollTop = document.querySelector('.scroll-top');
+
+	function toggleScrollTop() {
+		if (scrollTop) {
+			window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
+		}
+	}
+	scrollTop.addEventListener('click', (e) => {
+		e.preventDefault();
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth'
+		});
+	});
+
+	window.addEventListener('load', toggleScrollTop);
+	document.addEventListener('scroll', toggleScrollTop);
+</script>
 
 </html>

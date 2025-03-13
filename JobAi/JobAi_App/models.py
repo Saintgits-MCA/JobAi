@@ -70,24 +70,8 @@ class company_joblist(models.Model):
     Lastdate=models.DateField(max_length=20,null=True) 
     
 
-    
-class ResumeDetails(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    dob = models.CharField(max_length=50, blank=True, null=True)
-    address = models.TextField(blank=True, null=True)
-    highest_qualification = models.CharField(max_length=255, blank=True, null=True)
-    job_preference = models.CharField(max_length=255, blank=True, null=True)
-    university = models.CharField(max_length=255, blank=True, null=True)
-    skills = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name if self.name else "Unknown Resume"
-
-
 class JobNotification(models.Model):
-    jobseeker = models.ForeignKey(jobseeker_profile, on_delete=models.CASCADE, related_name='notifications')
+    jobseeker_profile = models.ForeignKey(jobseeker_profile, on_delete=models.CASCADE, related_name='notifications')
     company_job = models.ForeignKey(company_joblist, on_delete=models.CASCADE, related_name='notifications')
     message = models.TextField()
     is_read = models.BooleanField(default=False)

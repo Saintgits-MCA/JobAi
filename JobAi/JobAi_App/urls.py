@@ -38,6 +38,7 @@ urlpatterns = [
     path('company_type/',views.company_type,name="company_type"),
     path('Forgot_Password/',views.Forgot_pwd,name='Forgot Password'),
     path('user_support/',views.support,name='support'),
+    path("contact/", contact_view, name="contact"),
     path("notifications/", jobseeker_notifications, name="jobseeker_notifications"),
     path("notifications/read/", mark_notifications_as_read, name="mark_notifications_as_read"), path('company_password_reset/',views.company_forgot_password,name='company_forgot_password'),
     path('auto-apply/',views.autoapply,name='auto-apply'),
