@@ -90,7 +90,7 @@ class JobApplication(models.Model):
     jobseeker = models.ForeignKey(jobseeker_profile, on_delete=models.CASCADE, related_name='applications')
     company_joblist = models.ForeignKey(company_joblist, on_delete=models.CASCADE, related_name='applications')
     applied_at = models.DateTimeField(auto_now_add=True)  # Tracks when applied
-
+    status=models.TextField(blank=False,null=False,default="Applied")
     class Meta:
         unique_together = ('jobseeker', 'company_joblist')  # Ensures unique applications per jobseeker-job
 

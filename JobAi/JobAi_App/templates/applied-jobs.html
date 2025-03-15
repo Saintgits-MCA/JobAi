@@ -92,7 +92,7 @@
             <span class="job-details"><i class="fas fa-map-marker-alt"></i> {{ job.company_joblist.location }}</span>
             <span class="job-details"><b>Applied Date:</b> {{ job.applied_at|date:"d M Y" }}</span>
             <span class="job-details"><b>Last Date:</b> {{ job.company_joblist.Lastdate|date:"d M Y" }}</span>
-            <span class="job-details status"><b class="text-dark">Application Status:</b> Applied</span>
+            <span class="job-details status"><b class="text-dark">Application Status:</b> {{ job.status }}</span>
           </div>
         </div>
       {% endfor %}
