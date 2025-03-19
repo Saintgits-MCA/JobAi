@@ -59,8 +59,8 @@ class job_title(models.Model):
 class company_joblist(models.Model):
     company=models.ForeignKey(Company,on_delete=models.CASCADE,default=None)
     job_title = models.ForeignKey(job_title,on_delete=models.CASCADE,default=None)
-    job_number = models.CharField(max_length=100)
-    job_description = models.CharField(max_length=5000, blank=True, null=True)
+    # job_number = models.CharField(max_length=100)
+    job_description = models.CharField(max_length=12000, blank=True, null=True)
     job_type = models.CharField(max_length=255, blank=True, null=True)
     location=models.CharField(max_length=200,null=True)
     highest_qualification = models.CharField(max_length=255, blank=True, null=True)
@@ -90,6 +90,7 @@ class JobApplication(models.Model):
     jobseeker = models.ForeignKey(jobseeker_profile, on_delete=models.CASCADE, related_name='applications')
     company_joblist = models.ForeignKey(company_joblist, on_delete=models.CASCADE, related_name='applications')
     applied_at = models.DateTimeField(auto_now_add=True)  # Tracks when applied
+    ats_score = models.IntegerField(null=True, blank=True)  # Store ATS score
     status=models.TextField(blank=False,null=False,default="Applied")
     class Meta:
         unique_together = ('jobseeker', 'company_joblist')  # Ensures unique applications per jobseeker-job

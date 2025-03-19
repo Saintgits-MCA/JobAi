@@ -80,7 +80,7 @@
                 <div id="company-tab" class="tab-pane fade">
                     <div class="card p-3 mb-3">
                         <h5>Companies Here</h5>
-                        <p>You have the opportunity to apply to jobs posted by <b>{{ compcount }}</b> companies.</p>
+                        <p>You have the opportunity to apply to jobs posted by companies listed below.</p>
                         <!-- Down arrow icon -->
                         <div class="d-flex justify-content-center">
                             <a class="collapse-toggle text-secondary" data-bs-toggle="collapse" href="#companiesCollapse" role="button"
@@ -159,25 +159,25 @@
                             setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
                         }
                     }, 1000);
-                    // document.addEventListener("DOMContentLoaded", function () {
-                    //     var collapseToggle = document.querySelector('.collapse-toggle');
-                    //     var downIcon = document.querySelector('.down-icon');
-                    //     var companiesCollapse = document.getElementById('companiesCollapse');
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var collapseToggle = document.querySelector('.collapse-toggle');
+                        var downIcon = document.querySelector('.down-icon');
+                        var companiesCollapse = document.getElementById('companiesCollapse');
 
-                    //     companiesCollapse.addEventListener('shown.bs.collapse', function () {
-                    //         // When shown, change icon to an upward chevron
-                    //         downIcon.classList.remove('bi-chevron-double-down');
-                    //         downIcon.classList.add('bi-chevron-double-up');
-                    //         // Optionally add rotation animation
-                    //         downIcon.classList.add('rotate');
-                    //     });
+                        companiesCollapse.addEventListener('shown.bs.collapse', function () {
+                            // When shown, change icon to an upward chevron
+                            downIcon.classList.remove('bi-chevron-double-down');
+                            downIcon.classList.add('bi-chevron-double-up');
+                            // Optionally add rotation animation
+                            downIcon.classList.add('rotate');
+                        });
 
-                    //     companiesCollapse.addEventListener('hidden.bs.collapse', function () {
-                    //         // When hidden, revert to the downward chevron
-                    //         downIcon.classList.remove('bi-chevron-double-up', 'rotate');
-                    //         downIcon.classList.add('bi-chevron-double-down');
-                    //     });
-                    // });
+                        companiesCollapse.addEventListener('hidden.bs.collapse', function () {
+                            // When hidden, revert to the downward chevron
+                            downIcon.classList.remove('bi-chevron-double-up', 'rotate');
+                            downIcon.classList.add('bi-chevron-double-down');
+                        });
+                    });
                 </script>
 
                 {% endblock %}

@@ -3,7 +3,7 @@
 {% block content %}
 <style>
   .container {
-    max-height: 500px;
+    max-height: 620px;
     width: 100%;
     margin-left: 20px;
     overflow-y: auto;
@@ -86,13 +86,27 @@
         <div class="col-md-6 col-lg-4 mb-4">
           <div class="card job-card">
             <h5 class="job-title">{{ forloop.counter }}. {{ job.company_joblist.job_title.job_title }}</h5>
-            <span class="job-details"><b>Job ID:</b> {{ job.company_joblist.job_title.id }}</span>
-            <span class="job-details"><b>Unique Job No.:</b> {{ job.company_joblist.job_number }}</span>
+            <span class="job-details"><b>Application ID:</b> {{job.id}}</span>
+            <span class="job-details"><b>Job Position ID:</b> {{ job.company_joblist.job_title.id }}</span>
+            <span class="job-details"><b>Unique Job No.:</b> {{ job.company_joblist.id }}</span>
             <span class="job-details"><i class="fas fa-building"></i> {{ job.company_joblist.company.name }}</span>
             <span class="job-details"><i class="fas fa-map-marker-alt"></i> {{ job.company_joblist.location }}</span>
             <span class="job-details"><b>Applied Date:</b> {{ job.applied_at|date:"d M Y" }}</span>
             <span class="job-details"><b>Last Date:</b> {{ job.company_joblist.Lastdate|date:"d M Y" }}</span>
-            <span class="job-details status"><b class="text-dark">Application Status:</b> {{ job.status }}</span>
+            <span class="job-details status"> {% if job.status == "Rejected" %}
+              <span class="job-details status">
+                <b class="text-dark">Application Status:</b><span class="text-danger"> {{ job.status }}</span> 
+              </span>
+            {% elif job.status == "Accepted" %}
+              <span class="job-details status status-accepted">
+                <b class="text-dark">Application Status:</b> <span class="text-success"> {{ job.status }}</span>
+              </span>
+            {% else %}
+              <span class="job-details status status-other">
+                <b class="text-dark">Application Status:</b><span style="color: brown;">  {{ job.status }}</span>
+              </span>
+            {% endif %}
+          </span>
           </div>
         </div>
       {% endfor %}

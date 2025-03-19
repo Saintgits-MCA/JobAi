@@ -28,7 +28,7 @@ CREATE TABLE `django_content_type` (
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `django_content_type` (
 
 LOCK TABLES `django_content_type` WRITE;
 /*!40000 ALTER TABLE `django_content_type` DISABLE KEYS */;
-INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(3,'auth','group'),(2,'auth','permission'),(4,'auth','user'),(5,'contenttypes','contenttype'),(9,'JobAi_App','company'),(15,'JobAi_App','company_joblist'),(14,'JobAi_App','company_jobs'),(12,'JobAi_App','company_type_master'),(16,'JobAi_App','job_title'),(17,'JobAi_App','jobapplication'),(11,'JobAi_App','jobseeker_profile'),(10,'JobAi_App','jobseeker_registration'),(13,'JobAi_App','jobseeker_resume'),(8,'JobAi_App','resumedetails'),(7,'JobAi_App','uploadedfile'),(6,'sessions','session');
+INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(3,'auth','group'),(2,'auth','permission'),(4,'auth','user'),(5,'contenttypes','contenttype'),(9,'JobAi_App','company'),(15,'JobAi_App','company_joblist'),(14,'JobAi_App','company_jobs'),(12,'JobAi_App','company_type_master'),(16,'JobAi_App','job_title'),(17,'JobAi_App','jobapplication'),(18,'JobAi_App','jobnotification'),(11,'JobAi_App','jobseeker_profile'),(10,'JobAi_App','jobseeker_registration'),(13,'JobAi_App','jobseeker_resume'),(8,'JobAi_App','resumedetails'),(7,'JobAi_App','uploadedfile'),(6,'sessions','session');
 /*!40000 ALTER TABLE `django_content_type` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -50,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-01  7:24:29
+-- Dump completed on 2025-03-18  8:17:19

@@ -1,6 +1,11 @@
-from datetime import date, datetime
+from datetime import date,datetime
+from email import message
 import openai
-# from django.db import connection
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+import comtypes
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image  # type: ignore
 from django.shortcuts import get_object_or_404, render, redirect
 import os
 import json
@@ -18,6 +23,7 @@ from itertools import groupby
 from django.core.mail.message import EmailMessage
 import tempfile
 from django.utils.timezone import now
+import re
 
 openai.api_key = settings.OPENAI_API_KEY
 
@@ -60,8 +66,6 @@ def jobseeker_login(request):
 
 def extract_resume_details(content):
     """Extracts key details like name, skills, address, highest_qualification, job_preference, university name, date of birth, email, and phone number from the resume content."""
-    import re
-
     details = {
         "name": "",
         "skills": "",
@@ -338,7 +342,7 @@ def contact_view(request):
                 subject=f"New Contact Form Submission from {name}",
                 message=f"From \nName: {name}\nEmail: {email}\n\n\n{message}",
                 from_email=email,
-                recipient_list=["tecknohow.132@gmail.com"],  # Replace with your email
+                recipient_list=["jobai.prksolutions@gmail.com"],  # Replace with your email
                 fail_silently=False,
             )
 
@@ -422,7 +426,8 @@ def Forgot_pwd(request):
             # Send the email
             send_mail(
                 subject="Password Reset Request",
-                message=f"""Dear { user.name },\nClick the link below to reset your password:\n{reset_url}""",
+                message="",
+                html_message=f"""Dear { user.name },\nClick the button below to reset your password:\n\n<br><a href='{reset_url}'><button style='background-color:blue;color:white;border:1px solid blue;font-weight:bold'>Reset Password</button></a>""",
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
                 fail_silently=False,
@@ -565,17 +570,17 @@ Include the date ({ldate}) at the beginning and conclude with a proper closing, 
 
 def send_cover_letter_email(request):
     fname=request.session.get('jobseeker_name')
-    highest_qualification=request.session.get('highest_qualification')
+    # highest_qualification=request.session.get('highest_qualification')
     
     if request.method == "POST":
         cid = request.session.get("company_id")
         pdf_file = request.FILES.get("pdf")
-        job_title_id=request.POST.get('job_id')
+        # job_title_id=request.POST.get('job_id')
         # email=Company.objects.get(id=cid).email
         email=request.session.get('jobseeker_email')
         if not cid or not pdf_file:
             return JsonResponse({"message": "Missing email or PDF!"}, status=400)
-        job=job_title.objects.get(id=job_title_id).job_title
+        # job=job_title.objects.get(id=job_title_id).job_title
         # Save the uploaded PDF to a temporary file
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
             for chunk in pdf_file.chunks():
@@ -676,12 +681,12 @@ def mockinterview(request):
             questions = [q for q in content.split("\n") if q.strip()]
             # Ensure that exactly 5 questions are returned
             if len(questions) != 5:
-                return JsonResponse({"error": "Failed to generate exactly 5 interview questions. Please try again."}, status=400)
+                return JsonResponse({"error": "Failed to generate exactly 5 fresher level interview questions. Please try again."}, status=400)
             return JsonResponse({"questions": questions})
 
         else:
             # Evaluate the user answer
-            prompt = f"Evaluate this job interview response for a {job.job_title} role and provide constructive feedback with score and graphical analysis after all 5 questions. Do not include any introduction or pleasantries. Answer concisely.\n\nAnswer: {user_answer}"
+            prompt = f"Evaluate this job interview response for a {job.job_title} role and provide constructive feedback,score,sample answer for the questions for beginners. Do not include any introduction or pleasantries. Answer concisely.\n\nAnswer: {user_answer}"
             response = openai.ChatCompletion.create(# pylint: disable=undefined-variable
                 model="gpt-4o-mini",
                 messages=[{"role": "system", "content": prompt}]
@@ -701,10 +706,6 @@ def parse_list(text):
     return set()
 
 def match_jobs(jobseeker):
-    """
-    Match jobs based on overlapping skills and jobseeker's highest qualification.
-    Returns a QuerySet of matching company_joblist jobs.
-    """
     # Function to extract numeric percentage value from string
     def extract_percentage(value):
         try:
@@ -739,34 +740,118 @@ def match_jobs(jobseeker):
     return matching_jobs
 
 def auto_apply_jobs(jobseeker, max_apply=4):
-    """
-    Auto-apply function:
-    - Shortlists matching jobs (using skills and eligibility).
-    - Excludes jobs that the jobseeker has already applied for.
-    - Limits to max_apply new applications.
-    """
-    # Get list of job IDs that the jobseeker has already applied for
-    applied_job_ids = JobApplication.objects.filter(jobseeker=jobseeker).values_list('company_joblist_id', flat=True)
+    today = now().date()
+    
+    # Get job seeker's preference (convert to lowercase for case-insensitive matching)
+    job_preference = jobseeker.job_preference.lower() if jobseeker.job_preference else ""
+
+    # Get applications already made today
+    today_applied_jobs = JobApplication.objects.filter(jobseeker=jobseeker, applied_at__date=today)
+    today_applied_jobs_count = today_applied_jobs.count()
+
+    # **Enforce max 4 applications upfront**
+    if today_applied_jobs_count >= max_apply:
+        print(f"⚠️ Jobseeker {jobseeker.id} already applied for {today_applied_jobs_count} jobs today. No more applications allowed.")
+        return 0, []
+
+    # Get list of job IDs already applied for today (prevents duplicate applications for the same job)
+    applied_job_ids = set(today_applied_jobs.values_list('company_joblist_id', flat=True))
 
     # Get matching jobs based on skills and eligibility
     matching_jobs = match_jobs(jobseeker)
 
-    # Exclude jobs already applied for
-    available_jobs = [job for job in matching_jobs if job.id not in applied_job_ids and job.Lastdate >= now().date()]
+    # Exclude jobs already applied for today and ensure job is still open
+    available_jobs = [
+        job for job in matching_jobs 
+        if job.id not in applied_job_ids  # Prevent duplicate job applications
+        and job.Lastdate >= today  # Ensure job is still open
+    ]
 
-    # Sort by dateofpublish (newest first), handling None values
-    available_jobs.sort(key=lambda x: x.dateofpublish or "", reverse=True)
+    # **Sort jobs based on priority**
+    def job_sort_key(job):
+        is_preferred = job_preference in job.job_title.job_title.lower()
+        return (
+            not is_preferred,  # Prioritize job preference
+            job.Lastdate,       # Prioritize nearest deadline
+            job.dateofpublish or ""  # Prioritize recently published jobs
+        )
+
+    sorted_jobs = sorted(available_jobs, key=job_sort_key)
 
     applications_made = 0
-    for job in available_jobs[:max_apply]:
-        try:
-            JobApplication.objects.create(jobseeker=jobseeker, company_joblist=job)
-            applications_made += 1
-        except Exception as e:
-            print(f"Error applying for {job.job_title}: {e}")
+    applied_jobs_list = []
+
+    for job in sorted_jobs:
+        # **Strictly enforce max-apply limit**
+        if (today_applied_jobs_count + applications_made) >= max_apply:
+            print(f"Max applications ({max_apply}) reached. Stopping further applications.")
+            break  
+
+        # **Final check before applying**
+        if JobApplication.objects.filter(jobseeker=jobseeker, company_joblist=job).exists():
+            print(f"Already applied to {job.job_title.job_title} at {job.company.name}. Skipping...")
             continue
 
-    return applications_made, available_jobs
+        try:
+            # Apply for the job
+            JobApplication.objects.create(jobseeker=jobseeker, company_joblist=job)
+            applications_made += 1  # Track successful applications
+            applied_jobs_list.append(job)
+
+            # Add this job to the exclusion list for future checks
+            applied_job_ids.add(job.id)
+
+            print(f"Applied to: {job.job_title.job_title} at {job.company.name}")
+
+        except Exception as e:
+            print(f"Error applying for {job.job_title.job_title}: {e}")
+            continue
+
+    # Send email notification if applications were made
+    job_details_html = "".join([
+    "<tr>"
+    f"<td>🔹 <b>{job.job_title.job_title}</b></td>"
+    f"<td>🏢 {job.company.name}</td>"
+    f"<td>📍 {job.location}</td>"
+    f"<td>🏷️ {job.job_type}</td>"
+    f"<td>📅 {today}</td>"
+    f"<td>⏳ {job.Lastdate}</td>"
+   "</tr>"
+    for job in applied_jobs_list
+])
+
+    email_body_html = f"""
+<p>Dear {jobseeker.name},</p>
+<p>You have successfully applied to the following jobs today via <b>JobAi</b>:</p>
+<table border='1' cellspacing='0' cellpadding='5' style='border-collapse: collapse; text-align: left; width: 100%;'>
+    <tr style='background-color: #f2f2f2;'>
+        <th>Job Title</th>
+        <th>Company</th>
+        <th>Location</th>
+        <th>Job Type</th>
+        <th>Application Date</th>
+        <th>Deadline</th>
+    </tr>
+    {job_details_html}
+</table>
+<p>🚀 <b>Next Steps:</b></p>
+<ul>
+    <li>📌 Check your application status in your <a href='http://127.0.0.1:8000/jobseeker_login/'>JobAi Profile</a>.</li>
+    <li>📌 Prepare for interviews with our <b>AI Mock Interview Tool</b>.</li>
+</ul>
+<p>Thank you for using <b>JobAi</b>. We wish you success!</p>
+<p>Best Regards,<br><b>JobAi Team</b><br>📧 support@jobai.com | 🌐 <a href='http://127.0.0.1:8000/jobseeker_login/'>www.jobai.com</a></p>
+"""
+    if applications_made!=0:
+        send_mail(
+    subject="Job Application Confirmation – Your Applications for Today",
+    message="This is an HTML email. Please enable HTML to view the content properly.",
+    from_email="jobai.prksolutions@gmail.com",
+    recipient_list=[jobseeker.email],
+    fail_silently=False,
+    html_message=email_body_html
+)
+    return applications_made, applied_jobs_list
 
 def autoapply(request):
     # Use session to retrieve jobseeker email instead of just name
@@ -916,6 +1001,8 @@ def company_change_password(request):
             messages.error(request, "Old password is incorrect.")
         elif new_password != confirm_password:
             messages.error(request, "New passwords do not match.")
+        elif exist_pwd==old_password and exist_pwd==new_password:
+            messages.warning(request,"No changes in Password detected")
         elif len(new_password) < 4:
             messages.error(request, "Password must be at least 4 characters long.")
         else:
@@ -987,6 +1074,216 @@ def delete_job(request):
         
     return render(request, 'company_jobs.html', {'cname': cname,"compdt":comp})
 
+def extract_text_from_docx(docx_path):
+    """Extracts text from a DOCX resume file."""
+    doc = Document(docx_path)
+    return "\n".join([para.text for para in doc.paragraphs])
+
+# def calculate_ats_score(resume_url):
+#     """Mock ATS score calculation. Replace with actual ATS logic."""
+#     time.sleep(2)  # Simulate processing delay
+#     return random.randint(40, 100)  # Generate mock ATS score
+
+def convert_doc_to_docx(doc_path):
+    """Converts a DOC file to DOCX using comtypes (Windows only)."""
+    word = comtypes.client.CreateObject('Word.Application')
+    doc = word.Documents.Open(doc_path)
+    docx_path = doc_path + "x"
+    doc.SaveAs(docx_path, FileFormat=16)  # 16 = docx format
+    doc.Close()
+    word.Quit()
+    return docx_path
+
+def extract_resume_text(resume_path):
+    """Extracts text from DOCX or converts DOC to DOCX first."""
+    if resume_path.endswith(".docx"):
+        return extract_text_from_docx(resume_path)
+    elif resume_path.endswith(".doc"):
+        docx_path = convert_doc_to_docx(resume_path)
+        return extract_text_from_docx(docx_path)
+    return None
+
+def calculate_ats_score(resume_text, job_description):
+    """Sends resume and job description to OpenAI for ATS scoring."""
+    prompt = f"""
+    You are an ATS resume screening AI. Evaluate the resume against the job description.
+
+    **Scoring Criteria**:
+    - **Keyword Match (more than 10%)**
+    - **Formatting & Readability (more than 10%)**
+    - **Grammar & Clarity (more than 10%)**
+    
+   Don't give full marks or zero for any resume instead provide only nearest value
+    **Resume**:
+    {resume_text}
+
+    **Job Description**:
+    {job_description}
+
+    Provide:
+    1. **ATS Score** (out of 100)
+    2. **Improvement Suggestions** (if score < 70)
+    """
+
+    response = openai.ChatCompletion.create( #pylint: disable=undefined-variable
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.5
+    )
+    
+    ats_result = response["choices"][0]["message"]["content"]
+    ats_score = int(next(filter(str.isdigit, ats_result.split()), 0))  # Extract numeric score
+    return ats_score
+
+
+def generate_admit_card(jobseeker, job_title,application_id):
+    """Generates an Admit Card PDF with jobseeker details (without using canvas)."""
+
+    file_path = f"{settings.MEDIA_ROOT}/admit_cards/{jobseeker.name.replace(' ', '_')}_admit_card.pdf"
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    application = get_object_or_404(JobApplication, id=application_id)
+    # Create PDF Document
+    pdf = SimpleDocTemplate(file_path, pagesize=letter)
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Title
+    title = Paragraph("<b>First Round Admit Card</b>", styles['Title'])
+    elements.append(title)
+    
+    # Add Logo (Replace with your logo path)
+    logo_path = "{{ application.company.profile_img.url }}"  # Change to the actual logo file path
+    if os.path.exists(logo_path):
+        logo = Image(logo_path, width=100, height=50)  # Adjust size as needed
+        elements.append(logo)
+
+    # Applicant Image (If Available)
+    if jobseeker.profile_img and os.path.exists(jobseeker.profile_img.url):  # Assuming jobseeker.photo stores the image path
+        applicant_image = Image(jobseeker.profile_img.path, width=100, height=100)
+        elements.append(applicant_image)
+
+    # Jobseeker Information Table
+    data = [
+        ["Applicant Name:", jobseeker.name],
+        ["Email:", jobseeker.email],
+        ["Phone:", jobseeker.phone],
+        ["Qualification:", jobseeker.highest_qualification],
+        ["Job Title:", job_title],
+        ["Company:", application.company_joblist.company.name],  # Customize this
+        ["Status:", "Selected"]
+    ]
+
+    table = Table(data, colWidths=[150, 300])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+    ]))
+
+    elements.append(table)
+
+    # Final Instructions
+    instructions = Paragraph("<br/><b>Instructions:</b><br/>Please report to first level aptitute test with this admit card and required documents on the joining date.", styles['Normal'])
+    elements.append(instructions)
+
+    # Generate PDF
+    pdf.build(elements)
+    return file_path
+
+def auto_process_application(request, application_id):
+    """Automatically processes the job application based on ATS score."""
+    try:
+        application = get_object_or_404(JobApplication, id=application_id)
+        jobseeker = get_object_or_404(jobseeker_profile, id=application.jobseeker_id)
+
+        # Skip processing if already completed
+        if application.ats_score is not None:
+            return JsonResponse({
+                "status": application.status,
+                "ats_score": application.ats_score
+            })
+
+        #  Calculate ATS Score
+        ats_score = calculate_ats_score(application.jobseeker.resume,application.company_joblist.job_description)
+
+
+        #  Save ATS Score and Status in Database
+        application.ats_score = ats_score
+        application.save()
+
+        # Determine Acceptance or Rejection
+        if ats_score >= 60:
+            application.status = "Accepted"
+            status_text = "Accepted"
+            status_class = "text-success fw-bold"
+            
+            # Generate Admit Card
+            admit_card_path = generate_admit_card(jobseeker, application.company_joblist.job_title.job_title,application_id)
+            
+            # Email Content for Accepted Applicants
+            email_subject = f"You're eligible to attend for Aptitude test for position {application.company_joblist.job_title.job_title} at {application.company_joblist.company.name}"
+            email_body = f"""
+Dear {jobseeker.name},
+
+We are thrilled to inform you that your application for the position of {application.company_joblist.job_title.job_title} has been Accepted! 
+ 
+Your admit card is attached with this email.
+
+Next Steps:  
+- Kindly review the admit card and take print out.
+- Keep your admit card with you while come for aptitude test. 
+- Ensure your participation in aptitude test.
+ 
+
+We hope you prepare well for the test .The more details regarding Date,Time,Venue of exam will be informed shortly.
+
+Best Regards,  
+Recruitment Team
+"""
+            email = EmailMessage(email_subject, email_body, "noreply@company.com", [jobseeker.email])
+            email.attach_file(admit_card_path)
+            email.send()
+
+        else:
+            application.status = "Rejected"
+            status_text = "Rejected"
+            status_class = "text-danger fw-bold"
+
+            # Email Content for Rejected Applicants
+            email_subject = f"⚠️ Application Update - {application.company_joblist.job_title.job_title}"
+            email_body = f"""
+Dear {jobseeker.name},
+
+We regret to inform you that your application for the position of {application.company_joblist.job_title.job_title} has been Rejected.  
+
+We encourage you to improve your resume and apply for future opportunities with us.
+
+Wishing you all the best in your job search!
+
+Best Regards,  
+Recruitment Team
+"""
+            email = EmailMessage(email_subject, email_body, "noreply@company.com", [jobseeker.email])
+            email.send()
+
+        # Save ATS Score & Status
+        application.ats_score = ats_score
+        application.save()
+        messages.success(request,"Application Successfully ")
+        # Return JSON Response for Frontend Update
+        return JsonResponse({
+            "status": application.status,
+            "status_text": status_text,
+            "status_class": status_class,
+            "ats_score": ats_score
+        })
+
+    except JobApplication.DoesNotExist:
+        return JsonResponse({"error": "Application not found"}, status=404)
+    
 def company_type(request):
     if request.method == "POST":
         company_type = request.POST.get('ctype')
@@ -1043,7 +1340,8 @@ def company_forgot_password(request):
             # Send the email
             send_mail(
                 subject="Password Reset Request",
-                message=f"Click the link below to reset your password:\n{reset_url}",
+                message="",
+                html_message=f"""\nClick the button below to reset your password:\n\n<br><a href='{reset_url}'><button style='background-color:blue;color:white;border:1px solid blue;font-weight:bold'>Reset Password</button></a>""",
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
                 fail_silently=False,
@@ -1126,7 +1424,7 @@ def company_jobs(request):
         for job in compjobdt:
             job_info = {
                 "job_id": job.id,
-                "job_number": job.job_number,
+                # "job_number": job.job_number,
                 "job_title": job.job_title.job_title,
                 "job_description": job.job_description,
                 "eligibility":(job.highest_qualification),
@@ -1139,7 +1437,8 @@ def company_jobs(request):
             jobs_list.append(job_info)
 
         # Get expired jobs
-        expiredyet = company_joblist.objects.filter(company=cid, Lastdate__gt=date.today())
+        # expiredyet = company_joblist.objects.filter(company=cid, Lastdate__gt=date.today())
+        expiredyet = company_joblist.objects.filter(company=cid)
         # Convert string to list if stored incorrectly
 
         context = {
@@ -1189,7 +1488,6 @@ def company_postjob(request):
     cid = request.session.get('company_id')
     company = Company.objects.get(id=cid)
     if request.method == "POST":
-        job_number = request.POST.get('job_number')
         job_position = request.POST.get('job_title')
         job_description = request.POST.get('job_description')
         job_location = request.POST.get('Location')
@@ -1201,26 +1499,30 @@ def company_postjob(request):
         qualification_str = ",".join(qualification)
         skills_str = ",".join(skills)
         lastdate = request.POST.get('deadline')
-        if company_joblist.objects.filter(job_number=job_number).exists():
-            messages.error(request, "A job with this job number already posted in this portal use other id to post other jobs")
-        else:
-            companyjob_obj = company_joblist()
-            companyjob_obj.company_id = cid
-            companyjob_obj.job_number = job_number
-            companyjob_obj.job_title_id = job_position
-            companyjob_obj.job_description = job_description
-            companyjob_obj.location = job_location
-            companyjob_obj.job_type = job_type
-            companyjob_obj.dateofpublish = jobposted_date
-            companyjob_obj.highest_qualification = qualification_str
-            companyjob_obj.percent_criteria=percent_criteria
-            companyjob_obj.skills_required = skills_str
-            companyjob_obj.Lastdate = lastdate
-            companyjob_obj.save()
-            # **Notify jobseekers**
-            jobseekers = jobseeker_profile.objects.all()
-            for jobseeker in jobseekers:
-                JobNotification.objects.create(
+        companyjob_obj = company_joblist()
+        lastdate_obj = datetime.strptime(lastdate, "%Y-%m-%d").date()
+        if lastdate_obj < now().date():
+            messages.error(request,"Last date should not be past date.")
+            redirect('job_listing')
+        # ✅ **Check if this job_number already exists for this company**
+        if company_joblist.objects.filter(company=cid, job_title=job_position).exists():
+            messages.error(request, f"A job for job id `{job_position}` already exists in your listings. Please use a different Job ID.")
+            return redirect('job_listing')
+        companyjob_obj.company_id = cid
+        companyjob_obj.job_title_id = job_position
+        companyjob_obj.job_description = job_description
+        companyjob_obj.location = job_location
+        companyjob_obj.job_type = job_type
+        companyjob_obj.dateofpublish = jobposted_date
+        companyjob_obj.highest_qualification = qualification_str
+        companyjob_obj.percent_criteria=percent_criteria
+        companyjob_obj.skills_required = skills_str
+        companyjob_obj.Lastdate = lastdate
+        companyjob_obj.save()
+        # **Notify jobseekers**
+        jobseekers = jobseeker_profile.objects.all()
+        for jobseeker in jobseekers:
+            JobNotification.objects.create(
                     jobseeker_profile=jobseeker,
                     company_job=companyjob_obj,
                     message=f"New job posted: {companyjob_obj.job_title.job_title} at {company.name}."
@@ -1237,8 +1539,6 @@ def edit_job(request):
     company = Company.objects.get(id=cid)
     if request.method == "POST":
         job_id = request.POST.get('job_id')
-        job_number = request.POST.get('job_number')
-        job_position = request.POST.get('job_title')
         job_description = request.POST.get('job_description')
         job_location = request.POST.get('location')
         job_type = request.POST.get('job_type')
@@ -1267,8 +1567,7 @@ def edit_job(request):
 
      
         companyjob_obj.company_id = cid
-        companyjob_obj.job_number = job_number
-        companyjob_obj.job_title_id = job_position
+        # companyjob_obj.job_number = job_number
         companyjob_obj.job_description = job_description
         companyjob_obj.location = job_location
         companyjob_obj.job_type = job_type
@@ -1309,6 +1608,24 @@ def applications(request):
     }
     return render(request,'applications.html',context)
 
+def candidates(request):
+    cid = request.session.get('company_id')
+    cname = request.session.get('company_name')
+    company = Company.objects.get(id=cid)
+    Applicants=JobApplication.objects.filter(company_joblist__company_id=cid,status="Accepted")
+    # Sort the list of applicants by job title
+    Applicants = sorted(Applicants, key=lambda x: x.company_joblist.job_title.job_title)
+    # Group applicants by job title
+    grouped_applicants = {}
+    for job_title, group in groupby(Applicants, key=lambda x: x.company_joblist.job_title.job_title):
+            grouped_applicants[job_title] = list(group)
+    context = {
+        "cname":cname,
+        "compdt":company,
+        "Applicants":Applicants,
+        "grouped_applicants":grouped_applicants
+    }
+    return render(request,'candidates.html',context)
 def jobseeker_dashboard(request):
     fname = request.session.get('jobseeker_name')
     if not jobseeker_profile.objects.filter(name=fname).exists():

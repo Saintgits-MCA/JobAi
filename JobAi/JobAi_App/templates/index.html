@@ -12,6 +12,7 @@
 	<script defer src="{% static 'assets/js/alpine.min.js' %}" type="b014f77004e53e5bad1cb140-text/javascript"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+	<link rel="preload" href="{% static 'images/bg.png'%}" as="image">
 	<link rel="stylesheet" href="{% static 'assets/css/index.css'%}">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
@@ -342,9 +343,7 @@
 	<!-- top features -->
 	<div id="features" class="grid gap-1 py-1 lg:grid-cols-3">
 		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
-			<!-- <div class="aspect-square p-2 bg-accent font-title font-bold text-xl rounded-full grid place-content-center">
-        <svg class="text-accent-content" width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 24L20 34L40 14" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div> -->
+			<!--  -->
 			<h3 class="text-center font-title text-xl font-bold">
 				Job-specific cover letter </h3>
 			<figure
@@ -354,7 +353,7 @@
 					style="
               background-image: url(https://www.toptal.com/designers/subtlepatterns/uploads/handmadepaper.png);
             ">
-					<div class="grid h-full place-items-stretch [&>*]:[grid-column:1/1] [&>*]:[grid-row:1/1]">
+					<!-- <div class="grid h-full place-items-stretch [&>*]:[grid-column:1/1] [&>*]:[grid-row:1/1]">
 						<div
 							class="bg-[repeating-linear-gradient(45deg,white,oklch(0_0_0/.05))] [background-size:50%_50%]">
 						</div>
@@ -382,7 +381,8 @@
 							<br />
 							Best, Alen
 						</p>
-					</div>
+					</div> -->
+					<img src="{%static 'images/cover-letter.png'%}" alt="cover-letter" style="height: 220px; ">
 				</div>
 			</figure>
 		</div>
@@ -790,8 +790,8 @@
 				<div class="p-6 bg-gray-100 rounded-lg shadow-md">
 					<i class="fas fa-envelope text-green-600 text-4xl mb-2"></i>
 					<h3 class="text-xl font-bold text-gray-800">Email Us</h3>
-					<p class="text-gray-600"><a href="mailto:tecknohow.132@gmail.com"
-							class="text-blue-500">tecknohow.132@gmail.com</a></p>
+					<p class="text-gray-600"><a href="mailto:jobai.prksolutions@gmail.com"
+							class="text-blue-500">jobai.prksolutions@gmail.com</a></p>
 				</div>
 
 				<!-- Office Location -->

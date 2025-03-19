@@ -55,11 +55,11 @@ thead th {
                     <th>Applicant Name</th>
                     <th>DOB</th>
                     <th>Qualification</th>
+                    <th>%</th>
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Resume</th>
                     <th>ATS Score</th>
-                    <th>Accept/Reject</th>
                 </tr>
             </thead>
             <tbody id="applications-body">
@@ -74,6 +74,7 @@ thead th {
                             <td>{{ applicant.jobseeker.name }}</td>
                             <td>{{ applicant.jobseeker.dob|date:"d-M-Y"  }}</td>
                             <td>{{ applicant.jobseeker.highest_qualification }}</td>
+                            <td>{{ applicant.jobseeker.percentage }}</td>
                             <td>{{ applicant.jobseeker.email }}</td>
                             <td>{{ applicant.jobseeker.phone }}</td>
                             <td><a href="{{ applicant.jobseeker.resume.url }}">
@@ -87,19 +88,7 @@ thead th {
                                 {% else %}
                                     <span class="text-muted">Not Processed</span>
                                 {% endif %}
-                            </td>
-                            
-                            <td id="action-{{ applicant.id }}">
-                                {% if applicant.ats_score is not None %}
-                                    <span class="{% if applicant.status == 'Accepted' %}text-success fw-bold{% else %}text-danger fw-bold{% endif %}">
-                                        {{ applicant.status }}
-                                    </span>
-                                {% else %}
-                                    <button class="btn btn-success btn-sm w-100 fw-bold" id="process-btn-{{ applicant.id }}" onclick="autoProcess('{{ applicant.id }}')">
-                                        Process
-                                    </button>
-                                {% endif %}
-                            </td>                                                 
+                            </td>                                              
                         </tr>
                     {% endfor %}
                 {% endfor %}
@@ -107,36 +96,7 @@ thead th {
         </table>
     </div>
 {% else %}
-    <div class="alert alert-warning mt-3">No job applications received for jobs posted by you.</div>
+    <div class="alert alert-warning mt-3">Not shortlisted any candidates for jobs posted by you.</div>
 {% endif %}
-<script>
-   function autoProcess(applicationId) {
-    let processButton = document.getElementById(`process-btn-${applicationId}`);
-    let atsScoreCell = document.getElementById(`ats-score-${applicationId}`);
-    let actionCell = document.getElementById(`action-${applicationId}`);
-
-    // Change button text to "Processing..." and disable it
-    processButton.innerText = "Processing...";
-    processButton.disabled = true;
-
-    fetch(`/auto-process-application/${applicationId}/`)
-    .then(response => response.json())
-    .then(data => {
-        if (data.ats_score !== undefined) {
-            // Display ATS Score
-            atsScoreCell.innerHTML = `<b>${data.ats_score}/100</b>`;
-
-            // Replace button with Accepted/Rejected Status
-            actionCell.innerHTML = `<span class="${data.status_class}">${data.status_text}</span>`;
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        processButton.innerText = "Process"; // Restore button text in case of an error
-        processButton.disabled = false;
-    });
-}
-
-</script>
 
 {% endblock %}

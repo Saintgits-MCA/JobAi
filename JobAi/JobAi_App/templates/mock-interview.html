@@ -48,7 +48,7 @@
                     <h5 id="questionText" class="text-dark mt-3">Click 'Start Interview' to begin and wait ...</h5>
                     <textarea id="answerInput" class="form-control mt-3 text-dark"
                         placeholder="Type your answer"></textarea>
-                        <button class="btn btn-primary mt-3" id="toggleRecording"><i class="fas fa-microphone"></i> Start Answer</button>
+                        <button class="btn btn-primary mt-3" id="toggleRecording"><i class="fas fa-microphone"></i> Record Answer</button>
                 </div>
                 <div class="modal-footer">
                     <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
@@ -65,7 +65,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">AI Interview Feedback</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
                 </div>
                 <div class="modal-body">
                     <p id="feedbackText" class="text-dark"></p>
@@ -197,7 +197,7 @@
                 setTimeout(() => {
                     document.getElementById("startInterview").style.display = "block"; 
                     document.getElementById("submitAnswer").style.display = "none";
-                }, 500);
+                }, 100);
             }
         });
     });

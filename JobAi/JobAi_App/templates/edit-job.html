@@ -57,20 +57,17 @@
             <div class="mb-3">
                  <input type="hidden" id="job_id" name="job_id" class="form-control input-bg" value="{{ jobobg.id }}" readonly>
             </div>
-            <div class="mb-3">
+            <!-- <div class="mb-3">
                 <label class="form-label">Job Number</label><span class="text-danger mx-2">*</span>
                 <input type="text" class="form-control" name="job_number" id="job_number" value="{{ jobobg.job_number }}"
                     required>
-            </div>
+            </div> -->
 
             <!-- Job Title -->
             <div class="mb-3">
                 <label class="form-label">Job Title</label><span class="text-danger mx-2">*</span>
-                <select type="text" class="form-control" name="job_title" required>
-                  <option selected disabled value="">--Select Job--</option>
-                    {% for i in job %}
-                    <option value="{{i.id}}" {% if i.id == jobobg.job_title_id %}selected{%endif%} >{{i.job_title}}</option>
-                  {%endfor%}
+                <select type="text" class="form-control input-bg" name="job_title" readonly>
+                  <option selected disabled value="">{{jobobg.job_title.job_title}}</option>
                 </select>
             </div>
 

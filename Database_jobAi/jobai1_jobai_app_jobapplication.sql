@@ -27,12 +27,13 @@ CREATE TABLE `jobai_app_jobapplication` (
   `applied_at` datetime(6) NOT NULL,
   `company_joblist_id` bigint NOT NULL,
   `jobseeker_id` bigint NOT NULL,
+  `status` longtext NOT NULL DEFAULT (_utf8mb3'Applied'),
   PRIMARY KEY (`id`),
   UNIQUE KEY `JobAi_App_jobapplication_jobseeker_id_job_id_00de0ef9_uniq` (`jobseeker_id`,`company_joblist_id`),
   KEY `JobAi_App_jobapplica_company_joblist_id_680959ed_fk_JobAi_App` (`company_joblist_id`),
   CONSTRAINT `JobAi_App_jobapplica_company_joblist_id_680959ed_fk_JobAi_App` FOREIGN KEY (`company_joblist_id`) REFERENCES `jobai_app_company_joblist` (`id`),
   CONSTRAINT `JobAi_App_jobapplica_jobseeker_id_06490689_fk_JobAi_App` FOREIGN KEY (`jobseeker_id`) REFERENCES `jobai_app_jobseeker_profile` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +42,7 @@ CREATE TABLE `jobai_app_jobapplication` (
 
 LOCK TABLES `jobai_app_jobapplication` WRITE;
 /*!40000 ALTER TABLE `jobai_app_jobapplication` DISABLE KEYS */;
-INSERT INTO `jobai_app_jobapplication` VALUES (5,'2025-02-28 06:15:35.140829',2,1),(6,'2025-02-28 06:15:35.147701',3,1),(7,'2025-02-28 06:15:35.150823',10,1),(8,'2025-02-28 06:15:35.155158',8,1),(9,'2025-02-28 06:16:05.439463',7,1),(10,'2025-03-01 00:52:55.928023',2,5),(11,'2025-03-01 00:52:55.933818',3,5),(12,'2025-03-01 00:52:55.942062',10,5);
+INSERT INTO `jobai_app_jobapplication` VALUES (1,'2025-03-17 06:17:49.120463',2,2,'Applied'),(2,'2025-03-17 06:17:49.130604',14,2,'Applied'),(3,'2025-03-17 06:17:49.148733',3,2,'Applied'),(4,'2025-03-17 06:17:49.154236',12,2,'Applied'),(5,'2025-03-17 06:18:13.015994',1,2,'Applied'),(6,'2025-03-17 06:18:13.031990',6,2,'Applied'),(7,'2025-03-17 06:18:13.048463',9,2,'Applied'),(10,'2025-03-17 10:07:18.712750',3,4,'Applied'),(11,'2025-03-17 10:07:18.719446',12,4,'Applied'),(12,'2025-03-17 10:07:18.727209',2,4,'Applied'),(13,'2025-03-17 10:07:18.736057',14,4,'Applied');
 /*!40000 ALTER TABLE `jobai_app_jobapplication` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-01  7:24:24
+-- Dump completed on 2025-03-18  8:17:25
