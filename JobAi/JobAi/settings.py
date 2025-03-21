@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 # OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "sk-svcacct-8j4wA3KCJgFuorjGkTTfA_xrb6uaJfJt0UPB4La07qsV9_EZGnsh6flw_-yccT3BlbkFJZLLg2bVJE4ca_InXp_UkBblg0YQ-n7hVyMX86F9S4o9RzPDN6xy6cOFvGdmjAA")
 # OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "sk-svcacct-wpWX90OYOx8kwlJZczoTogcpgBlzF7N-dXZGkvKzUDXJVGV0FdDc4qWM9mfjhqdsZH0O5otK_ZT3BlbkFJ9Tj__4SnaRfbmBRVBGGZrwmxX1vRrMKrFZIyczOtzrRK1ylWw0PosG3beQOayVpneKZTEfncA")
-OPENAI_API_KEY=os.getenv("OPENAI_API_KEY","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")
+OPENAI_API_KEY=os.getenv("OPENAI_API_KEY","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")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
