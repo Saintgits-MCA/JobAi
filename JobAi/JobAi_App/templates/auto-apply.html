@@ -84,13 +84,14 @@
   });
 
   // Function to open the modal and set job details dynamically
-  function openJobModal(jobTitle, jobId, jobNumber, company, location, jobType, qualification, cutoff, skills, lastDate, publishDate) {
+  function openJobModal(jobTitle, jobId, jobNumber, company, location, jobType,JobDescription, qualification, cutoff, skills, lastDate, publishDate) {
     document.getElementById("modalJobTitle").innerText = jobTitle;
     document.getElementById("modalJobId").innerText = jobId;
     document.getElementById("modalJobNumber").innerText = jobNumber;
     document.getElementById("modalCompany").innerText = company;
     document.getElementById("modalLocation").innerText = location;
     document.getElementById("modalJobType").innerText = jobType;
+    document.getElementById("modalJobDescription").innerText=JobDescription;
     document.getElementById("modalQualification").innerText = qualification;
     document.getElementById("modalCutoff").innerText = cutoff;
     document.getElementById("modalSkills").innerText = skills;
@@ -147,6 +148,7 @@
                '{{ job.company.name }}', 
                '{{ job.location }}', 
                '{{ job.job_type }}', 
+               '{{ job.job_description }}',
                '{{ job.highest_qualification }}', 
                '{{ job.percent_criteria }}', 
                '{{ job.skills_required }}', 
@@ -181,6 +183,7 @@
         <p><b><i class="fas fa-building"></i></b> <span id="modalCompany"></span></p>
         <p><b><i class="fas fa-map-marker-alt"></i></b> <span id="modalLocation"></span></p>
         <p><b>Job Type:</b> <span id="modalJobType"></span></p>
+        <p><b>Job Description:</b> <span id="modalJobDescription"></span></p>
         <p><b>Eligibility:</b> <span id="modalQualification"></span></p>
         <p><b>Cutoff %:</b> <span id="modalCutoff"></span></p>
         <p><b>Skills Required:</b> <span id="modalSkills"></span></p>

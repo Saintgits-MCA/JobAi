@@ -4,8 +4,8 @@ import openai
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 import comtypes
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image  # type: ignore
+from reportlab.lib.styles import getSampleStyleSheet 
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image,Spacer # type: ignore
 from django.shortcuts import get_object_or_404, render, redirect
 import os
 import json
@@ -405,7 +405,7 @@ def reset_password(request, user_id):
         if new_password != confirm_password:
             messages.error(request, "Passwords do not match.")
         else:
-            user.password = new_password  # This should be hashed (use Django's set_password)
+            user.password = new_password 
            
             user.save()
             messages.success(request, "Your password has been reset successfully.")
@@ -427,7 +427,7 @@ def Forgot_pwd(request):
             send_mail(
                 subject="Password Reset Request",
                 message="",
-                html_message=f"""Dear { user.name },\nClick the button below to reset your password:\n\n<br><a href='{reset_url}'><button style='background-color:blue;color:white;border:1px solid blue;font-weight:bold'>Reset Password</button></a>""",
+                html_message=f"""Dear { user.name },\nClick the button below to reset your password:\n\n<br><a href='{reset_url}'><button style='background-color:blue;color:white;border:1px solid blue;font-weight:bold;border-radius:10px'>Reset Password</button></a>""",
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
                 fail_silently=False,
@@ -490,7 +490,28 @@ def search_job(request):
     }
     return render(request, 'search-job.html', context)
 
+def main_search(request):
+    jobs = company_joblist.objects.filter(Lastdate__gt=date.today())
 
+    # Get search parameters from GET request
+    search_query = request.GET.get('search', '')
+    location_query = request.GET.get('location', '')
+    
+    # Filter by search query. For the foreign key job_title, traverse to its text field.
+    if search_query:
+        jobs = jobs.filter(
+        Q(job_title__job_title__istartswith=search_query) | 
+        Q(company__name__icontains=search_query) | 
+        Q(job_type__icontains=search_query)
+        )
+    
+    # Filter by location query
+    if location_query:
+        jobs = jobs.filter(location__icontains=location_query)
+    context = {
+        "jobs": jobs,
+    }
+    return render(request,'main-search.html',context)
 def coverletter(request):
     job = job_title.objects.all()
     company = Company.objects.all()
@@ -800,7 +821,6 @@ def auto_apply_jobs(jobseeker, max_apply=4):
 
             # Add this job to the exclusion list for future checks
             applied_job_ids.add(job.id)
-
             print(f"Applied to: {job.job_title.job_title} at {job.company.name}")
 
         except Exception as e:
@@ -852,6 +872,7 @@ def auto_apply_jobs(jobseeker, max_apply=4):
     html_message=email_body_html
 )
     return applications_made, applied_jobs_list
+
 
 def autoapply(request):
     # Use session to retrieve jobseeker email instead of just name
@@ -1010,11 +1031,11 @@ def company_change_password(request):
             compobj.password=confirm_password
             compobj.save()
             messages.success(request, "Your password has been updated successfully!")
-
+    # 
     context = {
             # "jobs": expiredyet,
             "cname": cname,
-            "compdt":comp,
+            "compdt":comp
     }
     return render(request, 'company_change_pwd.html', context)
 
@@ -1074,19 +1095,9 @@ def delete_job(request):
         
     return render(request, 'company_jobs.html', {'cname': cname,"compdt":comp})
 
-def extract_text_from_docx(docx_path):
-    """Extracts text from a DOCX resume file."""
-    doc = Document(docx_path)
-    return "\n".join([para.text for para in doc.paragraphs])
-
-# def calculate_ats_score(resume_url):
-#     """Mock ATS score calculation. Replace with actual ATS logic."""
-#     time.sleep(2)  # Simulate processing delay
-#     return random.randint(40, 100)  # Generate mock ATS score
-
 def convert_doc_to_docx(doc_path):
     """Converts a DOC file to DOCX using comtypes (Windows only)."""
-    word = comtypes.client.CreateObject('Word.Application')
+    word = comtypes.client.CreateObject('Word.Application')#pylint:disable=undefined-variable
     doc = word.Documents.Open(doc_path)
     docx_path = doc_path + "x"
     doc.SaveAs(docx_path, FileFormat=16)  # 16 = docx format
@@ -1094,74 +1105,99 @@ def convert_doc_to_docx(doc_path):
     word.Quit()
     return docx_path
 
-def extract_resume_text(resume_path):
-    """Extracts text from DOCX or converts DOC to DOCX first."""
+def extract_text_from_docx(docx_path):
+    """Extracts text from a DOCX file."""
+    doc = Document(docx_path)
+    return "\n".join([para.text for para in doc.paragraphs])
+
+def extract_resume_text(profile_id):
+    """Fetches the resume path from the database and extracts text."""
+    jobseeker = get_object_or_404(jobseeker_profile, id=profile_id)
+    resume_path = os.path.join(settings.MEDIA_ROOT, str(jobseeker.resume))
+    
     if resume_path.endswith(".docx"):
         return extract_text_from_docx(resume_path)
     elif resume_path.endswith(".doc"):
         docx_path = convert_doc_to_docx(resume_path)
         return extract_text_from_docx(docx_path)
+    
     return None
 
 def calculate_ats_score(resume_text, job_description):
-    """Sends resume and job description to OpenAI for ATS scoring."""
     prompt = f"""
     You are an ATS resume screening AI. Evaluate the resume against the job description.
 
     **Scoring Criteria**:
-    - **Keyword Match (more than 10%)**
-    - **Formatting & Readability (more than 10%)**
-    - **Grammar & Clarity (more than 10%)**
+    - **Skills and Qualifications match(50%)**
+    - **Formatting & Readability (15%)**
+    - **Grammar & Clarity (40%)**
     
-   Don't give full marks or zero for any resume instead provide only nearest value
+    minimum 1/3 of appliication must be accepted so increase ats score of 3 for same job
+    
     **Resume**:
     {resume_text}
 
     **Job Description**:
     {job_description}
-
+    
     Provide:
     1. **ATS Score** (out of 100)
-    2. **Improvement Suggestions** (if score < 70)
+    2. **Improvement Suggestions** (if score < 50)
     """
 
     response = openai.ChatCompletion.create( #pylint: disable=undefined-variable
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.5
+        temperature=0
     )
     
     ats_result = response["choices"][0]["message"]["content"]
-    ats_score = int(next(filter(str.isdigit, ats_result.split()), 0))  # Extract numeric score
+    ats_score = int(re.search(r'\b(\d{1,3})\b', ats_result).group(1))
     return ats_score
 
-
-def generate_admit_card(jobseeker, job_title,application_id):
-    """Generates an Admit Card PDF with jobseeker details (without using canvas)."""
-
-    file_path = f"{settings.MEDIA_ROOT}/admit_cards/{jobseeker.name.replace(' ', '_')}_admit_card.pdf"
+def generate_admit_card(jobseeker, job_title, application_id):
+    """Generates an Admit Card PDF with jobseeker details, company logo, and profile image."""
+    
+    # File Path for PDF
+    file_name = f"{jobseeker.name.replace(' ', '_')}_admit_card.pdf"
+    file_path = os.path.join(settings.MEDIA_ROOT, "admit_cards", file_name)
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
     application = get_object_or_404(JobApplication, id=application_id)
+
     # Create PDF Document
     pdf = SimpleDocTemplate(file_path, pagesize=letter)
     elements = []
     styles = getSampleStyleSheet()
 
     # Title
-    title = Paragraph("<b>First Round Admit Card</b>", styles['Title'])
-    elements.append(title)
+    title = Paragraph("<b>Aptitude Test Admit Card</b>", styles['Title'])
     
-    # Add Logo (Replace with your logo path)
-    logo_path = "{{ application.company.profile_img.url }}"  # Change to the actual logo file path
-    if os.path.exists(logo_path):
-        logo = Image(logo_path, width=100, height=50)  # Adjust size as needed
-        elements.append(logo)
-
-    # Applicant Image (If Available)
-    if jobseeker.profile_img and os.path.exists(jobseeker.profile_img.url):  # Assuming jobseeker.photo stores the image path
-        applicant_image = Image(jobseeker.profile_img.path, width=100, height=100)
-        elements.append(applicant_image)
-
+    # Load Company Logo
+    logo_path = application.company_joblist.company.profile_img.path if application.company_joblist.company.profile_img else None
+    company_logo = Image(logo_path, width=120, height=60) if logo_path and os.path.exists(logo_path) else Paragraph("<b>[Company Logo Not Available]</b>", styles['Normal'])
+    
+    # Load Jobseeker Profile Image
+    profile_path = jobseeker.profile_img.path if jobseeker.profile_img else None
+    applicant_image = Image(profile_path, width=100, height=100) if profile_path and os.path.exists(profile_path) else Paragraph("<b>[Applicant Image Not Available]</b>", styles['Normal'])
+    
+    # Table for Header with Company Logo & Title Alignment
+    header_table = Table([[company_logo, title]], colWidths=[130, 400])
+    header_table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (0, 0), 'LEFT'),  # Align logo left
+        ('ALIGN', (1, 0), (1, 0), 'CENTER')  # Align title center
+    ]))
+    elements.append(header_table)
+    elements.append(Spacer(1, 20))  # Space between title and next section
+    
+    # Jobseeker Image Alignment (Top Right)
+    applicant_image_table = Table([[applicant_image]], colWidths=[100], rowHeights=[100])
+    applicant_image_table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),  # Align jobseeker image to the right
+    ]))
+    elements.append(applicant_image_table)
+    elements.append(Spacer(1, 20))
+    
     # Jobseeker Information Table
     data = [
         ["Applicant Name:", jobseeker.name],
@@ -1169,7 +1205,7 @@ def generate_admit_card(jobseeker, job_title,application_id):
         ["Phone:", jobseeker.phone],
         ["Qualification:", jobseeker.highest_qualification],
         ["Job Title:", job_title],
-        ["Company:", application.company_joblist.company.name],  # Customize this
+        ["Company:", application.company_joblist.company.name],
         ["Status:", "Selected"]
     ]
 
@@ -1182,15 +1218,18 @@ def generate_admit_card(jobseeker, job_title,application_id):
         ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
         ('GRID', (0, 0), (-1, -1), 1, colors.grey),
     ]))
-
     elements.append(table)
-
+    
     # Final Instructions
-    instructions = Paragraph("<br/><b>Instructions:</b><br/>Please report to first level aptitute test with this admit card and required documents on the joining date.", styles['Normal'])
+    instructions = Paragraph("""
+        <br/><b>Instructions:</b><br/>
+        Please bring this admit card along with required documents on the test day.
+    """, styles['Normal'])
     elements.append(instructions)
-
+    
     # Generate PDF
     pdf.build(elements)
+    
     return file_path
 
 def auto_process_application(request, application_id):
@@ -1198,7 +1237,11 @@ def auto_process_application(request, application_id):
     try:
         application = get_object_or_404(JobApplication, id=application_id)
         jobseeker = get_object_or_404(jobseeker_profile, id=application.jobseeker_id)
-
+        resume_text = extract_resume_text(application.jobseeker_id)
+        if not resume_text:
+            return {"error": "Failed to extract resume text."}
+        else:
+            print(resume_text)
         # Skip processing if already completed
         if application.ats_score is not None:
             return JsonResponse({
@@ -1207,7 +1250,7 @@ def auto_process_application(request, application_id):
             })
 
         #  Calculate ATS Score
-        ats_score = calculate_ats_score(application.jobseeker.resume,application.company_joblist.job_description)
+        ats_score = calculate_ats_score(resume_text,application.company_joblist.job_description)
 
 
         #  Save ATS Score and Status in Database
@@ -1215,7 +1258,7 @@ def auto_process_application(request, application_id):
         application.save()
 
         # Determine Acceptance or Rejection
-        if ats_score >= 60:
+        if ats_score >= 55:
             application.status = "Accepted"
             status_text = "Accepted"
             status_class = "text-success fw-bold"
@@ -1272,7 +1315,8 @@ Recruitment Team
         # Save ATS Score & Status
         application.ats_score = ats_score
         application.save()
-        messages.success(request,"Application Successfully ")
+        if ats_score>100:
+            messages.error(request,"Error occurred")
         # Return JSON Response for Frontend Update
         return JsonResponse({
             "status": application.status,
@@ -1283,7 +1327,8 @@ Recruitment Team
 
     except JobApplication.DoesNotExist:
         return JsonResponse({"error": "Application not found"}, status=404)
-    
+def company_base(request):
+    return render(request,'company_base.html')
 def company_type(request):
     if request.method == "POST":
         company_type = request.POST.get('ctype')
@@ -1334,14 +1379,14 @@ def company_forgot_password(request):
         try:
             cmpny = Company.objects.get(email=email)
             uid = cmpny.id
-            # Send email without link
+            # Setup link
             reset_url = f"{settings.SITE_URL}/company_reset_password/{uid}/"
             
             # Send the email
             send_mail(
                 subject="Password Reset Request",
                 message="",
-                html_message=f"""\nClick the button below to reset your password:\n\n<br><a href='{reset_url}'><button style='background-color:blue;color:white;border:1px solid blue;font-weight:bold'>Reset Password</button></a>""",
+                html_message=f"""\nClick the button below to reset your password:\n\n<br><a href='{reset_url}'><button style='background-color:blue;color:white;border:1px solid blue;font-weight:bold;border-radius:10px'>Reset Password</button></a>""",
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
                 fail_silently=False,
@@ -1363,13 +1408,16 @@ def company_dashboard(request):
         participants=JobApplication.objects.filter(company_joblist__company_id=cid)
         latest_applications=participants.order_by('-id')[:3]
         pcount=participants.count()
+        pendingapplications=JobApplication.objects.filter(company_joblist__company_id=cid,status="Applied").count()
+        shortlisted=JobApplication.objects.filter(company_joblist__company_id=cid,status="Accepted").count()
+        rejected=JobApplication.objects.filter(company_joblist__company_id=cid,status="Rejected").count()
         # If no jobs exist, show the default page
         if not compjobdt.exists():
             count = 0
             return render(request, 'company_dashboard.html', {"cname": cname, "count":count, "compdt":comp,"pcount":pcount,"participants":latest_applications}) # type: ignore
         
         # Get expired jobs
-       
+             
         count = compjobdt.count()  # Count jobs for the logged-in company
         context = {
             # "jobs": expiredyet,
@@ -1377,14 +1425,37 @@ def company_dashboard(request):
             "count":count,
             "compdt":comp,
             "pcount":pcount,
-            "participants":latest_applications
+            "participants":latest_applications,
+            "pending_applications":pendingapplications,
+            "shortlisted_applications":shortlisted,
+            "rejected_applications":rejected
         }
         return render(request, 'company_dashboard.html', context)
     except Exception as e:
         # Handle unexpected errors
         return render(request, 'company_dashboard.html', {"cname": cname, "compdt":comp, "error": str(e)})
 
+def rejected(request):
+    cid = request.session.get('company_id')
+    cname = request.session.get('company_name')
+    company = Company.objects.get(id=cid)
+    Applicants=JobApplication.objects.filter(company_joblist__company_id=cid,status="Rejected")
+    # Sort the list of applicants by job title
+    Applicants = sorted(Applicants, key=lambda x: x.company_joblist.job_title.job_title)
+    # Group applicants by job title
+    grouped_applicants = {}
+    for job_title, group in groupby(Applicants, key=lambda x: x.company_joblist.job_title.job_title):
+            grouped_applicants[job_title] = list(group)
     
+    context = {
+        "cname":cname,
+        "compdt":company,
+        "Applicants":Applicants,
+        "grouped_applicants":grouped_applicants,
+       
+    }
+    return render(request,'rejected.html',context)
+
 def company_settings(request):
     cid = request.session.get('company_id')
     compdt = Company.objects.get(id=cid)
@@ -1393,6 +1464,7 @@ def company_settings(request):
     cloc = compdt.address
     ctype = compdt.company_type.company_type
     company = Company.objects.get(id=cid)
+    
     context = {
             "cname":cname, "cmail":cmail, "cloc":cloc,
             "ctype":ctype, "cid":cid, "compdt":company
@@ -1440,12 +1512,13 @@ def company_jobs(request):
         # expiredyet = company_joblist.objects.filter(company=cid, Lastdate__gt=date.today())
         expiredyet = company_joblist.objects.filter(company=cid)
         # Convert string to list if stored incorrectly
-
+        
         context = {
             "jobs": expiredyet,
             "jobs_list": jobs_list,
             "cname": cname,
-            "compdt":company
+            "compdt":company,
+           
         }
         return render(request, 'company_jobs.html', context)
     
@@ -1529,7 +1602,7 @@ def company_postjob(request):
                 )
             messages.success(request, "Job Posted Successfully!!")        
     cname = request.session.get('company_name')
-    return render(request, 'company_postjob.html', {"cname":cname, "compdt":company, 'cdate':date.today().strftime("%Y-%m-%d"), "job":job})
+    return render(request, 'company_postjob.html', {"cname":cname, "compdt":company,'cdate':date.today().strftime("%Y-%m-%d"), "job":job})
 
 
 def edit_job(request):
@@ -1585,7 +1658,8 @@ def edit_job(request):
         'jobobg':jobobg,
         "cname":cname,
         "job":job,
-        "compdt":company
+        "compdt":company,
+       
     }
     return render(request, 'edit-job.html', context)
 
@@ -1600,11 +1674,15 @@ def applications(request):
     grouped_applicants = {}
     for job_title, group in groupby(Applicants, key=lambda x: x.company_joblist.job_title.job_title):
             grouped_applicants[job_title] = list(group)
+    
+
+    
     context = {
         "cname":cname,
         "compdt":company,
         "Applicants":Applicants,
-        "grouped_applicants":grouped_applicants
+        "grouped_applicants":grouped_applicants,
+       
     }
     return render(request,'applications.html',context)
 
@@ -1619,11 +1697,13 @@ def candidates(request):
     grouped_applicants = {}
     for job_title, group in groupby(Applicants, key=lambda x: x.company_joblist.job_title.job_title):
             grouped_applicants[job_title] = list(group)
+    
     context = {
         "cname":cname,
         "compdt":company,
         "Applicants":Applicants,
-        "grouped_applicants":grouped_applicants
+        "grouped_applicants":grouped_applicants,
+       
     }
     return render(request,'candidates.html',context)
 def jobseeker_dashboard(request):
@@ -1638,7 +1718,9 @@ def jobseeker_dashboard(request):
     company = Company.objects.all()
     jcount = ccount.count()
     compcount = company.count()
+    rejected=JobApplication.objects.filter(jobseeker_id__name=fname,status="Rejected").count()
+    shortlisted=JobApplication.objects.filter(jobseeker_id__name=fname,status="Accepted").count()
     jobseeker = jobseeker_profile.objects.get(name=fname)
     unread_notifications = JobNotification.objects.filter(jobseeker_profile=jobseeker, is_read=False).count()
-    return render(request, 'jobseeker_dashboard.html', {"fname":fname, "jcount":jcount, "compcount":compcount, "company":company, "jsdt":jobseeker,"ajcount":ajcount,"count":unread_notifications})
+    return render(request, 'jobseeker_dashboard.html', {"fname":fname, "jcount":jcount, "compcount":compcount,"shortlisted_count":shortlisted,"rejected":rejected, "company":company, "jsdt":jobseeker,"ajcount":ajcount,"count":unread_notifications})
 

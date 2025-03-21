@@ -6,6 +6,50 @@
     background-color: green;
 }
 
+#message-container {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        width: 300px;
+        z-index: 1000;
+    }
+
+    .alert {
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        animation: fadeOut 5s ease-in-out forwards;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    /* CSS Animation to Fade Out */
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
+
+        80% {
+            opacity: 1;
+        }
+
+        /* Stay visible for a while */
+        100% {
+            opacity: 0;
+            display: none;
+        }
+    }
+    
 thead th {
     position: sticky;
     top: 0;
@@ -108,6 +152,46 @@ thead th {
     </div>
 {% else %}
     <div class="alert alert-warning mt-3">No job applications received for jobs posted by you.</div>
+{% endif %}
+
+{% if messages %}
+<!-- Modal -->
+{% for message in messages %}
+<div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"
+    id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header with "X" Close Button -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="closeMessageModal()">X</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <div role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to Auto-Close on Click -->
+<script>
+    function closeMessageModal() {
+        document.getElementById("message-container").style.display = "none";
+    }
+</script>
 {% endif %}
 <script>
    function autoProcess(applicationId) {

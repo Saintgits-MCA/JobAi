@@ -1,0 +1,292 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Jobs</title>
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/css/search-job.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'assets/css/search-bar.css' %}" />
+  <link rel="icon" href="{% static 'images/jobAi-logo1.png' %}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+ <style>
+    body {
+      background: url("{% static 'images/bg1.png' %}") no-repeat center center;
+      background-size: 100% auto;
+      background-attachment: fixed;
+      color: white;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    body::-webkit-scrollbar-track {
+      width: 1px;
+    }
+
+    /* Sticky, semi-transparent, blurred navbar */
+    #navbar {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 9999;
+      background: rgba(0, 133, 194, 0.25);
+      padding: 0.5rem 1rem;
+    }
+
+    .job-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: none;
+      padding: 20px;
+      position: relative;
+    }
+
+    .job-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0px 6px 15px rgba(255, 255, 255, 0.3);
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .btn-primary {
+      background-color: #6c63ff;
+      border: none;
+      transition: background 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-color: #574bff;
+    }
+
+    a {
+      text-decoration: none;
+    }
+    .job-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-radius: 10px;
+}
+
+.job-card p {
+  margin-bottom: 0.3rem; /* Ensures equal spacing */
+}
+
+.job-card .btn {
+  width: 100%; /* Ensures button aligns properly */
+  text-align: center;
+}
+
+.job-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Ensures proper spacing between details */
+}
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px auto;
+      max-width: 800px;
+    }
+
+    .search-container input {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-container button {
+      white-space: nowrap;
+    }
+
+    .join {
+      border-radius: 0px;
+    }
+
+    @media (max-width: 576px) {
+      h2.text-center.text-dark {
+        font-size: 1.5rem;
+      }
+      .search-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+
+    /* Ensure modals appear above all content */
+    .modal {
+      z-index: 99999 !important;
+    }
+
+    .modal-backdrop {
+      z-index: 99998 !important;
+    }
+    .view-details
+    {
+      color: white;
+    }
+    .view-details:hover{
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- navbar -->
+  <nav class="navbar px-0 flex justify-between items-start" id="navbar">
+    <div class="flex flex-col sm:flex-row gap-4 justify-start">
+      <a>
+        <img src="{% static 'images/JobAi2.png' %}" alt="JobAi" class="h-10 ms-5"
+          style="height: 90px; border-radius: 25px; box-shadow: 0 0 20px rgb(48, 35, 229);" />
+      </a>
+    </div>
+    <div class="flex">
+      <ul class="menu menu-horizontal gap-0 max-sm:p-0 text-xs lg:text-sm mt-3">
+        <li><a href="../#" class="font-bold text-white hover:bg-black flex items-center text-lg" id="home">Home</a></li>
+        <li><a href="../#about" class="font-bold text-lg text-white hover:bg-black flex items-center">About</a></li>
+        <li><a href="../#services" class="font-bold text-lg text-white hover:bg-black flex items-center">Services</a></li>
+        <li><a href="{%url 'main_search'%}" class="font-bold text-lg text-white hover:bg-black  flex items-center">
+          <i class="fas fa-search"></i>Jobs
+        </a></li>
+        <li><a href="../#FAQ" class="font-bold text-lg text-white hover:bg-black flex items-center">FAQ</a></li>
+        <li><a href="../#contact" class="font-bold text-lg text-white hover:bg-black flex items-center">Contact</a></li>
+        <li><a href="{% url 'user-type' %}" class="font-bold text-lg text-white hover:bg-black flex items-center">Login</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <h2 class="text-center text-primary mb-3 mt-3">Search Job</h2>
+  <div class="container">
+    <form method="get" action="{% url 'main_search' %}" class="mb-4 w-full">
+      <div class="join w-full flex-col lg:flex-row mx-3">
+        <!-- Main Search Input -->
+        <input type="text" name="search" id="searchInput"
+          class="input input-lg input-bordered join-item w-full mb-2 lg:mb-0 text-dark"
+          placeholder="Job Title or Company" value="{{ request.GET.search|default:'' }}" />
+        <!-- City Input -->
+        <input type="text" name="location" id="locationInput"
+          class="input input-lg input-bordered join-item w-25 mb-2 lg:mb-0 text-dark"
+          placeholder="City" value="{{ request.GET.location|default:'' }}" />
+        <!-- Search Button -->
+        <button type="submit" class="btn btn-success text-white join-item btn-lg w-full lg:w-auto">
+          <span>Search</span> <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </form>
+    <a style="margin-left: 30px;" href="{% url 'main_search' %}">
+      <button class="btn btn-secondary mb-3" style="border-radius: 10px; background-color: rgb(65, 2, 112);">
+        <i class="fas fa-filter"></i> Clear All Filters
+      </button>
+    </a>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      {% if jobs %}
+        {% for job in jobs %}
+        <div class="col-md-12 col-lg-6 mb-4">
+          <div class="card job-card shadow-sm">
+            <div class="card-body p-3">
+              <h5 class="text-primary fw-bold">
+                <i class="fas fa-briefcase me-2"></i> {{ job.job_title.job_title }}
+              </h5>
+              
+              <p class="text-dark mb-1">
+                <i class="fas fa-building me-2"></i> {{ job.company.name }}
+              </p>
+        
+              <p class="text-dark mb-1">
+                <i class="fas fa-map-marker-alt me-2"></i> {{ job.location }}
+              </p>
+        
+              <p class="text-dark mb-1"><strong>Type:</strong> {{ job.job_type }}</p>
+              <p class="text-dark mb-1"><strong>Eligibility:</strong> {{ job.highest_qualification }}</p>
+              <p class="text-dark mb-1"><strong>Cutoff:</strong> {{ job.percent_criteria }}</p>
+              <p class="text-dark mb-1"><strong>Last Date:</strong> {{ job.Lastdate }}</p>
+        
+              <a href="{%url 'jobseeker_login'%}" class="btn btn-primary mt-2 pt-2 fw-bold">
+                <i class="fas fa-bolt-lightning text-warning"> </i> Get Start with JobAi's Auto-Apply
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        {% endfor %}
+      {% else %}
+        <div class="col-12 d-flex justify-content-center mt-4">
+          <div class="alert alert-info text-dark text-center" style="border-radius: 10px; max-width: 500px;">
+            <i class="fas fa-info-circle"></i> No job postings available.
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+   <script>
+    // Optional AJAX snippet if needed
+    document.addEventListener("DOMContentLoaded", function() {
+      const searchInput = document.querySelector("input[name='search']");
+      const locationInput = document.querySelector("input[name='location']");
+      const searchButton = document.getElementById("search-btn");
+      if (!searchButton) return;
+      searchButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        const searchValue = searchInput.value.trim();
+        const locationValue = locationInput.value.trim();
+        const url = `{% url 'main_search' %}?search=${encodeURIComponent(searchValue)}&location=${encodeURIComponent(locationValue)}`;
+        console.log("AJAX request URL:", url);
+        fetch(url, {
+          headers: {
+            "X-Requested-With": "XMLHttpRequest"
+          }
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error("Network error: " + response.status);
+            }
+            return response.text();
+          })
+          .then(html => {
+            console.log("Received HTML length:", html.length);
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const newTbody = doc.querySelector("tbody");
+            if (newTbody) {
+              tableBody.innerHTML = newTbody.innerHTML;
+              console.log("Table updated successfully.");
+            } else {
+              console.error("Could not find <tbody> in the AJAX response.");
+              console.log("Response snippet:", html.substring(0, 300));
+            }
+          })
+          .catch(error => {
+            console.error("Error during fetch:", error);
+          });
+      });
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+    const modals = document.querySelectorAll(".modal");
+    modals.forEach(modal => {
+      modal.addEventListener("show.bs.modal", function() {
+        console.log("Modal shown:", this.id);
+      });
+    });
+  });
+  </script>
+</body>
+
+</html>

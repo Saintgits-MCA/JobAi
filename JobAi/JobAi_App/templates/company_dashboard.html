@@ -1,69 +1,168 @@
 {% extends 'company_base.html' %}
 {% load static %}
 {% block content %}
+
 <style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .container-fluid {
+        padding: 30px;
+    }
+
+    .card {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .welcome-card {
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #007bff, #6610f2);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .profile-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-right: 15px;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 20px;
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: #007bff;
+    }
+
+    .btn-primary {
+        border-radius: 20px;
+        padding: 10px 20px;
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: 20px;
+        color: white;
+        border-radius: 10px;
+    }
+
+    .bg-blue {
+        background-color: #007bff;
+    }
+
+    .bg-green {
+        background-color: #28a745;
+    }
+
+    .bg-orange {
+        background-color: #fd7e14;
+    }
+
+    .bg-red {
+        background-color: #dc3545;
+    }
     #message-container {
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        width: 300px;
-        z-index: 1000;
-    }
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    z-index: 1000;
+}
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    animation: fadeOut 5s ease-in-out forwards;
+}
+.alert1 {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    animation: fadeOut 20s ease-in-out forwards;
+}
+.btn-close
+{
+    color: white;
+}
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
 
-    .alert {
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        animation: fadeOut 5s ease-in-out forwards;
-    }
-
-    .alert-success {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .alert-danger {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    /* CSS Animation to Fade Out */
-    @keyframes fadeOut {
-        0% {
-            opacity: 1;
-        }
-
-        80% {
-            opacity: 1;
-        }
-
-        /* Stay visible for a while */
-        100% {
-            opacity: 0;
-            display: none;
-        }
-    }
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+.bg-pink
+{
+    background-color: #7c0713;
+}
+/* CSS Animation to Fade Out */
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }  /* Stay visible for a while */
+    100% { opacity: 0; display: none; }
+}
 </style>
-<div class="container-fluid mt-4">
-    <div class="row">
 
-        <!-- Right Side Content -->
-        <div class="col-lg-9 col-md-12">
-            <!-- Profile Overview -->
-            <div class="card shadow-sm p-4 mb-2">
-                <div class="d-flex align-items-center">
-                    <img src="{{compdt.profile_img.url}}" alt="Profile" class="rounded-circle me-3" width="100px"
-                        height="80px">
-                    <div>
-                        <h5 class="mb-1">Welcome Back, {{cname}}!</h5>
-                        <p class="text-muted">Manage your jobs, candidates, and settings easily.</p>
-                    </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="welcome-card">
+                <img src="{{compdt.profile_img.url}}" alt="Profile" class="profile-img">
+                <div>
+                    <h4 class="text-white fw-bold">Welcome Back, {{cname}}!</h4>
+                    <p>Manage your jobs, candidates, and settings easily.</p>
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="stat-card bg-blue">
+                <h5 class="text-white fw-bold">Total Jobs</h5>
+                <h2 class="text-white"><i class="fas fa-briefcase"></i> {{ count|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card bg-green">
+                <h5 class="text-white fw-bold">Applns. Received</h5>
+                <h2 class="text-white"> <i class="fas fa-inbox"></i> {{ pcount|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card bg-orange">
+                <h5 class="text-white fw-bold">Pending Applns.</h5>
+                <h2 class="text-white"> <i class="fas fa-sync"></i> {{ pending_applications|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4 mt-2">
+            <div class="stat-card bg-red">
+                <h5 class="text-white fw-bold">Shortlisted Applns.</h5>
+                <h2 class="text-white"><i class="fas fa-list-check"></i> {{ shortlisted_applications|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4 mt-2">
+            <div class="stat-card bg-pink">
+                <h5 class="text-white fw-bold">Rejected Applns.</h5>
+                <h2 class="text-white"><i class="fas fa-times-circle"></i> {{ rejected_applications|default:"0" }}</h2>
+            </div>
+        </div>
+    </div>
 
-            <!-- Tabs for Navigation -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
             <ul class="nav nav-pills mb-3">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="pill" href="#jobs">Jobs</a>
@@ -72,83 +171,76 @@
                     <a class="nav-link" data-bs-toggle="pill" href="#applications">Applications</a>
                 </li>
             </ul>
+        </div>
+    </div>
 
-            <div class="tab-content">
-                <!-- Jobs Section -->
-                <div id="jobs" class="tab-pane fade show active">
-                    <div class="card p-3 mb-3">
-                        <h5>Active Job Postings</h5>
-                        {% if count and count|add:0 > 0%}
-                        <p>You have <b>{{count}}</b> job(s) posted.</p>
-                        {%else%}
-                        <p>You didn't Posted any Job yet.</p>
-                        {%endif%}
-                        <a href="{%url 'Post Job' %}"><button class="btn btn-primary">+ Post New Job</button></a>
+    <div class="tab-content">
+        <div id="jobs" class="tab-pane fade show active">
+            <div class="card p-4 mb-3">
+                <h5 class="mb-3">Active Job Postings</h5>
+                <!-- <p>You have <b>{{ count|default:"0" }}</b> job(s) posted.</p> -->
+                <a href="{% url 'Post Job' %}" class="btn btn-primary">
+                    <i class="fas fa-plus-square"></i> Post New Job
+                </a>
+            </div>
+        </div>
+
+        <div id="applications" class="tab-pane fade">
+            <div class="card p-4 mb-3">
+                <h5 class="mb-3">New Applicants</h5>
+                <!-- <p>You have <b>{{ pcount|default:"0" }}</b> new application(s).</p> -->
+                <a href="{% url 'job_applications' %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i> View Applications
+                </a>
+            </div>
+            
+        </div>
+    </div>
+    <div class="col-lg-7 w-100">
+        <div class="card p-4">
+            <h5 class="mb-3">Recent Applications</h5>
+            <div class="list-group">
+                {% for i in participants %}
+                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                    <img src="{{ i.jobseeker.profile_img.url }}" class="rounded-circle me-3" width="40">
+                    <div>
+                        <h6 class="mb-0 text-dark">{{ i.jobseeker.user.name }}</h6>
+                        <small class="text-muted">{{ i.company_joblist.job_title.job_title }}</small>
                     </div>
-
-                </div>
-
-                <!-- Applications Section -->
-                <div id="applications" class="tab-pane fade">
-                    <div class="card p-3 mb-2">
-                        <h5>New Applicants</h5>
-                        {% if pcount and pcount|add:0 > 0 %}
-                        <p>You have <b>{{ pcount }}</b> applications to jobs. Latest applications are listed below:</p>
-                    {% else %}
-                        <p>You didn't have any applicants for any of your jobs posted.</p>
-                    {% endif %}
-                        <a href="{%url 'job_applications' %}"><button class="btn btn-primary btn-sm"><i class="fas fa-eye text-white"></i>  View Applications</button></a>
-                    </div>
-
-                    <div class="list-group">
-                        {% for i in participants %}
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex align-items-center">
-                                <img src="{{i.jobseeker.profile_img.url}}" class="rounded-circle me-3" width="40">
-                                <div>
-
-                                    <h6 class="mb-0 text-dark">{{i.jobseeker.user.name}}</h6>
-                                    <small class="text-muted">{{i.company_joblist.job_title.job_title}}</small>
-
-                                </div>
-                            </div>
-                        </a>
-                        {%endfor%}
-
-                    </div>
-                </div>
+                </a>
+                {% empty %}
+                <p class="text-muted text-center">No new applications yet.</p>
+                {% endfor %}
             </div>
         </div>
     </div>
 </div>
-</div>
+
 {% if messages %}
 <!-- Modal -->
 {% for message in messages %}
-<div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"
-    id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
+<div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"  id="message-container" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true" style="display: block;">
     <div class="modal-dialog">
         <div class="modal-content">
-
+            
             <!-- Modal Header with "X" Close Button -->
             <div class="modal-header">
                 <h5 class="modal-title" id="messageModalLabel">Notification</h5>
-                <button type="button" class="close-btn btn btn-danger" data-bs-dismiss="modal" aria-label="Close"
-                    onclick="closeMessageModal()">X</button>
+                <button type="button" class="btn btn-danger text-white" data-bs-dismiss="modal" onclick="closeMessageModal()">X</button>
             </div>
 
             <!-- Modal Body -->
             <div class="modal-body">
-
-                <div role="alert">
-                    {{ message }}
-                </div>
+                
+                    <div  role="alert">
+                        {{ message }}
+                    </div>
                 {% endfor %}
             </div>
 
             <!-- Modal Footer -->
             <div class="modal-footer">
-            </div>
+                  </div>
 
         </div>
     </div>
@@ -161,6 +253,5 @@
     }
 </script>
 {% endif %}
-
 
 {% endblock %}

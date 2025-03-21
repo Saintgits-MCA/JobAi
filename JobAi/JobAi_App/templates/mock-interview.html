@@ -1,11 +1,64 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<style>
+    .how-it-works {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    .card-container {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(250px, 1fr));
+        gap: 10px;
+        justify-content: center;
+        padding: 20px;
+    }
+    .card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease-in-out;
+    }
+    .card:hover {
+        transform: scale(1.05);
+    }
+    .card img {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 15px;
+    }
+</style>
 <div class="main-content">
     <h4 id="profile">AI Mock Interview</h4>
-    <h6 class="text-dark mt-3 fs-5  ms-5">Start Practicing with Mock Interview Questions.Note down the Questions for further preparation </h6>
-    <div class="container" style="margin-top: 90px;box-shadow:0 2px 4px rgba(0, 0, 0, 0.1);">
-        <div class="cover-letter-generator coverletterbox w-100 pb-5 bg-white" style="margin-bottom: 50px;border-radius: 5px;box-shadow: none;">
+    <h6 class="text-dark mt-3 fs-5  ms-5">Start Practicing with Technical Mock Interview Questions.Note down the Questions for further preparation </h6>
+    <div class="how-it-works">
+        <span class="fs-3 fw-bold">How It Works?</span>
+        <div class="card-container">
+            <div class="card">
+                <h6>Select a Job Position</h6>
+                <p>Choose the role you are applying for to get relevant interview questions.</p>
+            </div>
+            <div class="card">
+                <h6>Start the Mock Interview</h6>
+                <p>Click on "Start AI Mock Interview" to generate questions.</p>
+            </div> <div class="card">
+                <h6>Click Start  Interview Button </h6>
+                <p>Click on "Start Interview" Button to start interview.</p>
+            </div>
+            <div class="card">
+                <h6>Answer the Questions</h6>
+                <p>Either type your answer or use the voice recording feature.</p>
+            </div>
+            <div class="card">
+                <h6>Receive AI Feedback</h6>
+                <p>Get AI-driven feedback with evaluation, sample answers, and improvement suggestions.</p>
+            </div>
+        </div>
+    </div>
+    <div class="ms-5 container" style="margin-top: 5px;box-shadow:0 2px 4px rgba(0, 0, 0, 0.1);width: 90%;">
+        <div class="cover-letter-generator coverletterbox  bg-white" style="margin-bottom: 20px;border-radius: 5px;box-shadow: none;">
             <div class="formcoverletter">
                 <form class="formcover" method="POST">
                     {% csrf_token %}

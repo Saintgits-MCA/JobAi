@@ -22,14 +22,20 @@
         margin-right: 0;
     }
 
-    .job-card {
-        position: relative;
-        word-wrap: break-word;
-        overflow: hidden;
-        width: 100%;
-        transition: all 0.3s ease-in-out;
-        max-width: 450px;
-    }
+   .job-card {
+    position: relative;
+    word-wrap: break-word;
+    overflow: hidden;
+    width: 100%;
+    transition: all 0.3s ease-in-out;
+    max-width: 450px;
+    background: white;
+    padding-top: 5px;
+    border-radius: 10px;
+    box-shadow: 1px 4px 4px rgba(0, 0, 0, 0.1), 2px 8px 5px rgba(0, 0, 0, 0.2);
+    transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
     .job-options {
         position: absolute;
@@ -113,11 +119,11 @@
                 </div>
                 
                 <div class="d-flex justify-content-between job-actions mt-2">
-                    <a href="javascript:void(0);" class="text-primary view-details-btn" onclick="toggleDetails(this)">View Details</a>
+                    <a href="javascript:void(0);" class="fw-bold view-details-btn" style="color: #721c24;" onclick="toggleDetails(this)">View Details</a>
                 </div>
                 
                 <div class="job-details-expanded">
-                    <!-- <p><b>Job Description:</b><pre>{{ job.job_description }}</pre></p> -->
+                    <p><b>Job Description:</b>{{ job.job_description }}</p>
                     <p><b>Job Type:</b> {{ job.job_type }}</p>
                     <p><b>Eligibility:</b> {{ job.highest_qualification}}</p>
                     <p><b>Percentage Criteria:</b>Percentage > {{ job.percent_criteria}}</p>

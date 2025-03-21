@@ -55,6 +55,18 @@
 		bottom: 15px;
 	}
 
+	.collapse-content.active .collapse-content {
+		display: block;
+	}
+
+	.collapse-header i {
+		transition: transform 0.3s;
+	}
+
+	.collapse-content.active .collapse-header i {
+		transform: rotate(180deg);
+	}
+
 	.job-process {
 		max-width: 900px;
 		margin: 10px auto;
@@ -162,13 +174,18 @@
 		z-index: 1000;
 		background: transparent;
 		transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-		width: 1250px;
-		padding: 10px;
-		margin-left: 5px;
+		width: 100%;
+       padding: 0.5rem 1rem;
 	}
-.menu #home:hover,#home,#home::after{
-	color: white;
+.menu1 #home{
+	margin-left: 55px;
 }
+	.menu #home:hover,
+	#home,
+	#home::after {
+		color: white;
+	}
+
 	/* Navbar After Scrolling */
 	#navbar.scroll {
 		background: rgba(0, 133, 194, 0.7);
@@ -197,15 +214,19 @@
 		</div>
 
 		<div class="flex">
-			<ul class="menu menu-horizontal gap-0 max-sm:p-0 text-xs lg:text-sm mt-3">
-				<li> <a href="#" class="font-bold text-white hover:bg-black flex items-center text-lg" id="home">Home</a></li>
+			<ul class="menu1 menu menu-horizontal gap-0 max-sm:p-0 text-xs lg:text-sm mt-3">
+				<li> <a href="#" class="font-bold text-white hover:bg-black flex items-center text-lg"
+						id="home">Home</a></li>
 				<li><a href="#about" class="font-bold text-lg text-white hover:bg-black  flex items-center">
 						About
 					</a></li>
 				<li><a href="#services" class="font-bold text-lg text-white hover:bg-black  flex items-center">
 						Services
 					</a></li>
-					<li><a href="#FAQ" class="font-bold text-lg text-white hover:bg-black  flex items-center">
+					<li><a href="{%url 'main_search'%}" class="font-bold text-lg text-white hover:bg-black  flex items-center">
+						<i class="fas fa-search"></i>Jobs
+					</a></li>
+				<li><a href="#FAQ" class="font-bold text-lg text-white hover:bg-black  flex items-center">
 						FAQ
 					</a></li>
 				<li><a href="#contact" class="font-bold text-lg text-white hover:bg-black  flex items-center">
@@ -232,8 +253,7 @@
 					with AI </span>
 			</h1>
 			<p class="text-lg [text-wrap:balance] font-bold opacity-90" style="color:black ;">
-				We value your time—don't let opportunities slip away. This site lets you Apply for jobs without spending
-				much time!</p>
+				We value your time—don't let opportunities slip away. This site helps you apply for jobs effortlessly!</p>
 			<div class="flex flex-col gap-4 sm:flex-row">
 				<a href="{%url 'user-type' %}" class="btn btn-primary btn-lg px-10 group font-bolder" id="mainCTA">
 					<span>
@@ -415,7 +435,7 @@
 						<div class="size-1.5 rounded-full bg-base-content/20"></div>
 					</div>
 					<img class="z-[1] rounded shadow-lg" src="{% static 'images/extract_resume.jpg' %}"
-					style="height: 185px;width: 287px;" />
+						style="height: 185px;width: 287px;" />
 					<!-- <div class="px-4 py-1.5 font-bold">New email</div>
 					<div class="border-b border-base-content/10 px-4 py-1.5">
 						To: <a class="__cf_email__"
@@ -518,7 +538,7 @@
 						<h3 class="text-lg font-semibold text-gray-700">Recent Graduates</h3>
 						<p class="text-gray-600 text-sm">Kickstart your career with automated job applications.</p>
 					</div>
-		
+
 					<div class="p-6 bg-white rounded-lg shadow-md">
 						<i class="fas fa-globe text-purple-500 text-3xl mb-2"></i>
 						<h3 class="text-lg font-semibold text-gray-700">Remote Job Seekers</h3>
@@ -529,7 +549,8 @@
 
 			<!-- Call to Action -->
 			<div class="mt-10">
-				<h2 class="text-2xl font-bold text-gray-800 " style="color: brown;"><i class="bi bi-rocket-fill"></i> Ready to Get Hired Faster?</h2>
+				<h2 class="text-2xl font-bold text-gray-800 " style="color: brown;"><i class="bi bi-rocket-fill"></i>
+					Ready to Get Hired Faster?</h2>
 				<p class="text-gray-600 text-lg mt-2">
 					Join thousands of job seekers who are <strong>10x more likely</strong> to get hired with JobAi.
 				</p>
@@ -878,14 +899,14 @@
 	</div>
 </body>
 <script>
-	setTimeout(function() {
-        let messageContainer = document.getElementById("message-container");
-        if (messageContainer) {
-            messageContainer.style.transition = "opacity 0.5s";
-            messageContainer.style.opacity = "1"; // Fade out effect
-            setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
-        }
-    }, 5000);
+	setTimeout(function () {
+		let messageContainer = document.getElementById("message-container");
+		if (messageContainer) {
+			messageContainer.style.transition = "opacity 0.5s";
+			messageContainer.style.opacity = "1"; // Fade out effect
+			setTimeout(() => messageContainer.remove(), 500); // Remove from DOM
+		}
+	}, 5000);
 	document.addEventListener("DOMContentLoaded", function () {
 		const navbar = document.getElementById("navbar");
 
@@ -916,6 +937,18 @@
 
 	window.addEventListener('load', toggleScrollTop);
 	document.addEventListener('scroll', toggleScrollTop);
+	document.querySelectorAll('.collapse-title').forEach(header => {
+		header.addEventListener('click', function () {
+			const parent = this.parentElement;
+			const isActive = parent.classList.contains('active');
+			document.querySelectorAll('.collapse-content').forEach(item => {
+				item.classList.remove('active');
+			});
+			if (!isActive) {
+				parent.classList.add('active');
+			}
+		});
+	});
 </script>
 
 </html>

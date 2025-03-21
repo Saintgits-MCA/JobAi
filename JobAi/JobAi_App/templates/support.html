@@ -1,107 +1,103 @@
-{%extends 'base.html'%}
+{% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
 <style>
-    .sidebar {
-    width: 260px;
-    background: var(--sidebar-bg);
-    color: white;
-    padding: 5px;
-    max-height: 175vh;
-}
+    .faq-container {
+        max-width: 800px;
+        padding: 20px;
+    }
+    .faq-header {
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .accordion {
+        width: 120%;
+        background: #f8f9fa;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .accordion-item {
+        border-bottom: 1px solid #ddd;
+        /* background-color: rgb(196, 190, 190); */
+    }
+    .accordion-header {
+        padding: 15px;
+        cursor: pointer;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+    }
+    .accordion-content {
+        display: none;
+        padding: 15px;
+        background: #ffff;
+    }
+    .accordion-header i {
+        transition: transform 0.3s ease-in-out;
+    }
+    .accordion-item.active .accordion-content {
+        display: block;
+    }
+    .accordion-item.active .accordion-header i {
+        transform: rotate(180deg);
+    }
 </style>
-<div class="main-content">
-    <h4 id="profile">Frequently Asked Questions</h4>
-    <div class="container1 mt-4 text-dark ms-5">
-        <div class="initial">
-            <div>
-                <div class="row main1">
-                    <div class=" col-10 mx-5 mt-4"><b>1. How does the AI job search work?</b>
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i> The AI scans multiple job boards,
-                            matches job postings with your resume and preferences, and automatically applies on your
-                            behalf.</p>
-                    </div>
-                </div>
-                <div class="row main1">
-                    <div class="col-10 align-self-center mx-5"><b>2. Is the platform really free? Are there any hidden
-                            charges?</b>
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i> Yes, our core services are free.
-                            However, some advanced features like auto-apply more than 3 jobs only be available through premium plans.</p>
-                    </div>
-                </div>
-                <div class="row main1">
-                    <div class="col-10 align-self-center mx-5"><b>3. How do I set up my profile for better job
-                            matches?</b>
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i>You can upload your resume, enter
-                            job preferences (industry, location, salary, etc.), and refine keywords to improve job
-                            matching.</p>
-                    </div>
-                </div>
-                <div class="row main1">
-                    <div class="col-10 align-self-center mx-5"><b>4.Which job boards or websites does this AI apply
-                            to?</b>
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i> The AI applies to major job boards
-                            like LinkedIn, Indeed, Glassdoor, and company career pages, depending on availability.</p>
-                    </div>
-                </div>
-                <div class="row main1">
-                    <div class="col-10 align-self-center mx-5"><b>5. Is my personal data secure?</b>
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i> Yes, we follow strict data security
-                            measures and do not share your information without your consent.</p>
-                    </div>
-                </div>
-                <div class="row main1">
-                    <div class="col-10 align-self-center mx-5"><b> 6. How does auto-apply work?</b>
 
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i> Once job preferences are set, the
-                            AI identifies suitable jobs and submits applications
-                            automatically.</p>
-                    </div>
-                </div>
-                <div class="row main1">
-                    <div class="col-10 align-self-center mx-5"><b>7. Can I review applications before they are sent?
-                        </b>
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i>Yes, you can enable manual review
-                            before submission or let the AI auto-apply based on your
-                            preferences.</p>
-                    </div>
-                </div>
-
-                <div class="row main1">
-                    <div class="col-10 align-self-center mx-5"><b> 8. Can I set preferences for job applications (e.g.,
-                            salary, location, remote work)?</b>
-
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i> Yes, you can customize preferences
-                            such as salary range, location, remote options, and job
-                            types.</p>
-                    </div>
-                </div>
-                <div class="row main1">
-                    <div class="col-10 align-self-center mx-5"><b> 9. How many jobs can the AI apply to in a day?</b>
-
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i> The AI can apply to a set number of
-                            jobs per day, depending on your plan and settings.</p>
-                    </div>
-                </div>
-
-                <div class="row main1">
-                    <div class="col-10 align-self-center mx-5"><b> 10. What if I want to stop auto-applying to jobs?</b>
-
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i> You can pause or deactivate the
-                            auto-apply feature anytime in your settings.</p>
-                    </div>
-                </div>
-                <div class="row main1">
-                    <div class="col-10 align-self-center mx-5"><b>11. How do I improve my resume for better job
-                            matches?</b>
-
-                        <p class="mobile"><i class="fas fa-chevron-right mr-2"></i>The AI provides suggestions to
-                            enhance your resume’s relevance for specific job roles.</p>
-                    </div>
-                </div>
-            </div>
+<div class="faq-container">
+    <h4 class="faq-header">Support</h4><br>
+    <div class="accordion">
+        <div class="accordion-item">
+            <div class="accordion-header">1. How does the AI job search work? <i class="fas fa-chevron-down"></i></div>
+            <div class="accordion-content">The AI scans multiple job boards, matches job postings with your resume and preferences, and automatically applies on your behalf.</div>
+        </div>
+        <div class="accordion-item">
+            <div class="accordion-header">2. Is the platform really free? Are there any hidden charges? <i class="fas fa-chevron-down"></i></div>
+            <div class="accordion-content">Yes, our core services are free. However, some advanced features like auto-apply more than 3 jobs only be available through premium plans.</div>
+        </div>
+        <div class="accordion-item">
+            <div class="accordion-header">3. How do I set up my profile for better job matches? <i class="fas fa-chevron-down"></i></div>
+            <div class="accordion-content">You can upload your resume, enter job preferences (industry, location, salary, etc.), and refine keywords to improve job matching.</div>
+        </div>
+        <div class="accordion-item">
+            <div class="accordion-header">4. Which job boards or websites does this AI apply to? <i class="fas fa-chevron-down"></i></div>
+            <div class="accordion-content">The AI applies to major job boards like LinkedIn, Indeed, Glassdoor, and company career pages, depending on availability.</div>
+        </div>
+        <div class="accordion-item">
+            <div class="accordion-header">5. Is my personal data secure? <i class="fas fa-chevron-down"></i></div>
+            <div class="accordion-content">Yes, we follow strict data security measures and do not share your information without your consent.</div>
+        </div>
+        <div class="accordion-item">
+            <div class="accordion-header">6. How does auto-apply work? <i class="fas fa-chevron-down"></i></div>
+            <div class="accordion-content">Once job preferences are set, the AI identifies suitable jobs and submits applications automatically.</div>
+        </div>
+        <div class="accordion-item">
+            <div class="accordion-header">7. Can I set preferences for job applications (e.g., salary, location, remote work)? <i class="fas fa-chevron-down"></i></div>
+            <div class="accordion-content">Yes, you can customize preferences such as salary range, location, remote options, and job types.</div>
+        </div>
+        <div class="accordion-item">
+            <div class="accordion-header">8. How many jobs can the AI apply to in a day? <i class="fas fa-chevron-down"></i></div>
+            <div class="accordion-content">The AI can apply to a set number of jobs per day, depending on your plan and settings.</div>
         </div>
     </div>
 </div>
 
-{%endblock%}
+<script>
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', function() {
+            let parent = this.parentElement;
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                if (item !== parent) {
+                    item.classList.remove('active');
+                }
+            });
+            parent.classList.toggle('active');
+        });
+    });
+</script>
+
+{% endblock %}

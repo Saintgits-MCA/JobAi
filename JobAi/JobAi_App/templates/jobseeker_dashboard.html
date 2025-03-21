@@ -16,6 +16,58 @@
         display: inline-block;
         transition: transform 0.3s ease;
     }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .container-fluid {
+        padding: 30px;
+    }
+
+    .card {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .welcome-card {
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #007bff, #6610f2);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+    } .welcome-card {
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #007bff, #6610f2);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .profile-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-right: 15px;
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: 20px;
+        color: white;
+        border-radius: 10px;
+    }
+   .container{
+    width: 100%;
+   }
+    .bg-blue { background-color: #007bff; }
+    .bg-green { background-color: #28a745; }
+    .bg-orange { background-color: #fd7e14; }
+    .bg-red { background-color: #dc3545; }
+    .bg-pink { background-color: #7c0713; }
 
     .collapse-toggle:hover .down-icon {
         transform: scale(1.2);
@@ -50,7 +102,35 @@
                     </div>
                 </div>
             </div>
+      
+    <div class="row mt-4 mb-4 d-flex justify-content-center w-150 gap-6">
+        <div class="col-sm-3 d-flex align-items-stretch">
+            <div class="stat-card bg-blue w-100">
+                <h5 class="text-white fw-bold">Total Jobs</h5>
+                <h2 class="text-white ps-3"><i class="fas fa-briefcase"></i> {{ jcount }} </h2>
+            </div>
+        </div>
+        <div class="col-sm-3 d-flex align-items-stretch">
+            <div class="stat-card bg-green w-100">
+                <h5 class="text-white fw-bold">Total Applns.</h5>
+                <h2 class="text-white ps-3"><i class="fas fa-envelope"></i> {{ ajcount }} </h2>
+            </div>
+        </div>
+        <div class="col-sm-3 d-flex align-items-stretch">
+            <div class="stat-card bg-orange w-100">
+                <h5 class="text-white fw-bold">Rejected </h5>
+                <h2 class="text-white ps-3"><i class="fas fa-times-circle"></i> {{ rejected }} </h2>
+            </div>
+        </div>
+        <div class="col-sm-3 d-flex align-items-stretch">
+            <div class="stat-card bg-red w-120">
+                <h5 class="text-white fw-bold">Shortlisted</h5>
+                <h2 class="text-white ps-3"><i class="fas fa-check-circle"></i> {{ shortlisted_count }} </h2>
+            </div>
+        </div>
+    </div>
 
+        
             <!-- Tabs -->
             <ul class="nav nav-pills mb-3">
                 <li class="nav-item">

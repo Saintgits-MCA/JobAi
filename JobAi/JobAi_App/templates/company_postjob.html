@@ -120,7 +120,7 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary w-100 mb-3">Post Job</button><br>
+            <button type="submit" name="submit" class="btn btn-primary w-100 mb-3">Post Job</button><br>
             <span class="text-danger">*</span>- Required fields
         </form>
         {% if messages %}
@@ -160,7 +160,39 @@
         }
     </script>
 {% endif %}
+<script>
+       document.addEventListener("DOMContentLoaded", function () {
+        let deadlineInput = document.querySelector("input[name='deadline']");
+        let submitButton = document.querySelector("button[type='submit']");
+        
+        function updateMinDate() {
+            let today = new Date();
+            today.setHours(0, 0, 0, 0); // Reset time for proper comparison
+            let todayString = today.toISOString().split("T")[0];
+            deadlineInput.setAttribute("min", todayString);
+        }
 
+        function validateDate() {
+            let selectedDate = new Date(deadlineInput.value);
+            let today = new Date();
+            today.setHours(0, 0, 0, 0); // Ensure we're comparing just the date
+
+            if (selectedDate < today) {
+                alert("Error: The selected deadline cannot be in the past!");
+                deadlineInput.value = ""; // Clear invalid input
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
+        }
+
+        // Set the minimum selectable date to today
+        updateMinDate();
+
+        // Prevent manually entering a past date
+        deadlineInput.addEventListener("change", validateDate);
+        });
+</script>
     </div>
 </div>
 {% endblock %}
