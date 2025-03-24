@@ -74,12 +74,12 @@
     }
 </style>
 
-<div class=" mt-4 ms-3">
+<div class=" mt-4 ms-4">
     <div class="row">
 
         <!-- Profile Section -->
-        <div class="col-lg-9 col-md-12">
-            <div class="card shadow-sm p-4 mb-4">
+        <div class="col-lg-9 col-md-12 w-100">
+            <div class="card shadow-sm p-4 mb-4 ">
                 <div class="d-flex align-items-center">
                     {%if jsdt.profile_img%}
                     <img src="{{jsdt.profile_img.url}}" class="rounded-circle me-3" width="60">
@@ -103,25 +103,25 @@
         <div class="col-lg-3 d-flex align-items-stretch">
             <div class="stat-card bg-green w-100">
                 <h5 class="text-white fw-bold">Applied Jobs</h5>
-                <h2 class="text-white ps-4"><i class="fas fa-inbox"></i> {{ ajcount }} </h2>
+                <h2 class="text-white ps-5"><i class="fas fa-inbox"></i> {{ ajcount }} </h2>
             </div>
         </div>
         <div class="col-lg-3 d-flex align-items-stretch">
             <div class="stat-card bg-orange w-100">
                 <h5 class="text-white fw-bold">Pending</h5>
-                <h2 class="text-white ps-4"><i class="fas fa-sync"></i> {{ shortlisted_count }} </h2>
+                <h2 class="text-white ps-5"><i class="fas fa-sync"></i> {{ shortlisted_count }} </h2>
             </div>
         </div>
         <div class="col-lg-3 d-flex align-items-stretch">
             <div class="stat-card bg-pink w-100">
                 <h5 class="text-white fw-bold">Shortlisted</h5>
-                <h2 class="text-white ps-4"><i class="fas fa-check-circle"></i> {{ shortlisted_count }} </h2>
+                <h2 class="text-white ps-5"><i class="fas fa-check-circle"></i> {{ shortlisted_count }} </h2>
             </div>
         </div>
         <div class="col-lg-3 d-flex align-items-stretch">
             <div class="stat-card bg-danger w-100">
                 <h5 class="text-white fw-bold">Rejected </h5>
-                <h2 class="text-white ps-4"><i class="fas fa-times-circle"></i> {{ rejected }} </h2>
+                <h2 class="text-white ps-5"><i class="fas fa-times-circle"></i> {{ rejected }} </h2>
             </div>
         </div>
     </div>
