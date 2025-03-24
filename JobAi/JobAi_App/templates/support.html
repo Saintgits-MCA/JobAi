@@ -4,7 +4,7 @@
 
 <style>
     .faq-container {
-        max-width: 800px;
+        max-width: 1000px;
         padding: 20px;
     }
     .faq-header {
@@ -14,14 +14,13 @@
         margin-bottom: 20px;
     }
     .accordion {
-        width: 120%;
+        width: 100%;
         background: #f8f9fa;
         border-radius: 5px;
         overflow: hidden;
     }
     .accordion-item {
         border-bottom: 1px solid #ddd;
-        /* background-color: rgb(196, 190, 190); */
     }
     .accordion-header {
         padding: 15px;
@@ -46,18 +45,145 @@
     .accordion-item.active .accordion-header i {
         transform: rotate(180deg);
     }
+    
+    /* Sticky Chat Icon */
+    .chat-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #007bff;
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+    }
+    
+    /* Chat Popup Window */
+    .chat-popup {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 300px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        display: none;
+    }
+    .chat-popup-header {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .chat-popup-body {
+        padding: 10px;
+    }
+    .chat-popup-body input, .chat-popup-body button {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .chat-popup-body button {
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .chat-response {
+        margin-top: 15px;
+        padding: 10px;
+        background: #f1f1f1;
+        border-radius: 5px;
+        font-style: italic;
+    }
+    input[type="text"]{
+        outline:none;
+        border:3px solid white;
+        box-shadow: 5px solid white;
+    }
+           .chat-popup-body {
+        padding: 10px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    .chat-input-container {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        background: #f8f9fa;
+    }
+    .chat-popup-body input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .chat-popup-body button {
+        margin-left: 5px;
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 5px;
+    }
+    .chat-message {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .user-message {
+        justify-content: flex-end;
+    }
+    .bot-message {
+        justify-content: flex-start;
+    }
+    .message-text {
+        padding: 8px;
+        border-radius: 10px;
+        max-width: 70%;
+    }
+    .user-message .message-text {
+        background: #dcf8c6;
+        color: black;
+    }
+    .bot-message .message-text {
+        background: #f1f1f1;
+    }
+    .profile-img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
 </style>
 
 <div class="faq-container">
-    <h4 class="faq-header">Support</h4><br>
-    <div class="accordion">
+    <h4 class="ms-1" id="profile">Support</h4>
+    <h5 class="text-dark mt-3 fs-5 mb-3">Hello, {{ fname }}. Guide for all users.</h5><br>
+
+    <div class="accordion" id="faqAccordion">
         <div class="accordion-item">
             <div class="accordion-header">1. How does the AI job search work? <i class="fas fa-chevron-down"></i></div>
             <div class="accordion-content">The AI scans multiple job boards, matches job postings with your resume and preferences, and automatically applies on your behalf.</div>
         </div>
         <div class="accordion-item">
             <div class="accordion-header">2. Is the platform really free? Are there any hidden charges? <i class="fas fa-chevron-down"></i></div>
-            <div class="accordion-content">Yes, our core services are free. However, some advanced features like auto-apply more than 3 jobs only be available through premium plans.</div>
+            <div class="accordion-content">Yes, our core services are free. However, some advanced features like auto-apply for more than 3 jobs may only be available through premium plans.</div>
         </div>
         <div class="accordion-item">
             <div class="accordion-header">3. How do I set up my profile for better job matches? <i class="fas fa-chevron-down"></i></div>
@@ -65,7 +191,7 @@
         </div>
         <div class="accordion-item">
             <div class="accordion-header">4. Which job boards or websites does this AI apply to? <i class="fas fa-chevron-down"></i></div>
-            <div class="accordion-content">The AI applies to major job boards like LinkedIn, Indeed, Glassdoor, and company career pages, depending on availability.</div>
+            <div class="accordion-content">The JobAI applies to only job posted in this portal but in future will integrate to LinkedIn,Glassdoor,etc..</div>
         </div>
         <div class="accordion-item">
             <div class="accordion-header">5. Is my personal data secure? <i class="fas fa-chevron-down"></i></div>
@@ -80,13 +206,36 @@
             <div class="accordion-content">Yes, you can customize preferences such as salary range, location, remote options, and job types.</div>
         </div>
         <div class="accordion-item">
-            <div class="accordion-header">8. How many jobs can the AI apply to in a day? <i class="fas fa-chevron-down"></i></div>
-            <div class="accordion-content">The AI can apply to a set number of jobs per day, depending on your plan and settings.</div>
+            <div class="accordion-header">8. How many jobs can be applied by JobAi per day? <i class="fas fa-chevron-down"></i></div>
+            <div class="accordion-content">The AI can apply to a set number of jobs in a limited time, depending on your plan and settings.</div>
         </div>
     </div>
 </div>
 
+
+<div class="chat-icon" onclick="toggleChatPopup()">
+    <i class="fas fa-comments fa-lg"></i>
+</div>
+
+
+<div class="chat-popup" id="chatPopup">
+    <div class="chat-popup-header">
+        <span class="fw-bold"> <i class="fas fa-comments"></i> Chat Support</span>
+        <button onclick="toggleChatPopup()" style="background: none; border: none; color: white; font-size: 1.2rem;">&times;</button>
+    </div>
+    <div class="chat-popup-body" id="chatBox"></div>
+    <span class="ms-1" id="type-hi"><i>Type '<b>Hi Jobai</b>' to start</i></span>
+    <div class="chat-input-container">
+        <input type="text" id="popupUserQuestion" placeholder="Type your message...">
+        <button onclick="sendPopupQuestion()"><i class="bi bi-send-fill"></i></button>
+       
+    </div>
+    <span id="popupResponseBox"></span>
+</div>
+
 <script>
+    hi=document.getElementById('type-hi')
+    // Accordion toggle functionality
     document.querySelectorAll('.accordion-header').forEach(header => {
         header.addEventListener('click', function() {
             let parent = this.parentElement;
@@ -98,6 +247,90 @@
             parent.classList.toggle('active');
         });
     });
-</script>
 
+    // Toggle the chat popup visibility
+    function toggleChatPopup() {
+        const popup = document.getElementById('chatPopup');
+        popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // Chatbot functionality for the popup chat
+    function sendPopupQuestion() {
+        const userInput = document.getElementById('popupUserQuestion');
+        let question = userInput.value.toLowerCase().trim();
+        let responseBox = document.getElementById('popupResponseBox');
+        let chatBox = document.getElementById('chatBox');
+        userInput.value = "";
+        if (question === '') {
+            responseBox.innerHTML = "<p style='color:red;'>Please enter a question.</p>";
+            return;
+        }
+        else
+        {
+            chatBox.innerHTML += `<div class='chat-message user-message'><span class='message-text'>${question}</span></div>`;
+        }
+        
+        // Predefined responses for keywords
+        const faqBot = {
+            'hi ':'Hi,How can I help you?',
+            'hello':'Hi,How can I help you?',
+            'ai job search': 'The AI scans multiple job boards, matches job postings with your resume and preferences, and automatically applies on your behalf.',
+            'free': 'Our core services are free. Some advanced features may require a premium plan.',
+            'profile': 'To get better job matches, please upload your resume and set your job preferences in your profile.',
+            'job boards': 'We integrate with major job boards like LinkedIn, Indeed, and Glassdoor, along with many company career pages.',
+            'personal data': 'Your data is secure. We follow strict security protocols and do not share your information without your consent.',
+            'auto-apply': 'Once your preferences are set, our AI automatically applies to matching jobs for you.',
+            'mock interview': 'Our AI-powered mock interview tool helps you practice for real interviews!',
+            'preferences': 'Yes, you can customize your application preferences including salary, location, and remote work options.',
+            'jobs per day': 'The number of applications per day depends on your plan and settings. We focus on quality over quantity.',
+            'contact':'Either Email us through "jobai.prksolutions@gmail.com" or call through "+91 9562766835"',
+            'JobAi per day':'The AI can apply to a set number of jobs in a limited time, depending on your plan and settings.'
+        };
+
+        let foundAnswer = "";
+        for (let key in faqBot) {
+            if (question.includes(key)) {
+                foundAnswer = faqBot[key];
+                break;
+            }
+        }
+        
+        // Simulate bot response
+        setTimeout(() => {
+            if (foundAnswer!='' || question=='hi') {
+                if(foundAnswer!='')
+            {
+                chatBox.innerHTML = `<p class='chat-response'><strong>Bot:</strong> ${foundAnswer}</p>`;
+            } 
+            if(question=='hi'){
+                chatbot.innerHTML=`<p class='chat-response'><strong>Bot:</strong> Hi {{ fname }} </p>`
+            }
+            }
+             else {
+                chatBox.innerHTML = `<p class='chat-response'><strong>Bot:</strong> Thanks for your query. Please Wait for response from our team shortly. Please refer to the FAQs or contact our support team at 'jobai.prksolutions@gmail.com'.</p>`;
+                hi.style.display= (hi.style.display === 'none') ;
+            }
+        }, 500);
+        
+        userInput.value = "";
+    }
+
+    function toggleChatPopup() {
+        const popup = document.getElementById('chatPopup');
+        popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+    }
+    // function sendPopupQuestion() {
+    //     const userInput = document.getElementById('popupUserQuestion');
+    //     let question = userInput.value.trim();
+    //     let chatBox = document.getElementById('chatBox');
+    //     if (question === '') return;
+    //     chatBox.innerHTML += `<div class='chat-message user-message'><span class='message-text'>${question}</span></div>`;
+    //     setTimeout(() => {
+    //         let response = "Thanks for your query. Please refer to the FAQs or contact support.";
+    //         chatBox.innerHTML += `<div class='chat-message bot-message'><img src='static/bot.png' class='profile-img'><span class='message-text'>${response}</span></div>`;
+    //         chatBox.scrollTop = chatBox.scrollHeight;
+    //     }, 500);
+    //     userInput.value = "";
+    // }
+</script>
 {% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .container {
+    max-height: 620px;
+    width: 100%;
+    margin-left: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: block;
+  }
+  
+  .container::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  #message-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    z-index: 1000;
+  }
+
+  .alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    animation: fadeOut 5s ease-in-out forwards;
+  }
+
+  .no-data {
+    text-align: center;
+    font-weight: 600;
+    color: #555;
+    padding: 20px;
+  }
+
+  /* Job Card Styling */
+  .job-card {
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .job-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .job-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+  }
+
+  .job-details {
+    display: block;
+    font-size: 14px;
+    color: #555;
+    margin: 5px 0;
+  }
+
+  .job-details i {
+    margin-right: 5px;
+    color: #007bff;
+  }
+
+  .status {
+    font-size: 14px;
+    font-weight: bold;
+    color: green;
+  }
+</style>
+
+<h4 id="profile">Shortlisted Applications</h4>
+<h5 class="text-dark mt-3 fs-5 ms-5 mb-3">Hello, {{ fname }}.This page lists job applications which are get shortlisted for Aptitude Test. <br>
+    <span class="text-danger">Check your mail and Download <i class="fas fa-file-alt"></i> Admit card</span></h5>
+
+<div class="container">
+  {% if jobs %}
+    <div class="row">
+      {% for job in jobs %}
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card job-card">
+            <h5 class="job-title">{{ forloop.counter }}. {{ job.company_joblist.job_title.job_title }}</h5>
+            <span class="job-details"><b>Application ID:</b> {{job.id}}</span>
+            <span class="job-details"><b>Job Position ID:</b> {{ job.company_joblist.job_title.id }}</span>
+            <span class="job-details"><b>Unique Job No.:</b> {{ job.company_joblist.id }}</span>
+            <span class="job-details"><i class="fas fa-building"></i> {{ job.company_joblist.company.name }}</span>
+            <span class="job-details"><i class="fas fa-map-marker-alt"></i> {{ job.company_joblist.location }}</span>
+            <span class="job-details"><b>Applied Date:</b> {{ job.applied_at|date:"d M Y" }}</span>
+
+              <span class="job-details status status-accepted">
+                <b class="text-dark">Application Status:</b> <span class="text-success"> {{ job.status }}</span>
+              </span>
+          </span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-warning mt-3">No Applied jobs.</div>
+  {% endif %}
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="message-container">
+        <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} fw-bold text-dark"
+             style="position: fixed; top: 20px; right: 20px; width: 300px; z-index: 1000;">
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Notification</span>
+            <button type="button" class="btn btn-sm btn-danger"
+                    onclick="this.parentElement.parentElement.parentElement.style.display='none'">X</button>
+          </div>
+          <div>{{ message }}</div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endblock %}

@@ -923,6 +923,23 @@ def applied_jobs(request):
         "count": unread_notifications,
     }
     return render(request,'applied-jobs.html',context)
+def shortlisted(request):
+    fname = request.session.get('jobseeker_name')
+    if not fname or not jobseeker_profile.objects.filter(name=fname).exists():
+        return redirect('home')
+    profile=jobseeker_profile.objects.get(name=fname)
+    profile_id=profile.id
+    jobseeker = jobseeker_profile.objects.get(name=fname)
+    jobs=JobApplication.objects.filter(jobseeker_id=profile_id,status="Accepted")
+    jobs=sorted(jobs, key=lambda x: x.id)
+    unread_notifications = JobNotification.objects.filter(jobseeker_profile=jobseeker, is_read=False).count()
+    context = {
+        "fname": fname,
+        "jsdt": jobseeker,
+        "jobs":jobs,
+        "count": unread_notifications,
+    }
+    return render(request,'jobseeker_shortlisted.html',context)
 
 def user_type(request):
     return render(request, 'user-type.html')

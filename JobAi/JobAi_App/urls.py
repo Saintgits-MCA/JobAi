@@ -30,6 +30,7 @@ urlpatterns = [
     path('company_registration/',views.company_registration,name="company_registration"),
     path('company_dashboard/',views.company_dashboard,name="company_dashboard"),
     path('job_listing/',views.company_jobs,name="job_listing"),
+    path('shortlisted/',views.shortlisted,name="shortlisted"),
     path('jobs/',views.jobs,name="jobs"),
     path('candidates/',views.candidates,name="candidates"),
     path('rejected/',views.rejected,name="rejected"),

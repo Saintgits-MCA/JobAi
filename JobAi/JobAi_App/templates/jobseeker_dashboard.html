@@ -21,9 +21,6 @@
         background-color: #f8f9fa;
     }
 
-    .container-fluid {
-        padding: 30px;
-    }
 
     .card {
         border-radius: 10px;
@@ -38,14 +35,7 @@
         color: white;
         padding: 20px;
         border-radius: 10px;
-    } .welcome-card {
-        display: flex;
-        align-items: center;
-        background: linear-gradient(135deg, #007bff, #6610f2);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-    }
+    } 
 
     .profile-img {
         width: 80px;
@@ -61,7 +51,7 @@
         border-radius: 10px;
     }
    .container{
-    width: 100%;
+    width: 90%;
    }
     .bg-blue { background-color: #007bff; }
     .bg-green { background-color: #28a745; }
@@ -84,7 +74,7 @@
     }
 </style>
 
-<div class="container mt-4 ms-3">
+<div class=" mt-4 ms-3">
     <div class="row">
 
         <!-- Profile Section -->
@@ -104,28 +94,34 @@
             </div>
       
     <div class="row mt-4 mb-4 d-flex justify-content-center w-150 gap-6">
-        <div class="col-sm-3 d-flex align-items-stretch">
+        <!-- <div class="col-lg-3 d-flex align-items-stretch">
             <div class="stat-card bg-blue w-100">
                 <h5 class="text-white fw-bold">Total Jobs</h5>
-                <h2 class="text-white ps-3"><i class="fas fa-briefcase"></i> {{ jcount }} </h2>
+                <h2 class="text-white ps-4"><i class="fas fa-briefcase"></i> {{ jcount }} </h2>
             </div>
-        </div>
-        <div class="col-sm-3 d-flex align-items-stretch">
+        </div> -->
+        <div class="col-lg-3 d-flex align-items-stretch">
             <div class="stat-card bg-green w-100">
-                <h5 class="text-white fw-bold">Total Applns.</h5>
-                <h2 class="text-white ps-3"><i class="fas fa-envelope"></i> {{ ajcount }} </h2>
+                <h5 class="text-white fw-bold">Applied Jobs</h5>
+                <h2 class="text-white ps-4"><i class="fas fa-inbox"></i> {{ ajcount }} </h2>
             </div>
         </div>
-        <div class="col-sm-3 d-flex align-items-stretch">
+        <div class="col-lg-3 d-flex align-items-stretch">
             <div class="stat-card bg-orange w-100">
-                <h5 class="text-white fw-bold">Rejected </h5>
-                <h2 class="text-white ps-3"><i class="fas fa-times-circle"></i> {{ rejected }} </h2>
+                <h5 class="text-white fw-bold">Pending</h5>
+                <h2 class="text-white ps-4"><i class="fas fa-sync"></i> {{ shortlisted_count }} </h2>
             </div>
         </div>
-        <div class="col-sm-3 d-flex align-items-stretch">
-            <div class="stat-card bg-red w-120">
+        <div class="col-lg-3 d-flex align-items-stretch">
+            <div class="stat-card bg-pink w-100">
                 <h5 class="text-white fw-bold">Shortlisted</h5>
-                <h2 class="text-white ps-3"><i class="fas fa-check-circle"></i> {{ shortlisted_count }} </h2>
+                <h2 class="text-white ps-4"><i class="fas fa-check-circle"></i> {{ shortlisted_count }} </h2>
+            </div>
+        </div>
+        <div class="col-lg-3 d-flex align-items-stretch">
+            <div class="stat-card bg-danger w-100">
+                <h5 class="text-white fw-bold">Rejected </h5>
+                <h2 class="text-white ps-4"><i class="fas fa-times-circle"></i> {{ rejected }} </h2>
             </div>
         </div>
     </div>
@@ -149,7 +145,7 @@
                 <div id="jobs" class="tab-pane fade show active">
                     <div class="card p-3 mb-3">
                         <h5>Active Job Postings</h5>
-                        <p>You can check <b>{{ jcount }}</b> job opportunities. <br>You can also manually search all jobs here.</p>
+                        <p>You can search all job openings here.</p>
                         <a href="{% url 'search-job' %}">
                             <button class="btn btn-primary"><i class="fas fa-search"></i> Search For Job</button>
                         </a>
@@ -193,7 +189,7 @@
                     <div class="card p-3 mb-3">
                         <h5>Applied Jobs</h5>
                         {% if ajcount and ajcount|add:0 > 0 %}
-                        <p>You have applied for <b>{{ ajcount }}</b> job(s).</p>
+                        <p>You can view your job application(s) here.</p>
                         <a href="{% url 'applied-jobs' %}">
                             <button class="btn btn-primary"><i class="bi bi-eye-fill"></i> View Applied Jobs</button><!-- Down arrow icon -->
                         </a>

@@ -169,14 +169,13 @@
 
 	/* Default Navbar (Transparent) */
 	#navbar {
-		position: sticky;
-		top: 0;
-		z-index: 1000;
-		background: transparent;
-		transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-		width: 100%;
-       padding: 0.5rem 1rem;
-	}
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 9999;
+      background: rgba(0, 133, 194, 0.0999);
+      padding: 0.5rem 1rem;
+    }
 .menu1 #home{
 	margin-left: 55px;
 }
@@ -202,49 +201,277 @@
 <body
 	class="grid grid-cols-[1fr_1rem_repeat(2,min(37.5rem,calc(50%-1rem)))_1rem_1fr] bg-top bg-no-repeat [background-size:200vw] lg:[background-size:100%_62rem] [:where(&>*)]:[grid-column:3/5]"
 	style="background-image: url('static/images/bg.png');opacity: 0.9;">
+<style>
+ /* 🔹 Mobile View (Max 768px) */
+@media (max-width: 768px) {
+    /* ✅ Navbar Fixes */
+    .navbar {
+        padding: 10px 15px;
+        flex-direction: column;
+        align-items: center;
+    }
 
-	<!-- navbar -->
-	<nav class="navbar px-0 flex justify-between items-start" id="navbar">
-		<div class="flex flex-col sm:flex-row gap-4 justify-start">
-			<a>
-				<img src="{% static 'images/JobAi2.png'%}" alt="JobAi" class="h-10"
-					style="height: 90px;border-radius: 25px;box-shadow: 0 0 20px rgb(48, 35, 229);">
-			</a>
+    /* ✅ Hide Desktop Menu on Mobile */
+    .desktop-menu {
+        display: none;
+    }
+    #logo{
+        margin-right:315px;
+        margin-top:15px;
+        margin-left: 10px;
+    }
 
-		</div>
+    /* ✅ Mobile Menu Button (☰) - Only for Mobile */
+    .menu-toggle {
+        display: block;
+        font-size: 24px;
+        color: white;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        z-index: 1000;
+    }
 
-		<div class="flex">
-			<ul class="menu1 menu menu-horizontal gap-0 max-sm:p-0 text-xs lg:text-sm mt-3">
-				<li> <a href="#" class="font-bold text-white hover:bg-black flex items-center text-lg"
-						id="home">Home</a></li>
-				<li><a href="#about" class="font-bold text-lg text-white hover:bg-black  flex items-center">
-						About
-					</a></li>
-				<li><a href="#services" class="font-bold text-lg text-white hover:bg-black  flex items-center">
-						Services
-					</a></li>
-					<li><a href="{%url 'main_search'%}" class="font-bold text-lg text-white hover:bg-black  flex items-center">
-						<i class="fas fa-search"></i>Jobs
-					</a></li>
-				<li><a href="#FAQ" class="font-bold text-lg text-white hover:bg-black  flex items-center">
-						FAQ
-					</a></li>
-				<li><a href="#contact" class="font-bold text-lg text-white hover:bg-black  flex items-center">
-						Contact
-					</a></li>
-				<li><a href="{% url 'user-type' %}"
-						class="font-bold text-lg text-white hover:bg-black  flex items-center">
-						Login
-					</a></li>
-			</ul>
-		</div>
+    /* ✅ Mobile Dropdown Menu */
+    .mobile-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        text-align: center;
+        padding: 10px 0;
+    }
 
-	</nav>
+    /* ✅ Show Mobile Menu When Toggled */
+    .mobile-menu.active {
+        display: block;
+    }
+
+    .mobile-menu a {
+        font-size: 16px;
+        padding: 10px;
+        display: block;
+        color: white;
+        text-decoration: none;
+    }
+
+    .mobile-menu a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ✅ Reduce Logo Size */
+    .navbar img {
+        height: 60px !important;
+        border-radius: 15px;
+    }
+
+    /* ✅ Adjust Text Sizes for Mobile */
+    h1 {
+        font-size: 22px;
+        text-align: center;
+    }
+.tagline{
+    font-size:40px;
+}
+    p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /* ✅ Buttons Adjusted for Mobile */
+    .btn {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+    /* ✅ Reduce Section Padding */
+    .section {
+        padding: 20px 15px;
+    }
+    /* 🔹 Mobile View (Max 768px) */
+@media (max-width: 768px) {
+    /* ✅ Navbar Fixes */
+    .navbar {
+        padding: 8px 12px; /* Reduce padding */
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* ✅ Adjust Logo Size */
+    .navbar img {
+        height: 55px !important; /* Smaller logo */
+        border-radius: 12px;
+    }
+
+    /* ✅ Adjust Mobile Menu */
+    .mobile-menu a {
+        font-size: 15px; /* Readable but compact */
+        padding: 8px 10px;
+    }
+
+    /* ✅ Reduce Heading & Text Sizes */
+    h1 {
+        font-size: 22px; /* Slightly smaller heading */
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    h2,h1,h3,h4,h5 {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+    p {
+        font-size: 14px;
+        line-height: 1.4;
+        margin-bottom: 10px;
+    }
+
+    /* ✅ Buttons Adjusted for Mobile */
+    .btn {
+        font-size: 14px;
+        padding: 6px 12px;
+        margin: 5px 0;
+    }
+
+    /* ✅ Adjust Section Padding & Margins */
+    .section {
+        padding: 18px 12px; /* Less space */
+    }
+
+    .hero {
+        text-align: center;
+        padding: 30px 10px;
+    }
+
+    /* ✅ Image Adjustments */
+    .image-container img {
+        width: 90%; /* Scale images */
+        max-width: 100%;
+    }
+
+    /* ✅ Adjust Footer */
+    .footer {
+        text-align: center;
+        padding: 15px;
+    }
+
+    /* ✅ Fix Card Layout for Mobile */
+    .card {
+        width: 100%;
+        margin-bottom: 12px;
+    }
+}
+
+/* 🔹 Desktop View (Min 769px) */
+@media (min-width: 769px) {
+    .navbar {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .desktop-menu {
+        display: flex;
+    }
+.img{
+    height:300px;
+    width:150px;
+}
+    .mobile-menu {
+        display: none !important;
+    }
+
+    .section {
+        padding: 40px 20px;
+    }
+
+    .btn {
+        font-size: 16px;
+        padding: 10px 18px;
+    }
+}
+
+}
+
+/* 🔹 Desktop View (Min 769px) */
+@media (min-width: 769px) {
+    /* ✅ Show Desktop Menu, Hide Mobile Button */
+    .menu-toggle {
+        display: none;
+    }
+
+    .mobile-menu {
+        display: none !important;
+    }
+
+    .desktop-menu {
+        display: flex;
+    }
+    
+}
+
+    </style>
+</head>
+<body>
+  <nav class="navbar px-0 flex justify-between items-center relative" id="navbar">
+    <a>
+        <img src="{% static 'images/JobAi2.png' %}" alt="JobAi" class="h-10" id='logo'
+            style="height: 90px; border-radius: 25px; box-shadow: 0 0 20px rgb(48, 35, 229);">
+    </a>
+
+    <!-- ✅ Fixed Toggle Button -->
+    <button class="menu-toggle sm:hidden" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- ✅ Fixed Mobile Dropdown Menu -->
+    <div class="mobile-menu hidden" id="mobileMenu">
+        <a href="#">Home</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="{% url 'main_search' %}"><i class="fas fa-search"></i> Jobs</a>
+        <a href="#FAQ">FAQ</a>
+        <a href="#contact">Contact</a>
+        <a href="{% url 'user-type' %}">Login</a>
+    </div>
+
+    <!-- Desktop Navigation Menu (Unchanged) -->
+    <ul class="menu1 menu menu-horizontal gap-3 max-sm:p-0 text-xs lg:text-sm mt-3 ps-3 desktop-menu">
+        <li><a href="#" class="font-bold text-white hover:bg-black text-lg ms-5 ps-5">Home</a></li>
+        <li><a href="#about" class="font-bold text-lg text-white hover:bg-black">About</a></li>
+        <li><a href="#services" class="font-bold text-lg text-white hover:bg-black">Services</a></li>
+        <li><a href="{% url 'main_search' %}" class="font-bold text-lg text-white hover:bg-black">
+                <i class="fas fa-search"></i> Jobs
+            </a>
+        </li>
+        <li><a href="#FAQ" class="font-bold text-lg text-white hover:bg-black">FAQ</a></li>
+        <li><a href="#contact" class="font-bold text-lg text-white hover:bg-black">Contact</a></li>
+        <li><a href="{% url 'user-type' %}" class="font-bold text-lg text-white hover:bg-black">Login</a></li>
+    </ul>
+</nav>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const menuToggle = document.getElementById("menuToggle");
+        const mobileMenu = document.getElementById("mobileMenu");
+
+        menuToggle.addEventListener("click", function () {
+            mobileMenu.classList.toggle("active");
+        });
+    });
+</script>
+
+
 	<!-- hero -->
 	<div
 		class="grid place-content-center items-center gap-y-6 overflow-hidden [grid-column:3/5] lg:h-[clamp(40rem,calc(100vh-4rem),50rem)] lg:justify-between lg:[grid-column:3/7] lg:[grid-template-columns:subgrid]">
 		<div class="z-[1] flex flex-col items-start gap-6 py-6">
-			<h1 class="relative font-title text-[clamp(4rem,20vw,3.75rem)] leading-none">
+			<h1 class="tagline relative font-title text-[clamp(4rem,20vw,3.75rem)] leading-none">
 				<b
 					style="color:white;background-color: #1E3A8A;border-radius: 15px;text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Automate</b>
 				<span class="font-bold" style="color: #0e0d0d;"> your</span><br /><span class='font-bold'
@@ -361,8 +588,8 @@
 	</h2>
 
 	<!-- top features -->
-	<div id="features" class="grid gap-1 py-1 lg:grid-cols-3">
-		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
+	<div id="features" class="grid gap-1 py-1 lg:grid-cols-3" style="margin-top:90px;background-color:lightblue;" >
+		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10" style="padding-top:80px;">
 			<!--  -->
 			<h3 class="text-center font-title text-xl font-bold">
 				Job-specific cover letter </h3>
@@ -406,7 +633,7 @@
 				</div>
 			</figure>
 		</div>
-		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
+		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10" style="padding-top:80px;">
 			<!-- <div class="aspect-square p-2 bg-accent font-title font-bold text-xl rounded-full grid place-content-center">
         <svg class="text-accent-content" width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 24L20 34L40 14" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div> -->
@@ -419,7 +646,7 @@
 					style="height: 200px;width: 490px;" />
 			</figure>
 		</div>
-		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10">
+		<div class="flex flex-col items-center gap-8 rounded-box bg-gradient-to-b from-base-200 py-10" style="padding-top:80px;">
 			<!-- <div class="aspect-square p-2 bg-accent font-title font-bold text-xl rounded-full grid place-content-center">
         <svg class="text-accent-content" width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 24L20 34L40 14" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div> -->
@@ -568,16 +795,16 @@
 			<h2 class="text-center text-lg font-bold uppercase tracking-widest text-base-content/50">
 				Get hired by top companies worldwide </h2>
 			<div class="mx-auto max-w-7xl text-center [text-wrap:balance]">
-				<img class="m-6 inline-block brightness-75" src="{% static 'images/tcs.png' %}" alt="ai apply"
+				<img class="m-6 inline-block brightness-75 img" src="{% static 'images/tcs.png' %}" alt="ai apply"
 					style="height: 90px;" />
-				<img class="m-6 inline-block brightness-75" src="{% static 'images/cognizant.png' %}"
+				<img class="m-6 inline-block brightness-75 img" src="{% static 'images/cognizant.png' %}"
 					alt="find a job with ai" width="158" style="height: 204px;" />
-				<img class="m-6 inline-block brightness-75" src="{% static 'images/infosys.png' %}"
+				<img class="m-6 inline-block brightness-75 img" src="{% static 'images/infosys.png' %}"
 					alt="job application ai" width="158" height="48" />
-				<img class="m-6 inline-block brightness-75" src="{% static 'images/6dtechnologies.png' %}"
+				<img class="m-6 inline-block brightness-75 img" src="{% static 'images/6dtechnologies.png' %}"
 					alt="cover letter generator" style="height: 100px;width:280px" />
-				<img class="m-6 inline-block brightness-75" src="{% static 'images/hcl.png' %}" alt="resume builder"
-					width="158" height="48" />
+				<img class="m-6 inline-block brightness-75 img" src="{% static 'images/hcl.png' %}" alt="resume builder"
+					width="158" height="48px" />
 			</div>
 		</div>
 	</div>
