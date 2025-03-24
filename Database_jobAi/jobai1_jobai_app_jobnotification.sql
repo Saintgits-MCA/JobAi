@@ -34,7 +34,7 @@ CREATE TABLE `jobai_app_jobnotification` (
   KEY `JobAi_App_jobnotific_jobseeker_profile_id_3d5a7004_fk_JobAi_App` (`jobseeker_profile_id`),
   CONSTRAINT `JobAi_App_jobnotific_company_job_id_4e386625_fk_JobAi_App` FOREIGN KEY (`company_job_id`) REFERENCES `jobai_app_company_joblist` (`id`),
   CONSTRAINT `JobAi_App_jobnotific_jobseeker_profile_id_3d5a7004_fk_JobAi_App` FOREIGN KEY (`jobseeker_profile_id`) REFERENCES `jobai_app_jobseeker_profile` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `jobai_app_jobnotification` (
 
 LOCK TABLES `jobai_app_jobnotification` WRITE;
 /*!40000 ALTER TABLE `jobai_app_jobnotification` DISABLE KEYS */;
-INSERT INTO `jobai_app_jobnotification` VALUES (1,'New job posted: Django Developer at Amazon India Pvt Ltd.',0,'2025-03-13 05:46:03.906596',14,1),(2,'New job posted: Django Developer at Amazon India Pvt Ltd.',0,'2025-03-13 05:46:03.919396',14,2),(3,'New job posted: Django Developer at Amazon India Pvt Ltd.',0,'2025-03-13 05:46:03.929337',14,3),(4,'New job posted: Django Developer at Amazon India Pvt Ltd.',0,'2025-03-13 05:46:03.929337',14,4);
+INSERT INTO `jobai_app_jobnotification` VALUES (2,'New job posted: Django Developer at Amazon India Pvt Ltd.',0,'2025-03-13 05:46:03.919396',14,2),(3,'New job posted: Django Developer at Amazon India Pvt Ltd.',0,'2025-03-13 05:46:03.929337',14,3),(4,'New job posted: Django Developer at Amazon India Pvt Ltd.',0,'2025-03-13 05:46:03.929337',14,4),(34,'New job posted: FullStack Developer at TATA CONSULTING SERVICES.',0,'2025-03-20 10:44:43.253782',22,2),(35,'New job posted: FullStack Developer at TATA CONSULTING SERVICES.',0,'2025-03-20 10:44:43.258962',22,3),(36,'New job posted: FullStack Developer at TATA CONSULTING SERVICES.',0,'2025-03-20 10:44:43.263968',22,4),(38,'New job posted: Mern Stack Developer at Infosys.',0,'2025-03-21 05:01:27.206509',23,2),(39,'New job posted: Mern Stack Developer at Infosys.',0,'2025-03-21 05:01:27.210585',23,3),(40,'New job posted: Mern Stack Developer at Infosys.',0,'2025-03-21 05:01:27.212987',23,4);
 /*!40000 ALTER TABLE `jobai_app_jobnotification` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-18  8:17:26
+-- Dump completed on 2025-03-23  8:27:07

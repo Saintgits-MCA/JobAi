@@ -45,7 +45,7 @@ CREATE TABLE `auth_user` (
 
 LOCK TABLES `auth_user` WRITE;
 /*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
-INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$870000$TzNVHAozsGVsuZBrpGhm5R$WM7LhZdEua2h5lakBIvpFoU+E7fx9gioIJx+YuSfyhM=','2025-03-03 06:32:29.927906',1,'Prudhwi2002','','','tecknohow.132@gmail.com',1,1,'2025-03-03 06:31:31.849065');
+INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$870000$TzNVHAozsGVsuZBrpGhm5R$WM7LhZdEua2h5lakBIvpFoU+E7fx9gioIJx+YuSfyhM=','2025-03-20 06:02:03.140391',1,'Prudhwi2002','','','tecknohow.132@gmail.com',1,1,'2025-03-03 06:31:31.849065');
 /*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-18  8:17:25
+-- Dump completed on 2025-03-23  8:26:57

@@ -41,7 +41,7 @@ CREATE TABLE `jobai_app_jobseeker_profile` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,7 +50,7 @@ CREATE TABLE `jobai_app_jobseeker_profile` (
 
 LOCK TABLES `jobai_app_jobseeker_profile` WRITE;
 /*!40000 ALTER TABLE `jobai_app_jobseeker_profile` DISABLE KEYS */;
-INSERT INTO `jobai_app_jobseeker_profile` VALUES (1,'Aslam Salam','aslamsalam3491@gmail.com','623508419','2002-01-09','MCA','FullStack Developer','A P J Abdulkalam Technological University','Lakulathu Thazchayil, Kuttapuzha P O Thiruvalla, Kerala, 689103','CSS, Django, Git, HTML, Java, JavaScript, Python, React, SQL','documents/ASLAM-SALAM-FlowCV-Resume-20250112_2.docx',4,'images/aslam_salam.jpeg','84.1%','2025'),(2,'Prudhwi Raj','prudhwirajk@gmail.com','9562766835','2002-04-24','Integrated MCA','Django Developer','Saintgits College Of Engineering(Autonomous),Kottayam, Kerala','Kottayam ,Kerala Pin:686502','CSS, Git, HTML, Java, Python, SQL','documents/Prudhwi_Raj_Krishna_V_CV.docx',1,'images/Prudhwi_Raj.jpg','85.7%','2025'),(3,'Janna Gardner','jannagardner@gmail.com','9576628123','2002-01-18','MCA','Database  Analyst','A P J Abdul Kalam Technological University, Kerala','Ance Villa,Kochi,Kerala,India','CSS, HTML, Python, SQL','documents/Janna_Gardner.docx',6,'images/janna-gardner.jpeg','60%','2025'),(4,'Jayaraj J Pillai','jayaraj.inmca2025@saintgits.org','8586342510','2002-06-24','Integrated MCA','Cyber Security Analyst','Saintgits College of Engineering (Autonomous), Kottayam','Vallamkulam P.O Thiruvalla Pathanamthitta Kerala','C++, CSS, Django, Git, HTML, Java, JavaScript, Python, SQL','documents/Jayaraj_J_Pillai_resume.docx',3,'images/jayaraj.jpeg','80.7%','2025');
+INSERT INTO `jobai_app_jobseeker_profile` VALUES (1,'Aslam Salam','aslamsalam8419@gmail.com','623508419','2002-01-09','MCA','FullStack Developer','A P J Abdulkalam Technological University','Lakulathu Thazchayil, Kuttapuzha P O Thiruvalla, Kerala, 689103','CSS, Django, Git, HTML, Java, JavaScript, Python, React, SQL','documents/ASLAM-SALAM-FlowCV-Resume-20250112_2.docx',4,'images/aslam_salam.jpeg','84.1%','2025'),(2,'Prudhwi Raj','prudhwirajk@gmail.com','9562766835','2002-04-24','Integrated MCA','Django Developer','Saintgits College Of Engineering(Autonomous),Kottayam, Kerala','Kottayam ,Kerala Pin:686502','CSS, Git, HTML, Java, Python, SQL','documents/Prudhwi_Raj_Krishna_V_CV.docx',1,'images/Prudhwi_Raj.jpg','85.7%','2025'),(3,'Janna Gardner','jannagardner@gmail.com','9576628123','2002-01-18','MCA','Database  Analyst','A P J Abdul Kalam Technological University, Kerala','Ance Villa,Kochi,Kerala,India','CSS, HTML, Python, SQL','documents/Janna_Gardner.docx',6,'images/janna-gardner.jpeg','60%','2025'),(4,'Jayaraj J Pillai','jayaraj.inmca2025@saintgits.org','8586342510','2002-06-24','Integrated MCA','Cyber Security Analyst','Saintgits College of Engineering (Autonomous), Kottayam','Vallamkulam P.O Thiruvalla Pathanamthitta Kerala','C++, CSS, Django, Git, HTML, Java, JavaScript, Python, SQL','documents/Jayaraj_J_Pillai_resume.docx',3,'images/jayaraj.jpeg','80.7%','2025');
 /*!40000 ALTER TABLE `jobai_app_jobseeker_profile` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -63,4 +63,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-18  8:17:22
+-- Dump completed on 2025-03-23  8:27:07
